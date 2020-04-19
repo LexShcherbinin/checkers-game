@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'com.github.lexshcherbinin'
+version '1.0'
+
+sourceCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.typesafe:config:${typesafeConfigVersion}"
+    implementation "org.apache.poi:poi-ooxml:${apachePoi}"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
