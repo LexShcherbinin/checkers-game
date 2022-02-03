@@ -5,15 +5,14 @@ plugins {
 group 'com.github.lexshcherbinin'
 version '1.0'
 
-sourceCompatibility = 13
+sourceCompatibility = 17
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "com.typesafe:config:${typesafeConfigVersion}"
-    implementation "org.apache.poi:poi-ooxml:${apachePoi}"
+    implementation 'com.typesafe:config:1.4.1'
 }
 
 tasks.withType(JavaCompile) {
