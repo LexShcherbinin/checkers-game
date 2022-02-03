@@ -68,6 +68,16 @@ public class ChessPiece {
     return this;
   }
 
+  public static ChessPiece createPiece(Colors color, Pieces piece, Coordinates coordinate) {
+    return new ChessPiece()
+        .setName(piece)
+        .setCoordinates(coordinate)
+        .setOnBoard(true)
+        .setCanMove(false)
+        .setActions(null)
+        .setColor(color);
+  }
+
   @Override
   public String toString() {
     String color = "";
