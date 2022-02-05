@@ -1,8 +1,10 @@
 package chess;
 
+import java.util.List;
+
 public class ChessPiece {
 
-  Pieces name;
+  Names name;
 
   Coordinates coordinates;
 
@@ -10,15 +12,15 @@ public class ChessPiece {
 
   boolean canMove = false;
 
-  Actions actions = null;
+  List<Actions> actions = null;
 
   Colors color;
 
-  public Pieces getName() {
+  public Names getName() {
     return name;
   }
 
-  public ChessPiece setName(Pieces name) {
+  public ChessPiece setName(Names name) {
     this.name = name;
     return this;
   }
@@ -50,11 +52,11 @@ public class ChessPiece {
     return this;
   }
 
-  public Actions getActions() {
+  public List<Actions> getActions() {
     return actions;
   }
 
-  public ChessPiece setActions(Actions actions) {
+  public ChessPiece setActions(List<Actions> actions) {
     this.actions = actions;
     return this;
   }
@@ -68,35 +70,22 @@ public class ChessPiece {
     return this;
   }
 
-  public static ChessPiece createPiece(Colors color, Pieces piece, Coordinates coordinate) {
+  public static ChessPiece createPiece(Colors color, Names piece, Coordinates coordinate) {
     return new ChessPiece()
         .setName(piece)
         .setCoordinates(coordinate)
-        .setOnBoard(true)
-        .setCanMove(false)
-        .setActions(null)
         .setColor(color);
   }
 
   @Override
   public String toString() {
-    String color = "";
-    String name = "";
-
-    switch (this.color) {
-      case BLACK -> color = "B";
-      case WHITE -> color = "W";
-    }
-
-    switch (this.name) {
-      case KINGS -> name = "K";
-      case QUEEN -> name = "Q";
-      case ROOK -> name = "R";
-      case BISHOP -> name = "B";
-      case KNIGHT -> name = "H";
-      case PAWN -> name = "P";
-    }
+    String color = this.color.toString();
+    String name = this.name.toString();
 
     return color + name;
+  }
+
+  public void move() {
+
   }
 }

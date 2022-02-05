@@ -10,4 +10,22 @@ public class Coordinates {
     this.vertical = vertical;
     this.horizontal = horizontal;
   }
+
+  public int getVertical() {
+    return vertical;
+  }
+
+  public Coordinates setVertical(int vertical) {
+    this.vertical = vertical;
+    return this;
+  }
+
+  public int getHorizontal() {
+    return horizontal;
+  }
+
+  public Coordinates setHorizontal(int horizontal) {
+    this.horizontal = horizontal;
+    return this;
+  }
 }

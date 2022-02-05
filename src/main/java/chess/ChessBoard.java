@@ -1,22 +1,68 @@
 package chess;
 
-import static chess.ChessPiece.createPiece;
-import static chess.Colors.*;
-import static chess.Pieces.*;
+import static chess.Colors.BLACK;
+import static chess.Colors.WHITE;
+import static chess.Names.BISHOP;
+import static chess.Names.KING;
+import static chess.Names.KNIGHT;
+import static chess.Names.PAWN;
+import static chess.Names.QUEEN;
+import static chess.Names.ROOK;
 
+import chess.pieces.Bishop;
+import chess.pieces.BlackPawn;
+import chess.pieces.IPieces;
+import chess.pieces.King;
+import chess.pieces.Knight;
+import chess.pieces.Queen;
+import chess.pieces.Rook;
+import chess.pieces.WhitePawn;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChessBoard {
 
-  List<ChessPiece> pieces;
+  List<IPieces> pieces;
+
+  Colors priority = WHITE;
 
   public ChessBoard() {
     this.pieces = getDefaultBoard();
   }
 
-  public List<ChessPiece> getDefaultBoard() {
-    List<ChessPiece> pieces = new ArrayList<>();
+  public IPieces createPiece(Colors color, Names name, Coordinates coordinate) {
+    switch (name) {
+      case KING:
+        return new King(name, color, coordinate);
+
+      case QUEEN:
+        return new Queen(name, color, coordinate);
+
+      case ROOK:
+        return new Rook(name, color, coordinate);
+
+      case BISHOP:
+        return new Bishop(name, color, coordinate);
+
+      case KNIGHT:
+        return new Knight(name, color, coordinate);
+
+      case PAWN: {
+        if (color == WHITE) {
+          return new WhitePawn(name, color, coordinate);
+
+        } else {
+          return new BlackPawn(name, color, coordinate);
+        }
+      }
+
+      default:
+        throw new RuntimeException("Что-то не так с фигурами");
+    }
+  }
+
+  public List<IPieces> getDefaultBoard() {
+    List<IPieces> pieces = new ArrayList<>();
 
     pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 0)));
     pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 1)));
@@ -31,11 +77,10 @@ public class ChessBoard {
     pieces.add(createPiece(WHITE, KNIGHT, new Coordinates(0, 1)));
     pieces.add(createPiece(WHITE, BISHOP, new Coordinates(0, 2)));
     pieces.add(createPiece(WHITE, QUEEN, new Coordinates(0, 3)));
-    pieces.add(createPiece(WHITE, KINGS, new Coordinates(0, 4)));
+    pieces.add(createPiece(WHITE, KING, new Coordinates(0, 4)));
     pieces.add(createPiece(WHITE, BISHOP, new Coordinates(0, 5)));
     pieces.add(createPiece(WHITE, KNIGHT, new Coordinates(0, 6)));
     pieces.add(createPiece(WHITE, ROOK, new Coordinates(0, 7)));
-
 
     pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 0)));
     pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 1)));
@@ -50,7 +95,7 @@ public class ChessBoard {
     pieces.add(createPiece(BLACK, KNIGHT, new Coordinates(7, 1)));
     pieces.add(createPiece(BLACK, BISHOP, new Coordinates(7, 2)));
     pieces.add(createPiece(BLACK, QUEEN, new Coordinates(7, 3)));
-    pieces.add(createPiece(BLACK, KINGS, new Coordinates(7, 4)));
+    pieces.add(createPiece(BLACK, KING, new Coordinates(7, 4)));
     pieces.add(createPiece(BLACK, BISHOP, new Coordinates(7, 5)));
     pieces.add(createPiece(BLACK, KNIGHT, new Coordinates(7, 6)));
     pieces.add(createPiece(BLACK, ROOK, new Coordinates(7, 7)));
@@ -58,22 +103,49 @@ public class ChessBoard {
     return pieces;
   }
 
+//  public void makeMove() {
+//    ChessPiece piece = pieces.stream()
+//        .filter(p -> p.color == priority)
+//        .filter(p -> p.canMove)
+//        .findAny()
+//        .orElseThrow(() -> new RuntimeException("Нет подходящих фигур"));
+//
+//
+//    Actions action = piece.actions.stream()
+////        .filter(Actions::checkAction)
+//        .findAny()
+//        .orElseThrow(() -> new RuntimeException("Нет возможных ходов"));
+//
+//    action.apply(piece);
+//    changePriority();
+//  }
+
+  private void changePriority() {
+    if (priority == WHITE) {
+      priority = BLACK;
+
+    } else {
+      priority = WHITE;
+    }
+  }
+
   /**
-   * @return  +-------------------------+
-   *          | BR BH BB BQ BK BB BH BR |
-   *          | BP BP BP BP BP BP BP BP |
-   *          |  *  *  *  *  *  *  *  * |
-   *          |  *  *  *  *  *  *  *  * |
-   *          |  *  *  *  *  *  *  *  * |
-   *          |  *  *  *  *  *  *  *  * |
-   *          | WP WP WP WP WP WP WP WP |
-   *          | WR WH WB WQ WK WB WH WR |
-   *          +-------------------------+
+   * @return
+   * +-------------------------+
+   * | BR BH BB BQ BK BB BH BR |
+   * | BP BP BP BP BP BP BP BP |
+   * |  *  *  *  *  *  *  *  * |
+   * |  *  *  *  *  *  *  *  * |
+   * |  *  *  *  *  *  *  *  * |
+   * |  *  *  *  *  *  *  *  * |
+   * | WP WP WP WP WP WP WP WP |
+   * | WR WH WB WQ WK WB WH WR |
+   * +-------------------------+
    */
   @Override
   public String toString() {
 
-    String[][] board = new String[][]{
+    String[][] board = new String[][] {
         {" *", " *", " *", " *", " *", " *", " *", " *"},
         {" *", " *", " *", " *", " *", " *", " *", " *"},
         {" *", " *", " *", " *", " *", " *", " *", " *"},
@@ -84,13 +156,11 @@ public class ChessBoard {
         {" *", " *", " *", " *", " *", " *", " *", " *"}
     };
 
-    for (ChessPiece piece : pieces) {
-      if (piece.onBoard) {
-        int vertical = piece.coordinates.vertical;
-        int horizontal = piece.coordinates.horizontal;
+    for (IPieces piece : pieces) {
+      int vertical = piece.getCoordinates().getVertical();
+      int horizontal = piece.getCoordinates().getHorizontal();
 
-        board[vertical][horizontal] = piece.toString();
-      }
+      board[vertical][horizontal] = piece.toString();
     }
 
     String result = "+-------------------------+\n| ";
