@@ -51,16 +51,67 @@ public class Bishop implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Consumer<IPieces> down1 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 1, horizontal));
-    Consumer<IPieces> down2 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 2, horizontal));
-    Consumer<IPieces> downAndRight = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
-    Consumer<IPieces> downAndLeft = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Consumer<IPieces> upAndRight1 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
+    Consumer<IPieces> upAndRight2 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 2, horizontal + 2));
+    Consumer<IPieces> upAndRight3 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 3, horizontal + 3));
+    Consumer<IPieces> upAndRight4 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 4, horizontal + 4));
+    Consumer<IPieces> upAndRight5 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 5, horizontal + 5));
+    Consumer<IPieces> upAndRight6 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 6, horizontal + 6));
+    Consumer<IPieces> upAndRight7 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 7, horizontal + 7));
+
+    Consumer<IPieces> upAndLeft1 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
+    Consumer<IPieces> upAndLeft2 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 2, horizontal - 2));
+    Consumer<IPieces> upAndLeft3 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 3, horizontal - 3));
+    Consumer<IPieces> upAndLeft4 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 4, horizontal - 4));
+    Consumer<IPieces> upAndLeft5 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 5, horizontal - 5));
+    Consumer<IPieces> upAndLeft6 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 6, horizontal - 6));
+    Consumer<IPieces> upAndLeft7 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 7, horizontal - 7));
+
+    Consumer<IPieces> downAndRight1 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
+    Consumer<IPieces> downAndRight2 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 2, horizontal + 2));
+    Consumer<IPieces> downAndRight3 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 3, horizontal + 3));
+    Consumer<IPieces> downAndRight4 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 4, horizontal + 4));
+    Consumer<IPieces> downAndRight5 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 5, horizontal + 5));
+    Consumer<IPieces> downAndRight6 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 6, horizontal + 6));
+    Consumer<IPieces> downAndRight7 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 7, horizontal + 7));
+
+    Consumer<IPieces> downAndLeft1 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Consumer<IPieces> downAndLeft2 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 2, horizontal - 2));
+    Consumer<IPieces> downAndLeft3 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 3, horizontal - 3));
+    Consumer<IPieces> downAndLeft4 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 4, horizontal - 4));
+    Consumer<IPieces> downAndLeft5 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 5, horizontal - 5));
+    Consumer<IPieces> downAndLeft6 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 6, horizontal - 6));
+    Consumer<IPieces> downAndLeft7 = piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 7, horizontal - 7));
 
     List<Consumer<IPieces>> actions = List.of(
-        down1,
-        down2,
-        downAndRight,
-        downAndLeft
+        upAndRight1,
+        upAndRight2,
+        upAndRight3,
+        upAndRight4,
+        upAndRight5,
+        upAndRight6,
+        upAndRight7,
+        upAndLeft1,
+        upAndLeft2,
+        upAndLeft3,
+        upAndLeft4,
+        upAndLeft5,
+        upAndLeft6,
+        upAndLeft7,
+        downAndRight1,
+        downAndRight2,
+        downAndRight3,
+        downAndRight4,
+        downAndRight5,
+        downAndRight6,
+        downAndRight7,
+        downAndLeft1,
+        downAndLeft2,
+        downAndLeft3,
+        downAndLeft4,
+        downAndLeft5,
+        downAndLeft6,
+        downAndLeft7
     );
 
     return actions;

@@ -51,16 +51,24 @@ public class Knight implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Consumer<IPieces> down1 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 1, horizontal));
-    Consumer<IPieces> down2 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 2, horizontal));
-    Consumer<IPieces> downAndRight = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
-    Consumer<IPieces> downAndLeft = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Consumer<IPieces> jump1 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical + 2, horizontal + 1));
+    Consumer<IPieces> jump2 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical + 1, horizontal + 2));
+    Consumer<IPieces> jump3 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 2));
+    Consumer<IPieces> jump4 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 2, horizontal + 1));
+    Consumer<IPieces> jump5 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 2, horizontal - 1));
+    Consumer<IPieces> jump6 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 2));
+    Consumer<IPieces> jump7 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical + 1, horizontal - 2));
+    Consumer<IPieces> jump8 = piece -> new Knight(piece).setCoordinates(new Coordinates(vertical + 2, horizontal - 1));
 
     List<Consumer<IPieces>> actions = List.of(
-        down1,
-        down2,
-        downAndRight,
-        downAndLeft
+        jump1,
+        jump2,
+        jump3,
+        jump4,
+        jump5,
+        jump6,
+        jump7,
+        jump8
     );
 
     return actions;

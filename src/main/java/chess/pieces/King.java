@@ -51,16 +51,16 @@ public class King implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
+    Consumer<IPieces> up1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical + 1, horizontal));
     Consumer<IPieces> down1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical - 1, horizontal));
-    Consumer<IPieces> down2 = piece -> new King(piece).setCoordinates(new Coordinates(vertical - 2, horizontal));
-    Consumer<IPieces> downAndRight = piece -> new King(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
-    Consumer<IPieces> downAndLeft = piece -> new King(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Consumer<IPieces> right1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical, horizontal + 1));
+    Consumer<IPieces> left1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical, horizontal - 1));
 
     List<Consumer<IPieces>> actions = List.of(
+        up1,
         down1,
-        down2,
-        downAndRight,
-        downAndLeft
+        right1,
+        left1
     );
 
     return actions;

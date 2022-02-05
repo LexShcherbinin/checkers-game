@@ -51,16 +51,128 @@ public class Queen implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
+    Consumer<IPieces> up1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 1, horizontal));
+    Consumer<IPieces> up2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 2, horizontal));
+    Consumer<IPieces> up3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 3, horizontal));
+    Consumer<IPieces> up4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 4, horizontal));
+    Consumer<IPieces> up5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 5, horizontal));
+    Consumer<IPieces> up6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 6, horizontal));
+    Consumer<IPieces> up7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 7, horizontal));
+
     Consumer<IPieces> down1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal));
     Consumer<IPieces> down2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 2, horizontal));
-    Consumer<IPieces> downAndRight = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
-    Consumer<IPieces> downAndLeft = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Consumer<IPieces> down3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 3, horizontal));
+    Consumer<IPieces> down4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 4, horizontal));
+    Consumer<IPieces> down5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 5, horizontal));
+    Consumer<IPieces> down6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 6, horizontal));
+    Consumer<IPieces> down7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 7, horizontal));
+
+    Consumer<IPieces> right1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 1));
+    Consumer<IPieces> right2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 2));
+    Consumer<IPieces> right3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 3));
+    Consumer<IPieces> right4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 4));
+    Consumer<IPieces> right5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 5));
+    Consumer<IPieces> right6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 6));
+    Consumer<IPieces> right7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 7));
+
+    Consumer<IPieces> left1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 1));
+    Consumer<IPieces> left2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 2));
+    Consumer<IPieces> left3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 3));
+    Consumer<IPieces> left4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 4));
+    Consumer<IPieces> left5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 5));
+    Consumer<IPieces> left6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 6));
+    Consumer<IPieces> left7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 7));
+
+    Consumer<IPieces> upAndRight1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
+    Consumer<IPieces> upAndRight2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 2, horizontal + 2));
+    Consumer<IPieces> upAndRight3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 3, horizontal + 3));
+    Consumer<IPieces> upAndRight4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 4, horizontal + 4));
+    Consumer<IPieces> upAndRight5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 5, horizontal + 5));
+    Consumer<IPieces> upAndRight6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 6, horizontal + 6));
+    Consumer<IPieces> upAndRight7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 7, horizontal + 7));
+
+    Consumer<IPieces> upAndLeft1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
+    Consumer<IPieces> upAndLeft2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 2, horizontal - 2));
+    Consumer<IPieces> upAndLeft3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 3, horizontal - 3));
+    Consumer<IPieces> upAndLeft4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 4, horizontal - 4));
+    Consumer<IPieces> upAndLeft5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 5, horizontal - 5));
+    Consumer<IPieces> upAndLeft6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 6, horizontal - 6));
+    Consumer<IPieces> upAndLeft7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 7, horizontal - 7));
+
+    Consumer<IPieces> downAndRight1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
+    Consumer<IPieces> downAndRight2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 2, horizontal + 2));
+    Consumer<IPieces> downAndRight3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 3, horizontal + 3));
+    Consumer<IPieces> downAndRight4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 4, horizontal + 4));
+    Consumer<IPieces> downAndRight5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 5, horizontal + 5));
+    Consumer<IPieces> downAndRight6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 6, horizontal + 6));
+    Consumer<IPieces> downAndRight7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 7, horizontal + 7));
+
+    Consumer<IPieces> downAndLeft1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Consumer<IPieces> downAndLeft2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 2, horizontal - 2));
+    Consumer<IPieces> downAndLeft3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 3, horizontal - 3));
+    Consumer<IPieces> downAndLeft4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 4, horizontal - 4));
+    Consumer<IPieces> downAndLeft5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 5, horizontal - 5));
+    Consumer<IPieces> downAndLeft6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 6, horizontal - 6));
+    Consumer<IPieces> downAndLeft7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 7, horizontal - 7));
 
     List<Consumer<IPieces>> actions = List.of(
+        up1,
+        up2,
+        up3,
+        up4,
+        up5,
+        up6,
+        up7,
         down1,
         down2,
-        downAndRight,
-        downAndLeft
+        down3,
+        down4,
+        down5,
+        down6,
+        down7,
+        right1,
+        right2,
+        right3,
+        right4,
+        right5,
+        right6,
+        right7,
+        left1,
+        left2,
+        left3,
+        left4,
+        left5,
+        left6,
+        left7,
+
+        upAndRight1,
+        upAndRight2,
+        upAndRight3,
+        upAndRight4,
+        upAndRight5,
+        upAndRight6,
+        upAndRight7,
+        upAndLeft1,
+        upAndLeft2,
+        upAndLeft3,
+        upAndLeft4,
+        upAndLeft5,
+        upAndLeft6,
+        upAndLeft7,
+        downAndRight1,
+        downAndRight2,
+        downAndRight3,
+        downAndRight4,
+        downAndRight5,
+        downAndRight6,
+        downAndRight7,
+        downAndLeft1,
+        downAndLeft2,
+        downAndLeft3,
+        downAndLeft4,
+        downAndLeft5,
+        downAndLeft6,
+        downAndLeft7
     );
 
     return actions;
