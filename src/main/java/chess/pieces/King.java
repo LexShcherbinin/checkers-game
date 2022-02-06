@@ -5,6 +5,7 @@ import chess.Coordinates;
 import chess.Names;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class King implements IPieces {
 
@@ -17,7 +18,9 @@ public class King implements IPieces {
   private Coordinates coordinates;
 
   public King(IPieces piece) {
-    this.piece = piece;
+    this.name = piece.getName();
+    this.color = piece.getColor();
+    this.coordinates = piece.getCoordinates();
   }
 
   public King(Names name, Colors color, Coordinates coordinates) {
@@ -42,21 +45,22 @@ public class King implements IPieces {
   }
 
   @Override
-  public void setCoordinates(Coordinates coordinates) {
+  public IPieces setCoordinates(Coordinates coordinates) {
     this.coordinates = coordinates;
+    return this;
   }
 
   @Override
-  public List<Consumer<IPieces>> getActions() {
+  public List<Function<IPieces, IPieces>> getActions() {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Consumer<IPieces> up1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical + 1, horizontal));
-    Consumer<IPieces> down1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical - 1, horizontal));
-    Consumer<IPieces> right1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical, horizontal + 1));
-    Consumer<IPieces> left1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical, horizontal - 1));
+    Function<IPieces, IPieces> up1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical + 1, horizontal));
+    Function<IPieces, IPieces> down1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical - 1, horizontal));
+    Function<IPieces, IPieces> right1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical, horizontal + 1));
+    Function<IPieces, IPieces> left1 = piece -> new King(piece).setCoordinates(new Coordinates(vertical, horizontal - 1));
 
-    List<Consumer<IPieces>> actions = List.of(
+    List<Function<IPieces, IPieces>> actions = List.of(
         up1,
         down1,
         right1,

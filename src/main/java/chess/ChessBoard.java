@@ -19,6 +19,10 @@ import chess.pieces.Rook;
 import chess.pieces.WhitePawn;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ChessBoard {
 
@@ -103,22 +107,26 @@ public class ChessBoard {
     return pieces;
   }
 
-//  public void makeMove() {
-//    ChessPiece piece = pieces.stream()
-//        .filter(p -> p.color == priority)
-//        .filter(p -> p.canMove)
-//        .findAny()
-//        .orElseThrow(() -> new RuntimeException("Нет подходящих фигур"));
-//
-//
-//    Actions action = piece.actions.stream()
-////        .filter(Actions::checkAction)
-//        .findAny()
-//        .orElseThrow(() -> new RuntimeException("Нет возможных ходов"));
-//
-//    action.apply(piece);
-//    changePriority();
-//  }
+  public void makeMove() {
+    Random random = new Random();
+
+    IPieces piece = pieces
+        .stream()
+        .filter(p -> p.getColor() == priority)
+        .collect(Collectors.toList())
+        .get(random.nextInt(pieces.size()));
+
+    Function<IPieces, IPieces> action = piece
+        .getActions()
+        .get(random.nextInt(pieces.size()));
+
+    pieces.remove(piece);
+
+    piece = action.apply(piece);
+
+    pieces.add(piece);
+    changePriority();
+  }
 
   private void changePriority() {
     if (priority == WHITE) {

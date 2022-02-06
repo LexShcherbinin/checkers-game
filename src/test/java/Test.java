@@ -6,8 +6,10 @@ public class Test {
     ChessBoard chessBoard = new ChessBoard();
     System.out.println(chessBoard);
 
-//    chessBoard.makeMove();
-//    System.out.println(chessBoard);
+    for (int i = 0; i <= 0; i++) {
+      chessBoard.makeMove();
+      System.out.println(chessBoard);
+    }
   }
 
 }

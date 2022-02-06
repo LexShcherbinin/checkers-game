@@ -5,6 +5,7 @@ import chess.Coordinates;
 import chess.Names;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface IPieces {
 
@@ -14,8 +15,8 @@ public interface IPieces {
 
   Coordinates getCoordinates();
 
-  void setCoordinates(Coordinates coordinates);
+  IPieces setCoordinates(Coordinates coordinates);
 
-  List<Consumer<IPieces>> getActions();
+  List<Function<IPieces, IPieces>> getActions();
 
 }

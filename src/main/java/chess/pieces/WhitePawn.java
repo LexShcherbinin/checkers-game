@@ -5,6 +5,7 @@ import chess.Coordinates;
 import chess.Names;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class WhitePawn implements IPieces {
 
@@ -17,7 +18,9 @@ public class WhitePawn implements IPieces {
   private Coordinates coordinates;
 
   public WhitePawn(IPieces piece) {
-    this.piece = piece;
+    this.name = piece.getName();
+    this.color = piece.getColor();
+    this.coordinates = piece.getCoordinates();
   }
 
   public WhitePawn(Names name, Colors color, Coordinates coordinates) {
@@ -42,21 +45,22 @@ public class WhitePawn implements IPieces {
   }
 
   @Override
-  public void setCoordinates(Coordinates coordinates) {
+  public IPieces setCoordinates(Coordinates coordinates) {
     this.coordinates = coordinates;
+    return this;
   }
 
   @Override
-  public List<Consumer<IPieces>> getActions() {
+  public List<Function<IPieces, IPieces>> getActions() {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Consumer<IPieces> up1 = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 1, horizontal));
-    Consumer<IPieces> up2 = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 2, horizontal));
-    Consumer<IPieces> upAndRight = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
-    Consumer<IPieces> upAndLeft = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
+    Function<IPieces, IPieces> up1 = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 1, horizontal));
+    Function<IPieces, IPieces> up2 = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 2, horizontal));
+    Function<IPieces, IPieces> upAndRight = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
+    Function<IPieces, IPieces> upAndLeft = piece -> new WhitePawn(piece).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
 
-    List<Consumer<IPieces>> actions = List.of(
+    List<Function<IPieces, IPieces>> actions = List.of(
         up1,
         up2,
         upAndRight,
