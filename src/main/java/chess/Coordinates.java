@@ -28,4 +28,27 @@ public class Coordinates {
     this.horizontal = horizontal;
     return this;
   }
+
+//  @Override
+//  public boolean equals(Object obj) {
+//    if (obj instanceof Coordinates) {
+//      boolean v = ((Coordinates) obj).getVertical() == this.getVertical();
+//      boolean h = ((Coordinates) obj).getHorizontal() == this.getHorizontal();
+//
+//      return v && h;
+//
+//    } else {
+//      return false;
+//    }
+//  }
+//
+//  @Override
+//  public int hashCode() {
+//    return Integer.hashCode(this.getVertical()) + Integer.hashCode(this.getHorizontal());
+//  }
+
+  @Override
+  public String toString() {
+    return "(" + (horizontal + 1) + ", " + (vertical + 1) + ")";
+  }
 }

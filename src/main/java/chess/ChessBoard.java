@@ -19,9 +19,7 @@ import chess.pieces.Rook;
 import chess.pieces.WhitePawn;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -135,6 +133,12 @@ public class ChessBoard {
 
     pieces.add(accessiblePiece);
     changePriority();
+
+    System.out.printf(
+        "%s%s -> %s%s%n",
+        accessiblePiece2, accessiblePiece2.getCoordinates(),
+        accessiblePiece, accessiblePiece.getCoordinates()
+    );
   }
 
   private void changePriority() {
@@ -159,10 +163,10 @@ public class ChessBoard {
 //  }
 
   public boolean checkAction(IPieces piece, Function<IPieces, IPieces> action) {
-    IPieces piece2 = action.apply(piece);
+    IPieces pieceAfter = action.apply(piece);
 
-    int vertical = piece2.getCoordinates().getVertical();
-    int horizontal = piece2.getCoordinates().getHorizontal();
+    int vertical = pieceAfter.getCoordinates().getVertical();
+    int horizontal = pieceAfter.getCoordinates().getHorizontal();
 
 
     if (vertical > 7 || vertical < 0) {
@@ -173,13 +177,17 @@ public class ChessBoard {
       return false;
     }
 
-    IPieces therePiece = this.pieces.stream()
-        .filter(p -> p.getCoordinates() == piece2.getCoordinates())
+    IPieces destinationPiece = this.pieces.stream()
+        .filter(p -> (p.getCoordinates().getVertical() == vertical) && (p.getCoordinates().getHorizontal() == horizontal))
         .findAny()
         .orElse(null);
 
-    if (therePiece == null || piece2.getColor() != therePiece.getColor()) {
+    if (destinationPiece == null) {
       return true;
+    }
+
+    if (pieceAfter.getColor() == destinationPiece.getColor()) {
+      return false;
     }
 
     return true;
@@ -234,6 +242,6 @@ public class ChessBoard {
       }
     }
 
-    return result + "+-------------------------+";
+    return result + "+-------------------------+" + "\n";
   }
 }
