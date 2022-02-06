@@ -136,13 +136,13 @@ public class ChessBoard {
     pieces.add(accessiblePiece);
     changePriority();
 
-    System.out.printf(
-        "%s[%s -> %s]\n",
-        accessiblePiece2, accessiblePiece2.getCoordinates(), accessiblePiece.getCoordinates()
-    );
+//    System.out.printf(
+//        "%s[%s -> %s]\n",
+//        accessiblePiece2, accessiblePiece2.getCoordinates(), accessiblePiece.getCoordinates()
+//    );
 
     lastStep = String.format(
-        "%s[%s -> %s]\n",
+        "%s[%s -> %s]",
         accessiblePiece2, accessiblePiece2.getCoordinates(), accessiblePiece.getCoordinates()
     );
   }
@@ -233,21 +233,30 @@ public class ChessBoard {
       board[vertical][horizontal] = piece.toString();
     }
 
-    String result = "+-------------------------+\n| ";
+    StringBuilder result = new StringBuilder(" \t+-------------------------+\n");
 
     for (int i = 7; i >= 0; i--) {
+      StringBuilder row = new StringBuilder();
+
       for (int j = 0; j < 8; j++) {
-        result = result + board[i][j] + " ";
+        row.append(board[i][j]).append(" ");
       }
 
-      if (i == 0) {
-        result = result + "|\n";
-
-      } else {
-        result = result + "|\n| ";
+      switch (i) {
+//        case 7 -> result += "8\t| " + row + "|\n";
+        case 7 -> result.append("8\t| ").append(row).append("| ").append(lastStep).append("\n");
+        case 6 -> result.append("7\t| ").append(row).append("|\n");
+        case 5 -> result.append("6\t| ").append(row).append("|\n");
+        case 4 -> result.append("5\t| ").append(row).append("|\n");
+        case 3 -> result.append("4\t| ").append(row).append("|\n");
+        case 2 -> result.append("3\t| ").append(row).append("|\n");
+        case 1 -> result.append("2\t| ").append(row).append("|\n");
+        case 0 -> result.append("1\t| ").append(row).append("|\n");
       }
     }
 
-    return result + "+-------------------------+" + "\n";
+    return result +
+        " \t+-------------------------+" + "\n" +
+        " \t   a  b  c  d  e  f  g  h  \n";
   }
 }
