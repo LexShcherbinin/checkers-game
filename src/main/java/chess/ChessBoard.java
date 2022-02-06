@@ -19,6 +19,7 @@ import chess.pieces.Rook;
 import chess.pieces.WhitePawn;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -110,21 +111,29 @@ public class ChessBoard {
   public void makeMove() {
     Random random = new Random();
 
-    IPieces piece = pieces
+    List<IPieces> pieceList = pieces
         .stream()
         .filter(p -> p.getColor() == priority)
-        .collect(Collectors.toList())
-        .get(random.nextInt(pieces.size()));
+        .filter(p -> p.getActions().stream().anyMatch(a -> checkAction(p, a)))
+        .collect(Collectors.toList());
 
-    Function<IPieces, IPieces> action = piece
+    IPieces accessiblePiece = pieceList.get(random.nextInt(pieceList.size()));
+
+    IPieces accessiblePiece2 = accessiblePiece;
+
+    List<Function<IPieces, IPieces>> actionList = accessiblePiece
         .getActions()
-        .get(random.nextInt(pieces.size()));
+        .stream()
+        .filter(a -> checkAction(accessiblePiece2, a))
+        .collect(Collectors.toList());
 
-    pieces.remove(piece);
+    Function<IPieces, IPieces> action = actionList.get(random.nextInt(actionList.size()));
 
-    piece = action.apply(piece);
+    pieces.remove(accessiblePiece);
 
-    pieces.add(piece);
+    accessiblePiece = action.apply(accessiblePiece);
+
+    pieces.add(accessiblePiece);
     changePriority();
   }
 
@@ -135,6 +144,45 @@ public class ChessBoard {
     } else {
       priority = WHITE;
     }
+  }
+
+//  public List<Function<IPieces, IPieces>> checkPiece(IPieces piece) {
+//    List<Function<IPieces, IPieces>> actionList = new ArrayList<>();
+//
+//    for (Function<IPieces, IPieces> action : piece.getActions()) {
+//      if (checkAction(piece, action)) {
+//        actionList.add(action);
+//      }
+//    }
+//
+//    return actionList;
+//  }
+
+  public boolean checkAction(IPieces piece, Function<IPieces, IPieces> action) {
+    IPieces piece2 = action.apply(piece);
+
+    int vertical = piece2.getCoordinates().getVertical();
+    int horizontal = piece2.getCoordinates().getHorizontal();
+
+
+    if (vertical > 7 || vertical < 0) {
+      return false;
+    }
+
+    if (horizontal > 7 || horizontal < 0) {
+      return false;
+    }
+
+    IPieces therePiece = this.pieces.stream()
+        .filter(p -> p.getCoordinates() == piece2.getCoordinates())
+        .findAny()
+        .orElse(null);
+
+    if (therePiece == null || piece2.getColor() != therePiece.getColor()) {
+      return true;
+    }
+
+    return true;
   }
 
   /**
