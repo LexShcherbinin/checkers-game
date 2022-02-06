@@ -29,6 +29,8 @@ public class ChessBoard {
 
   Colors priority = WHITE;
 
+  String lastStep = "";
+
   public ChessBoard() {
     this.pieces = getDefaultBoard();
   }
@@ -135,9 +137,13 @@ public class ChessBoard {
     changePriority();
 
     System.out.printf(
-        "%s%s -> %s%s%n",
-        accessiblePiece2, accessiblePiece2.getCoordinates(),
-        accessiblePiece, accessiblePiece.getCoordinates()
+        "%s[%s -> %s]\n",
+        accessiblePiece2, accessiblePiece2.getCoordinates(), accessiblePiece.getCoordinates()
+    );
+
+    lastStep = String.format(
+        "%s[%s -> %s]\n",
+        accessiblePiece2, accessiblePiece2.getCoordinates(), accessiblePiece.getCoordinates()
     );
   }
 

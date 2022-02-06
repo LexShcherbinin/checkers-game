@@ -49,6 +49,20 @@ public class Coordinates {
 
   @Override
   public String toString() {
-    return "(" + (horizontal + 1) + ", " + (vertical + 1) + ")";
+    String letter;
+
+    switch (horizontal) {
+      case 0 -> letter = "A";
+      case 1 -> letter = "B";
+      case 2 -> letter = "C";
+      case 3 -> letter = "D";
+      case 4 -> letter = "I";
+      case 5 -> letter = "F";
+      case 6 -> letter = "G";
+      case 7 -> letter = "H";
+      default -> letter = "";
+    }
+
+    return letter + (vertical + 1);
   }
 }
