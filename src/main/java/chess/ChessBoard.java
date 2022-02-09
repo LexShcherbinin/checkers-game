@@ -30,7 +30,8 @@ public class ChessBoard {
   Colors priority = WHITE;
 
   String lastStep = "";
-  int count = 0;
+  int eatPiecesCount = 0;
+  int stepCount = 1;
 
   public ChessBoard() {
     this.pieces = getDefaultBoard();
@@ -109,6 +110,9 @@ public class ChessBoard {
     return pieces;
   }
 
+  /**
+   * Сделать какой-нибудь ход какой-нибудь фигурой
+   */
   public void makeMove() {
     Random random = new Random();
 
@@ -118,70 +122,67 @@ public class ChessBoard {
         .filter(p -> p.getActions().stream().anyMatch(a -> checkAction(p, a)))
         .collect(Collectors.toList());
 
-    IPieces accessiblePiece = pieceList.get(random.nextInt(pieceList.size()));
+    //Выбрать фигуру
+    IPieces pieceBefore = pieceList.get(random.nextInt(pieceList.size()));
 
-    IPieces accessiblePiece2 = accessiblePiece;
-
-    List<Function<IPieces, IPieces>> actionList = accessiblePiece
+    List<Function<IPieces, IPieces>> actionList = pieceBefore
         .getActions()
         .stream()
-        .filter(a -> checkAction(accessiblePiece2, a))
+        .filter(a -> checkAction(pieceBefore, a))
         .collect(Collectors.toList());
 
+    //Выбрать ход
     Function<IPieces, IPieces> action = actionList.get(random.nextInt(actionList.size()));
 
-//    pieces.remove(accessiblePiece);
+    IPieces pieceAfter = action.apply(pieceBefore);
 
-    IPieces accessiblePieceNew = action.apply(accessiblePiece);
+    //Проверить, есть ли в месте назначения фигура противоположного цвета
+    IPieces pieceDestination = getDestinationPiece(pieceAfter);
 
-    IPieces badPiece = getPiece(accessiblePieceNew);
-
-    if (badPiece != null) {
-      pieces.remove(badPiece);
-      pieces.remove(accessiblePiece);
-      pieces.add(accessiblePieceNew);
-      count++;
-
-      lastStep = String.format(
-          "%s[%s -> %s] (%s)",
-          accessiblePiece, accessiblePiece.getCoordinates(), accessiblePieceNew.getCoordinates(), count
-      );
-
-      checkKing();
-
-    } else {
-      pieces.remove(accessiblePiece);
-      pieces.add(accessiblePieceNew);
-
-      lastStep = String.format(
-          "%s[%s -> %s] (%s)",
-          accessiblePiece, accessiblePiece.getCoordinates(), accessiblePieceNew.getCoordinates(), count
-      );
+    //Если есть, удалить её с доски
+    if (pieceDestination != null) {
+      pieces.remove(pieceDestination);
+      eatPiecesCount++;
     }
 
-    changePriority();
+    pieces.remove(pieceBefore);
+    pieces.add(pieceAfter);
 
-//    lastStep = String.format(
-//        "%s[%s -> %s] (%s)",
-//        accessiblePiece, accessiblePiece.getCoordinates(), accessiblePieceNew.getCoordinates(), count
-//    );
+    saveLastStep(pieceBefore, pieceAfter);
+
+    //Проверить, не короля ли убили
+    if (pieceDestination != null) {
+      checkKing();
+    }
+
+    //Передать ход другой стороне
+    changePriority();
   }
 
-  private IPieces getPiece(IPieces piece) {
+  /**
+   * Запомнить последний ход
+   */
+  private void saveLastStep(IPieces pieceBefore, IPieces pieceAfter) {
+    lastStep = String.format(
+        "%s[%s -> %s] (Killing pieces = %s, step = %s)",
+        pieceBefore, pieceBefore.getCoordinates(), pieceAfter.getCoordinates(), eatPiecesCount, stepCount
+    );
+  }
+
+  /**
+   * Проверить, есть ли в месте назначения фигура противоположного цвета
+   */
+  private IPieces getDestinationPiece(IPieces piece) {
     return pieces
         .stream()
-        .filter(p -> {
-          int vertical = p.getCoordinates().getVertical();
-          int horizontal = p.getCoordinates().getHorizontal();
-
-          return (vertical == piece.getCoordinates().getVertical()) &&
-              (horizontal == piece.getCoordinates().getHorizontal()) &&
-              (p.getColor() != piece.getColor());
-        })
+        .filter(p -> p.getCoordinates().equals(piece.getCoordinates()) && p.getColor() != piece.getColor())
         .findFirst()
         .orElse(null);
   }
 
+  /**
+   * Проверить, не убили ли одного из королей
+   */
   private void checkKing() {
     List<IPieces> kings =  pieces.stream()
         .filter(p -> p.getName() == KING)
@@ -198,11 +199,16 @@ public class ChessBoard {
       }
 
       System.out.println(this);
-      System.exit(-1);
+      System.exit(0);
     }
   }
 
+  /**
+   * Передать ход другой стороне
+   */
   private void changePriority() {
+    stepCount++;
+
     if (priority == WHITE) {
       priority = BLACK;
 
@@ -211,18 +217,9 @@ public class ChessBoard {
     }
   }
 
-//  public List<Function<IPieces, IPieces>> checkPiece(IPieces piece) {
-//    List<Function<IPieces, IPieces>> actionList = new ArrayList<>();
-//
-//    for (Function<IPieces, IPieces> action : piece.getActions()) {
-//      if (checkAction(piece, action)) {
-//        actionList.add(action);
-//      }
-//    }
-//
-//    return actionList;
-//  }
-
+  /**
+   * Проверка, можно ли ТАК пойти (надо доработать)
+   */
   public boolean checkAction(IPieces piece, Function<IPieces, IPieces> action) {
     IPieces pieceAfter = action.apply(piece);
 
