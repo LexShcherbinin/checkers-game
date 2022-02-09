@@ -30,6 +30,7 @@ public class ChessBoard {
   Colors priority = WHITE;
 
   String lastStep = "";
+  int count = 0;
 
   public ChessBoard() {
     this.pieces = getDefaultBoard();
@@ -129,22 +130,76 @@ public class ChessBoard {
 
     Function<IPieces, IPieces> action = actionList.get(random.nextInt(actionList.size()));
 
-    pieces.remove(accessiblePiece);
+//    pieces.remove(accessiblePiece);
 
-    accessiblePiece = action.apply(accessiblePiece);
+    IPieces accessiblePieceNew = action.apply(accessiblePiece);
 
-    pieces.add(accessiblePiece);
+    IPieces badPiece = getPiece(accessiblePieceNew);
+
+    if (badPiece != null) {
+      pieces.remove(badPiece);
+      pieces.remove(accessiblePiece);
+      pieces.add(accessiblePieceNew);
+      count++;
+
+      lastStep = String.format(
+          "%s[%s -> %s] (%s)",
+          accessiblePiece, accessiblePiece.getCoordinates(), accessiblePieceNew.getCoordinates(), count
+      );
+
+      checkKing();
+
+    } else {
+      pieces.remove(accessiblePiece);
+      pieces.add(accessiblePieceNew);
+
+      lastStep = String.format(
+          "%s[%s -> %s] (%s)",
+          accessiblePiece, accessiblePiece.getCoordinates(), accessiblePieceNew.getCoordinates(), count
+      );
+    }
+
     changePriority();
 
-//    System.out.printf(
-//        "%s[%s -> %s]\n",
-//        accessiblePiece2, accessiblePiece2.getCoordinates(), accessiblePiece.getCoordinates()
+//    lastStep = String.format(
+//        "%s[%s -> %s] (%s)",
+//        accessiblePiece, accessiblePiece.getCoordinates(), accessiblePieceNew.getCoordinates(), count
 //    );
+  }
 
-    lastStep = String.format(
-        "%s[%s -> %s]",
-        accessiblePiece2, accessiblePiece2.getCoordinates(), accessiblePiece.getCoordinates()
-    );
+  private IPieces getPiece(IPieces piece) {
+    return pieces
+        .stream()
+        .filter(p -> {
+          int vertical = p.getCoordinates().getVertical();
+          int horizontal = p.getCoordinates().getHorizontal();
+
+          return (vertical == piece.getCoordinates().getVertical()) &&
+              (horizontal == piece.getCoordinates().getHorizontal()) &&
+              (p.getColor() != piece.getColor());
+        })
+        .findFirst()
+        .orElse(null);
+  }
+
+  private void checkKing() {
+    List<IPieces> kings =  pieces.stream()
+        .filter(p -> p.getName() == KING)
+        .collect(Collectors.toList());
+
+    if (kings.size() < 2) {
+      Colors color = kings.get(0).getColor();
+
+      if (color == WHITE) {
+        System.out.println("WHITE is win");
+
+      } else {
+        System.out.println("BLACK is win");
+      }
+
+      System.out.println(this);
+      System.exit(-1);
+    }
   }
 
   private void changePriority() {

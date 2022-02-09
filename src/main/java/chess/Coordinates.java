@@ -56,7 +56,7 @@ public class Coordinates {
       case 1 -> letter = "B";
       case 2 -> letter = "C";
       case 3 -> letter = "D";
-      case 4 -> letter = "I";
+      case 4 -> letter = "E";
       case 5 -> letter = "F";
       case 6 -> letter = "G";
       case 7 -> letter = "H";
