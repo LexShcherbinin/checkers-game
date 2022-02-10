@@ -3,6 +3,7 @@ package chess;
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
 import static chess.Names.KING;
+import static chess.Names.PAWN;
 import static chess.PiecesCreator.getDefaultBoard;
 
 import chess.pieces.IPieces;
@@ -185,11 +186,89 @@ public class ChessBoard {
       return false;
     }
 
+    switch (pieceAfter.getName()) {
+      case PAWN: return checkPawn(piece, action);
+    }
+
+    return true;
+  }
+
+  private boolean checkPawn(IPieces piece, Function<IPieces, IPieces> action) {
+    IPieces pieceAfter = action.apply(piece);
+
+    int verticalBefore = piece.getCoordinates().getVertical();
+    int verticalAfter = pieceAfter.getCoordinates().getVertical();
+
+    int horizontalBefore = piece.getCoordinates().getHorizontal();
+    int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+
+    int sideShift = Math.abs(horizontalBefore - horizontalAfter);
+
+    if (pieceAfter.getColor() == WHITE) {
+      if (sideShift == 0 && !checkOppositePieceInDestination(pieceAfter)) {
+
+        if (verticalAfter - verticalBefore == 1) {
+          return true;
+
+        } else if (verticalBefore == 1 && !checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
+          return true;
+
+        } else {
+          return false;
+        }
+
+      } else if (sideShift == 0 && checkOppositePieceInDestination(pieceAfter)) {
+
+        if (verticalAfter - verticalBefore == 1) {
+          return false;
+
+        } else if (verticalBefore == 1 && checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
+          return false;
+
+        } else {
+          return false;
+        }
+
+      } else if (sideShift == 1 && !checkOppositePieceInDestination(pieceAfter)) {
+        return false;
+      }
+
+    } else {
+      if (sideShift == 0 && !checkOppositePieceInDestination(pieceAfter)) {
+
+        if (verticalAfter - verticalBefore == -1) {
+          return true;
+
+        } else if (verticalBefore == 1 && !checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
+          return true;
+
+        } else {
+          return false;
+        }
+
+      } else if (sideShift == 0 && checkOppositePieceInDestination(pieceAfter)) {
+
+        if (verticalAfter - verticalBefore == -1) {
+          return false;
+
+        } else if (verticalBefore == 6 && checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
+          return false;
+
+        } else {
+          return false;
+        }
+
+      } else if (sideShift == 1 && !checkOppositePieceInDestination(pieceAfter)) {
+        return false;
+      }
+    }
+
     return true;
   }
 
   /**
    * Проверяет, не выходит ли фигура за пределы доски
+   *
    * @param piece - фигура после того, как сделает ход
    * @return - возвращает true, если фигура не выходит за рамки доски, false - если выходит
    */
@@ -202,6 +281,7 @@ public class ChessBoard {
 
   /**
    * Проверяет, есть ли своя фигура в том месте, куда хочет пойти ходящая фигура
+   *
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть своя фигура, false - если фигур нет
    */
@@ -213,6 +293,7 @@ public class ChessBoard {
 
   /**
    * Проверяет, есть ли чужая фигура в том месте, куда хочет пойти ходящая фигура
+   *
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть чужая фигура, false - если фигур нет
    */
