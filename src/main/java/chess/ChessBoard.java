@@ -2,22 +2,10 @@ package chess;
 
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
-import static chess.Names.BISHOP;
 import static chess.Names.KING;
-import static chess.Names.KNIGHT;
-import static chess.Names.PAWN;
-import static chess.Names.QUEEN;
-import static chess.Names.ROOK;
+import static chess.PiecesCreator.getDefaultBoard;
 
-import chess.pieces.Bishop;
-import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
-import chess.pieces.King;
-import chess.pieces.Knight;
-import chess.pieces.Queen;
-import chess.pieces.Rook;
-import chess.pieces.WhitePawn;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -37,98 +25,31 @@ public class ChessBoard {
     this.pieces = getDefaultBoard();
   }
 
-  public IPieces createPiece(Colors color, Names name, Coordinates coordinate) {
-    switch (name) {
-      case KING:
-        return new King(name, color, coordinate);
-
-      case QUEEN:
-        return new Queen(name, color, coordinate);
-
-      case ROOK:
-        return new Rook(name, color, coordinate);
-
-      case BISHOP:
-        return new Bishop(name, color, coordinate);
-
-      case KNIGHT:
-        return new Knight(name, color, coordinate);
-
-      case PAWN: {
-        if (color == WHITE) {
-          return new WhitePawn(name, color, coordinate);
-
-        } else {
-          return new BlackPawn(name, color, coordinate);
-        }
-      }
-
-      default:
-        throw new RuntimeException("Что-то не так с фигурами");
-    }
-  }
-
-  public List<IPieces> getDefaultBoard() {
-    List<IPieces> pieces = new ArrayList<>();
-
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 0)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 1)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 2)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 3)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 4)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 5)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 6)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 7)));
-
-    pieces.add(createPiece(WHITE, ROOK, new Coordinates(0, 0)));
-    pieces.add(createPiece(WHITE, KNIGHT, new Coordinates(0, 1)));
-    pieces.add(createPiece(WHITE, BISHOP, new Coordinates(0, 2)));
-    pieces.add(createPiece(WHITE, QUEEN, new Coordinates(0, 3)));
-    pieces.add(createPiece(WHITE, KING, new Coordinates(0, 4)));
-    pieces.add(createPiece(WHITE, BISHOP, new Coordinates(0, 5)));
-    pieces.add(createPiece(WHITE, KNIGHT, new Coordinates(0, 6)));
-    pieces.add(createPiece(WHITE, ROOK, new Coordinates(0, 7)));
-
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 0)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 1)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 2)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 3)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 4)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 5)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 6)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 7)));
-
-    pieces.add(createPiece(BLACK, ROOK, new Coordinates(7, 0)));
-    pieces.add(createPiece(BLACK, KNIGHT, new Coordinates(7, 1)));
-    pieces.add(createPiece(BLACK, BISHOP, new Coordinates(7, 2)));
-    pieces.add(createPiece(BLACK, QUEEN, new Coordinates(7, 3)));
-    pieces.add(createPiece(BLACK, KING, new Coordinates(7, 4)));
-    pieces.add(createPiece(BLACK, BISHOP, new Coordinates(7, 5)));
-    pieces.add(createPiece(BLACK, KNIGHT, new Coordinates(7, 6)));
-    pieces.add(createPiece(BLACK, ROOK, new Coordinates(7, 7)));
-
-    return pieces;
-  }
-
   /**
    * Сделать какой-нибудь ход какой-нибудь фигурой
    */
   public void makeMove() {
     Random random = new Random();
 
+    //Получить список всех фигур, которыми можно пойти
     List<IPieces> pieceList = pieces
         .stream()
         .filter(p -> p.getColor() == priority)
-        .filter(p -> p.getActions().stream().anyMatch(a -> checkAction(p, a)))
+        .filter(p -> p
+            .getActions()
+            .stream()
+            .anyMatch(a -> checkMove(p, a))
+        )
         .collect(Collectors.toList());
 
     //Выбрать фигуру
     IPieces pieceBefore = pieceList.get(random.nextInt(pieceList.size()));
 
+    //Получить список всех ходов, которыми можно пойти
     List<Function<IPieces, IPieces>> actionList = pieceBefore
         .getActions()
         .stream()
-        .filter(a -> checkAction(pieceBefore, a))
+        .filter(a -> checkMove(pieceBefore, a))
         .collect(Collectors.toList());
 
     //Выбрать ход
@@ -184,7 +105,7 @@ public class ChessBoard {
    * Проверить, не убили ли одного из королей
    */
   private void checkKing() {
-    List<IPieces> kings =  pieces.stream()
+    List<IPieces> kings = pieces.stream()
         .filter(p -> p.getName() == KING)
         .collect(Collectors.toList());
 
@@ -192,10 +113,10 @@ public class ChessBoard {
       Colors color = kings.get(0).getColor();
 
       if (color == WHITE) {
-        System.out.println("WHITE is win");
+        System.out.println("WHITE win");
 
       } else {
-        System.out.println("BLACK is win");
+        System.out.println("BLACK win");
       }
 
       System.out.println(this);
@@ -217,38 +138,88 @@ public class ChessBoard {
     }
   }
 
+//  /**
+//   * Проверка, можно ли ТАК пойти (надо доработать)
+//   */
+//  public boolean checkMove(IPieces piece, Function<IPieces, IPieces> action) {
+//    IPieces pieceAfter = action.apply(piece);
+//
+//    int vertical = pieceAfter.getCoordinates().getVertical();
+//    int horizontal = pieceAfter.getCoordinates().getHorizontal();
+//
+//    if (vertical > 7 || vertical < 0) {
+//      return false;
+//    }
+//
+//    if (horizontal > 7 || horizontal < 0) {
+//      return false;
+//    }
+//
+//    IPieces destinationPiece = this.pieces.stream()
+//        .filter(p -> (p.getCoordinates().getVertical() == vertical) && (p.getCoordinates().getHorizontal() == horizontal))
+//        .findAny()
+//        .orElse(null);
+//
+//    if (destinationPiece == null) {
+//      return true;
+//    }
+//
+//    if (pieceAfter.getColor() == destinationPiece.getColor()) {
+//      return false;
+//    }
+//
+//    return true;
+//  }
+
   /**
    * Проверка, можно ли ТАК пойти (надо доработать)
    */
-  public boolean checkAction(IPieces piece, Function<IPieces, IPieces> action) {
+  public boolean checkMove(IPieces piece, Function<IPieces, IPieces> action) {
     IPieces pieceAfter = action.apply(piece);
 
-    int vertical = pieceAfter.getCoordinates().getVertical();
-    int horizontal = pieceAfter.getCoordinates().getHorizontal();
-
-
-    if (vertical > 7 || vertical < 0) {
+    if (!checkBoardBorders(pieceAfter)) {
       return false;
     }
 
-    if (horizontal > 7 || horizontal < 0) {
-      return false;
-    }
-
-    IPieces destinationPiece = this.pieces.stream()
-        .filter(p -> (p.getCoordinates().getVertical() == vertical) && (p.getCoordinates().getHorizontal() == horizontal))
-        .findAny()
-        .orElse(null);
-
-    if (destinationPiece == null) {
-      return true;
-    }
-
-    if (pieceAfter.getColor() == destinationPiece.getColor()) {
+    if (checkMyPieceInDestination(pieceAfter)) {
       return false;
     }
 
     return true;
+  }
+
+  /**
+   * Проверяет, не выходит ли фигура за пределы доски
+   * @param piece - фигура после того, как сделает ход
+   * @return - возвращает true, если фигура не выходит за рамки доски, false - если выходит
+   */
+  private boolean checkBoardBorders(IPieces piece) {
+    int vertical = piece.getCoordinates().getVertical();
+    int horizontal = piece.getCoordinates().getHorizontal();
+
+    return vertical < 8 && vertical >= 0 && horizontal < 8 && horizontal >= 0;
+  }
+
+  /**
+   * Проверяет, есть ли своя фигура в том месте, куда хочет пойти ходящая фигура
+   * @param piece - фигура после того, как сделает ход (ходящая фигура)
+   * @return - возвращает true, если в конечной точке есть своя фигура, false - если фигур нет
+   */
+  private boolean checkMyPieceInDestination(IPieces piece) {
+    return this.pieces
+        .stream()
+        .anyMatch(p -> p.getCoordinates().equals(piece.getCoordinates()) && p.getColor().equals(piece.getColor()));
+  }
+
+  /**
+   * Проверяет, есть ли чужая фигура в том месте, куда хочет пойти ходящая фигура
+   * @param piece - фигура после того, как сделает ход (ходящая фигура)
+   * @return - возвращает true, если в конечной точке есть чужая фигура, false - если фигур нет
+   */
+  private boolean checkOppositePieceInDestination(IPieces piece) {
+    return this.pieces
+        .stream()
+        .anyMatch(p -> p.getCoordinates().equals(piece.getCoordinates()) && !p.getColor().equals(piece.getColor()));
   }
 
   /**
