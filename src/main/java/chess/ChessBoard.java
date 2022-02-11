@@ -355,17 +355,14 @@ public class ChessBoard {
       if (sideShiftVertical > 0) {
         for (int i = 1; i < sideShiftVertical; i++) {
 
-          int iii = i;
-          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+          IPieces tempPrice = new Rook(piece).setCoordinates(
               new Coordinates(
-                  p.getCoordinates().getVertical() + iii,
+                  piece.getCoordinates().getVertical() + i,
                   horizontalAfter
               )
           );
 
-          IPieces www = qqq.apply(piece);
-
-          if (checkPieceInDestination(www)) {
+          if (checkPieceInDestination(tempPrice)) {
             result = false;
             break;
           }
@@ -374,17 +371,14 @@ public class ChessBoard {
       } else if (sideShiftVertical < 0){
         for (int i = -1; i > sideShiftVertical; i--) {
 
-          int iii = i;
-          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+          IPieces tempPrice = new Rook(piece).setCoordinates(
               new Coordinates(
-                  p.getCoordinates().getVertical() + iii,
+                  piece.getCoordinates().getVertical() + i,
                   horizontalAfter
               )
           );
 
-          IPieces www = qqq.apply(piece);
-
-          if (checkPieceInDestination(www)) {
+          if (checkPieceInDestination(tempPrice)) {
             result = false;
             break;
           }
@@ -393,17 +387,14 @@ public class ChessBoard {
       } else if (sideShiftHorizontal > 0){
         for (int i = 1; i < sideShiftHorizontal; i++) {
 
-          int iii = i;
-          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+          IPieces tempPrice = new Rook(piece).setCoordinates(
               new Coordinates(
                   verticalAfter,
-                  p.getCoordinates().getHorizontal() + iii
+                  piece.getCoordinates().getHorizontal() + i
               )
           );
 
-          IPieces www = qqq.apply(piece);
-
-          if (checkPieceInDestination(www)) {
+          if (checkPieceInDestination(tempPrice)) {
             result = false;
             break;
           }
@@ -412,17 +403,14 @@ public class ChessBoard {
       } else if (sideShiftHorizontal < 0){
         for (int i = -1; i > sideShiftHorizontal; i--) {
 
-          int iii = i;
-          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+          IPieces tempPrice = new Rook(piece).setCoordinates(
               new Coordinates(
                   verticalAfter,
-                  p.getCoordinates().getHorizontal() + iii
+                  piece.getCoordinates().getHorizontal() + i
               )
           );
 
-          IPieces www = qqq.apply(piece);
-
-          if (checkPieceInDestination(www)) {
+          if (checkPieceInDestination(tempPrice)) {
             result = false;
             break;
           }
@@ -435,14 +423,83 @@ public class ChessBoard {
 
     private boolean checkBishop(IPieces piece, Function<IPieces, IPieces> action) {
       IPieces pieceAfter = action.apply(piece);
+      boolean result = true;
 
       int verticalBefore = piece.getCoordinates().getVertical();
       int verticalAfter = pieceAfter.getCoordinates().getVertical();
+      int sideShiftVertical = verticalAfter - verticalBefore;
 
       int horizontalBefore = piece.getCoordinates().getHorizontal();
       int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
 
-      return true;
+      if (sideShiftVertical > 0 && sideShiftHorizontal > 0) {
+        for (int i = 1; i < sideShiftVertical; i++) {
+
+          IPieces tempPrice = new Rook(piece).setCoordinates(
+              new Coordinates(
+                  piece.getCoordinates().getVertical() + i,
+                  piece.getCoordinates().getHorizontal() + i
+              )
+          );
+
+          if (checkPieceInDestination(tempPrice)) {
+            result = false;
+            break;
+          }
+        }
+
+      } else if (sideShiftVertical < 0 && sideShiftHorizontal < 0){
+        for (int i = -1; i > sideShiftVertical; i--) {
+
+          IPieces tempPrice = new Rook(piece).setCoordinates(
+              new Coordinates(
+                  piece.getCoordinates().getVertical() + i,
+                  piece.getCoordinates().getHorizontal() + i
+              )
+          );
+
+          if (checkPieceInDestination(tempPrice)) {
+            result = false;
+            break;
+          }
+        }
+
+      } else if (sideShiftVertical > 0 && sideShiftHorizontal < 0){
+        for (int i = 1; i < sideShiftVertical; i++) {
+
+          IPieces tempPrice = new Rook(piece).setCoordinates(
+              new Coordinates(
+                  piece.getCoordinates().getVertical() + i,
+                  piece.getCoordinates().getHorizontal() - i
+              )
+          );
+
+          if (checkPieceInDestination(tempPrice)) {
+            result = false;
+            break;
+          }
+        }
+
+      } else if (sideShiftVertical < 0 && sideShiftHorizontal > 0){
+        for (int i = -1; i > sideShiftVertical; i--) {
+
+          IPieces tempPrice = new Rook(piece).setCoordinates(
+              new Coordinates(
+                  piece.getCoordinates().getVertical() + i,
+                  piece.getCoordinates().getHorizontal() - i
+              )
+          );
+
+          if (checkPieceInDestination(tempPrice)) {
+            result = false;
+            break;
+          }
+        }
+
+      }
+
+      return result;
     }
 
     private boolean checkQueen(IPieces piece, Function<IPieces, IPieces> action) {
