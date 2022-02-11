@@ -153,14 +153,14 @@ public class ChessBoard {
       return false;
     }
 
-    switch (pieceAfter.getName()) {
-      case PAWN: return new checkPieces().checkPawn(piece, action);
-      case ROOK: return new checkPieces().checkRook(piece, action);
-      case BISHOP: return new checkPieces().checkBishop(piece, action);
-      case QUEEN: return new checkPieces().checkQueen(piece, action);
-    }
+    return switch (pieceAfter.getName()) {
+      case PAWN -> new checkPieces().checkPawn(piece, action);
+      case ROOK -> new checkPieces().checkRook(piece, action);
+      case BISHOP -> new checkPieces().checkBishop(piece, action);
+      case QUEEN -> new checkPieces().checkQueen(piece, action);
+      default -> true;
+    };
 
-    return true;
   }
 
   /**
@@ -352,7 +352,7 @@ public class ChessBoard {
       int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
       int sideShiftHorizontal = horizontalAfter - horizontalBefore;
 
-      if (sideShiftVertical > 0) {
+      if (sideShiftVertical > 0 && sideShiftHorizontal == 0) {
         for (int i = 1; i < sideShiftVertical; i++) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
@@ -368,7 +368,7 @@ public class ChessBoard {
           }
         }
 
-      } else if (sideShiftVertical < 0){
+      } else if (sideShiftVertical < 0 && sideShiftHorizontal == 0){
         for (int i = -1; i > sideShiftVertical; i--) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
@@ -384,7 +384,7 @@ public class ChessBoard {
           }
         }
 
-      } else if (sideShiftHorizontal > 0){
+      } else if (sideShiftHorizontal > 0 && sideShiftVertical == 0){
         for (int i = 1; i < sideShiftHorizontal; i++) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
@@ -400,7 +400,7 @@ public class ChessBoard {
           }
         }
 
-      } else if (sideShiftHorizontal < 0){
+      } else if (sideShiftHorizontal < 0 && sideShiftVertical == 0){
         for (int i = -1; i > sideShiftHorizontal; i--) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
@@ -503,15 +503,7 @@ public class ChessBoard {
     }
 
     private boolean checkQueen(IPieces piece, Function<IPieces, IPieces> action) {
-      IPieces pieceAfter = action.apply(piece);
-
-      int verticalBefore = piece.getCoordinates().getVertical();
-      int verticalAfter = pieceAfter.getCoordinates().getVertical();
-
-      int horizontalBefore = piece.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
-
-      return true;
+      return checkRook(piece, action) && checkBishop(piece, action);
     }
 
   }
