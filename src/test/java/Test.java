@@ -10,6 +10,11 @@ public class Test {
       chessBoard.makeMove();
       System.out.println(chessBoard);
     }
+
+//    while (true) {
+//      chessBoard.makeMove();
+//      System.out.println(chessBoard);
+//    }
   }
 
 }

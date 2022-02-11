@@ -3,10 +3,15 @@ package chess;
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
 import static chess.Names.KING;
+import static chess.Names.PAWN;
+import static chess.Names.QUEEN;
+import static chess.PiecesCreator.createPiece;
 import static chess.PiecesCreator.getDefaultBoard;
 
 import chess.pieces.IPieces;
+import chess.pieces.Queen;
 import chess.pieces.Rook;
+import chess.pieces.WhitePawn;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -32,7 +37,7 @@ public class ChessBoard {
   public void makeMove() {
     Random random = new Random();
 
-    //Получить список всех фигур, которыми можно пойти
+    // Получить список всех фигур, которыми можно пойти
     List<IPieces> pieceList = pieces
         .stream()
         .filter(p -> p.getColor() == priority)
@@ -43,41 +48,52 @@ public class ChessBoard {
         )
         .collect(Collectors.toList());
 
-    //Выбрать фигуру
+    // Выбрать фигуру
     IPieces pieceBefore = pieceList.get(random.nextInt(pieceList.size()));
 
-    //Получить список всех ходов, которыми можно пойти
+    // Получить список всех ходов, которыми можно пойти
     List<Function<IPieces, IPieces>> actionList = pieceBefore
         .getActions()
         .stream()
         .filter(a -> checkMove(pieceBefore, a))
         .collect(Collectors.toList());
 
-    //Выбрать ход
+    // Выбрать ход
     Function<IPieces, IPieces> action = actionList.get(random.nextInt(actionList.size()));
 
     IPieces pieceAfter = action.apply(pieceBefore);
 
-    //Проверить, есть ли в месте назначения фигура противоположного цвета
+    // Проверить, есть ли в месте назначения фигура противоположного цвета
     IPieces pieceDestination = getDestinationPiece(pieceAfter);
 
-    //Если есть, удалить её с доски
+    // Если есть, удалить её с доски
     if (pieceDestination != null) {
       pieces.remove(pieceDestination);
       eatPiecesCount++;
     }
 
     pieces.remove(pieceBefore);
+
+    // Если пешка добралась до противоположной стороны, превратить её в ферзя
+    if (pieceAfter.getName() == PAWN) {
+      if (pieceAfter.getColor() == WHITE && pieceAfter.getCoordinates().getVertical() == 7) {
+        pieceAfter = new Queen(QUEEN, WHITE, pieceAfter.getCoordinates());
+
+      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getCoordinates().getVertical() == 0) {
+        pieceAfter = new Queen(QUEEN, BLACK, pieceAfter.getCoordinates());
+      }
+    }
+
     pieces.add(pieceAfter);
 
     saveLastStep(pieceBefore, pieceAfter);
 
-    //Проверить, не короля ли убили
+    // Проверить, не короля ли убили
     if (pieceDestination != null) {
       checkKing();
     }
 
-    //Передать ход другой стороне
+    // Передать ход другой стороне
     changePriority();
   }
 
@@ -284,11 +300,11 @@ public class ChessBoard {
       int horizontalBefore = piece.getCoordinates().getHorizontal();
       int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
 
-      int sideShift = Math.abs(horizontalBefore - horizontalAfter);
+      int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
 
       if (pieceAfter.getColor() == WHITE) {
         if (checkOppositePieceInDestination(pieceAfter)) {
-          if (sideShift == 0) {
+          if (sideShiftHorizontal == 0) {
             return false;
 
           } else {
@@ -296,7 +312,7 @@ public class ChessBoard {
           }
 
         } else {
-          if (sideShift == 1) {
+          if (sideShiftHorizontal == 1) {
             return false;
 
           } else {
@@ -314,7 +330,7 @@ public class ChessBoard {
 
       } else {
         if (checkOppositePieceInDestination(pieceAfter)) {
-          if (sideShift == 0) {
+          if (sideShiftHorizontal == 0) {
             return false;
 
           } else {
@@ -322,7 +338,7 @@ public class ChessBoard {
           }
 
         } else {
-          if (sideShift == 1) {
+          if (sideShiftHorizontal == 1) {
             return false;
 
           } else {
