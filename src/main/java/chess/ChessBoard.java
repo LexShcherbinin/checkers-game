@@ -3,10 +3,10 @@ package chess;
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
 import static chess.Names.KING;
-import static chess.Names.PAWN;
 import static chess.PiecesCreator.getDefaultBoard;
 
 import chess.pieces.IPieces;
+import chess.pieces.Rook;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -139,39 +139,6 @@ public class ChessBoard {
     }
   }
 
-//  /**
-//   * Проверка, можно ли ТАК пойти (надо доработать)
-//   */
-//  public boolean checkMove(IPieces piece, Function<IPieces, IPieces> action) {
-//    IPieces pieceAfter = action.apply(piece);
-//
-//    int vertical = pieceAfter.getCoordinates().getVertical();
-//    int horizontal = pieceAfter.getCoordinates().getHorizontal();
-//
-//    if (vertical > 7 || vertical < 0) {
-//      return false;
-//    }
-//
-//    if (horizontal > 7 || horizontal < 0) {
-//      return false;
-//    }
-//
-//    IPieces destinationPiece = this.pieces.stream()
-//        .filter(p -> (p.getCoordinates().getVertical() == vertical) && (p.getCoordinates().getHorizontal() == horizontal))
-//        .findAny()
-//        .orElse(null);
-//
-//    if (destinationPiece == null) {
-//      return true;
-//    }
-//
-//    if (pieceAfter.getColor() == destinationPiece.getColor()) {
-//      return false;
-//    }
-//
-//    return true;
-//  }
-
   /**
    * Проверка, можно ли ТАК пойти (надо доработать)
    */
@@ -187,80 +154,10 @@ public class ChessBoard {
     }
 
     switch (pieceAfter.getName()) {
-      case PAWN: return checkPawn(piece, action);
-    }
-
-    return true;
-  }
-
-  private boolean checkPawn(IPieces piece, Function<IPieces, IPieces> action) {
-    IPieces pieceAfter = action.apply(piece);
-
-    int verticalBefore = piece.getCoordinates().getVertical();
-    int verticalAfter = pieceAfter.getCoordinates().getVertical();
-
-    int horizontalBefore = piece.getCoordinates().getHorizontal();
-    int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
-
-    int sideShift = Math.abs(horizontalBefore - horizontalAfter);
-
-    if (pieceAfter.getColor() == WHITE) {
-      if (sideShift == 0 && !checkOppositePieceInDestination(pieceAfter)) {
-
-        if (verticalAfter - verticalBefore == 1) {
-          return true;
-
-        } else if (verticalBefore == 1 && !checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
-          return true;
-
-        } else {
-          return false;
-        }
-
-      } else if (sideShift == 0 && checkOppositePieceInDestination(pieceAfter)) {
-
-        if (verticalAfter - verticalBefore == 1) {
-          return false;
-
-        } else if (verticalBefore == 1 && checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
-          return false;
-
-        } else {
-          return false;
-        }
-
-      } else if (sideShift == 1 && !checkOppositePieceInDestination(pieceAfter)) {
-        return false;
-      }
-
-    } else {
-      if (sideShift == 0 && !checkOppositePieceInDestination(pieceAfter)) {
-
-        if (verticalAfter - verticalBefore == -1) {
-          return true;
-
-        } else if (verticalBefore == 1 && !checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
-          return true;
-
-        } else {
-          return false;
-        }
-
-      } else if (sideShift == 0 && checkOppositePieceInDestination(pieceAfter)) {
-
-        if (verticalAfter - verticalBefore == -1) {
-          return false;
-
-        } else if (verticalBefore == 6 && checkOppositePieceInDestination(piece.getActions().get(0).apply(piece))) {
-          return false;
-
-        } else {
-          return false;
-        }
-
-      } else if (sideShift == 1 && !checkOppositePieceInDestination(pieceAfter)) {
-        return false;
-      }
+      case PAWN: return new checkPieces().checkPawn(piece, action);
+      case ROOK: return new checkPieces().checkRook(piece, action);
+      case BISHOP: return new checkPieces().checkBishop(piece, action);
+      case QUEEN: return new checkPieces().checkQueen(piece, action);
     }
 
     return true;
@@ -277,6 +174,18 @@ public class ChessBoard {
     int horizontal = piece.getCoordinates().getHorizontal();
 
     return vertical < 8 && vertical >= 0 && horizontal < 8 && horizontal >= 0;
+  }
+
+  /**
+   * Проверяет, есть ли своя фигура в том месте, куда хочет пойти ходящая фигура
+   *
+   * @param piece - фигура после того, как сделает ход (ходящая фигура)
+   * @return - возвращает true, если в конечной точке есть своя фигура, false - если фигур нет
+   */
+  private boolean checkPieceInDestination(IPieces piece) {
+    return this.pieces
+        .stream()
+        .anyMatch(p -> p.getCoordinates().equals(piece.getCoordinates()));
   }
 
   /**
@@ -362,5 +271,191 @@ public class ChessBoard {
     return result +
         " \t+-------------------------+" + "\n" +
         " \t   a  b  c  d  e  f  g  h  \n";
+  }
+
+  private class checkPieces {
+
+    private boolean checkPawn(IPieces piece, Function<IPieces, IPieces> action) {
+      IPieces pieceAfter = action.apply(piece);
+
+      int verticalBefore = piece.getCoordinates().getVertical();
+      int verticalAfter = pieceAfter.getCoordinates().getVertical();
+
+      int horizontalBefore = piece.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+
+      int sideShift = Math.abs(horizontalBefore - horizontalAfter);
+
+      if (pieceAfter.getColor() == WHITE) {
+        if (checkOppositePieceInDestination(pieceAfter)) {
+          if (sideShift == 0) {
+            return false;
+
+          } else {
+            return true;
+          }
+
+        } else {
+          if (sideShift == 1) {
+            return false;
+
+          } else {
+            if (verticalAfter - verticalBefore == 1) {
+              return true;
+
+            } else if (verticalBefore == 1) {
+              return true;
+
+            } else {
+              return false;
+            }
+          }
+        }
+
+      } else {
+        if (checkOppositePieceInDestination(pieceAfter)) {
+          if (sideShift == 0) {
+            return false;
+
+          } else {
+            return true;
+          }
+
+        } else {
+          if (sideShift == 1) {
+            return false;
+
+          } else {
+            if (verticalAfter - verticalBefore == -1) {
+              return true;
+
+            } else if (verticalBefore == 6) {
+              return true;
+
+            } else {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
+    private boolean checkRook(IPieces piece, Function<IPieces, IPieces> action) {
+      IPieces pieceAfter = action.apply(piece);
+      boolean result = true;
+
+      int verticalBefore = piece.getCoordinates().getVertical();
+      int verticalAfter = pieceAfter.getCoordinates().getVertical();
+      int sideShiftVertical = verticalAfter - verticalBefore;
+
+      int horizontalBefore = piece.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
+
+      if (sideShiftVertical > 0) {
+        for (int i = 1; i < sideShiftVertical; i++) {
+
+          int iii = i;
+          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+              new Coordinates(
+                  p.getCoordinates().getVertical() + iii,
+                  horizontalAfter
+              )
+          );
+
+          IPieces www = qqq.apply(piece);
+
+          if (checkPieceInDestination(www)) {
+            result = false;
+            break;
+          }
+        }
+
+      } else if (sideShiftVertical < 0){
+        for (int i = -1; i > sideShiftVertical; i--) {
+
+          int iii = i;
+          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+              new Coordinates(
+                  p.getCoordinates().getVertical() + iii,
+                  horizontalAfter
+              )
+          );
+
+          IPieces www = qqq.apply(piece);
+
+          if (checkPieceInDestination(www)) {
+            result = false;
+            break;
+          }
+        }
+
+      } else if (sideShiftHorizontal > 0){
+        for (int i = 1; i < sideShiftHorizontal; i++) {
+
+          int iii = i;
+          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+              new Coordinates(
+                  verticalAfter,
+                  p.getCoordinates().getHorizontal() + iii
+              )
+          );
+
+          IPieces www = qqq.apply(piece);
+
+          if (checkPieceInDestination(www)) {
+            result = false;
+            break;
+          }
+        }
+
+      } else if (sideShiftHorizontal < 0){
+        for (int i = -1; i > sideShiftHorizontal; i--) {
+
+          int iii = i;
+          Function<IPieces, IPieces> qqq = p -> new Rook(p).setCoordinates(
+              new Coordinates(
+                  verticalAfter,
+                  p.getCoordinates().getHorizontal() + iii
+              )
+          );
+
+          IPieces www = qqq.apply(piece);
+
+          if (checkPieceInDestination(www)) {
+            result = false;
+            break;
+          }
+        }
+
+      }
+
+      return result;
+    }
+
+    private boolean checkBishop(IPieces piece, Function<IPieces, IPieces> action) {
+      IPieces pieceAfter = action.apply(piece);
+
+      int verticalBefore = piece.getCoordinates().getVertical();
+      int verticalAfter = pieceAfter.getCoordinates().getVertical();
+
+      int horizontalBefore = piece.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+
+      return true;
+    }
+
+    private boolean checkQueen(IPieces piece, Function<IPieces, IPieces> action) {
+      IPieces pieceAfter = action.apply(piece);
+
+      int verticalBefore = piece.getCoordinates().getVertical();
+      int verticalAfter = pieceAfter.getCoordinates().getVertical();
+
+      int horizontalBefore = piece.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+
+      return true;
+    }
+
   }
 }
