@@ -8,6 +8,7 @@ import static chess.Names.QUEEN;
 import static chess.PiecesCreator.createPiece;
 import static chess.PiecesCreator.getDefaultBoard;
 
+import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
@@ -70,6 +71,30 @@ public class ChessBoard {
     if (pieceDestination != null) {
       pieces.remove(pieceDestination);
       eatPiecesCount++;
+
+    } else if (pieceAfter.getName() == PAWN && action == pieceAfter.getActions().get(1)){
+      if (pieceAfter.getColor() == WHITE) {
+        IPieces www = new BlackPawn(PAWN, BLACK, new Coordinates(
+            pieceAfter.getCoordinates().getVertical() - 1,
+            pieceAfter.getCoordinates().getHorizontal()
+        ));
+
+        System.out.println("en passant");
+
+        pieces.remove(getDestinationPiece(www));
+        eatPiecesCount++;
+
+      } else {
+        IPieces www = new WhitePawn(PAWN, WHITE, new Coordinates(
+            pieceAfter.getCoordinates().getVertical() + 1,
+            pieceAfter.getCoordinates().getHorizontal()
+        ));
+
+        System.out.println("en passant");
+
+        pieces.remove(getDestinationPiece(www));
+        eatPiecesCount++;
+      }
     }
 
     pieces.remove(pieceBefore);
@@ -313,7 +338,22 @@ public class ChessBoard {
 
         } else {
           if (sideShiftHorizontal == 1) {
-            return false;
+
+            IPieces www = new BlackPawn(PAWN, BLACK, new Coordinates(
+                pieceAfter.getCoordinates().getVertical() - 1,
+                pieceAfter.getCoordinates().getHorizontal()
+            ));
+
+            www.setMoveBefore(false);
+
+            IPieces pieceDestination = getDestinationPiece(www);
+
+            if (pieceDestination != null && !pieceDestination.getMoveBefore()) {
+              return true;
+
+            } else {
+              return false;
+            }
 
           } else {
             if (verticalAfter - verticalBefore == 1) {

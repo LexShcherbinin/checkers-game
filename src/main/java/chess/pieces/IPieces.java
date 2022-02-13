@@ -4,7 +4,6 @@ import chess.Colors;
 import chess.Coordinates;
 import chess.Names;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public interface IPieces {
@@ -18,5 +17,9 @@ public interface IPieces {
   IPieces setCoordinates(Coordinates coordinates);
 
   List<Function<IPieces, IPieces>> getActions();
+
+  boolean getMoveBefore();
+
+  IPieces setMoveBefore(boolean moveBefore);
 
 }
