@@ -8,10 +8,6 @@ import java.util.function.Function;
 
 public class King implements IPieces {
 
-  private IPieces piece;
-
-  private final Names name;
-
   private final Colors color;
 
   private Coordinates coordinates;
@@ -19,13 +15,11 @@ public class King implements IPieces {
   private boolean moveBefore = false;
 
   public King(IPieces piece) {
-    this.name = piece.getName();
     this.color = piece.getColor();
     this.coordinates = piece.getCoordinates();
   }
 
-  public King(Names name, Colors color, Coordinates coordinates) {
-    this.name = name;
+  public King(Colors color, Coordinates coordinates) {
     this.color = color;
     this.coordinates = coordinates;
   }

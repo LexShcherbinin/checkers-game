@@ -8,25 +8,15 @@ import java.util.function.Function;
 
 public class BlackPawn implements IPieces {
 
-  private IPieces piece;
-
-  private final Names name;
-
-  private final Colors color;
-
   private Coordinates coordinates;
 
   private boolean moveBefore = false;
 
   public BlackPawn(IPieces piece) {
-    this.name = piece.getName();
-    this.color = piece.getColor();
     this.coordinates = piece.getCoordinates();
   }
 
-  public BlackPawn(Names name, Colors color, Coordinates coordinates) {
-    this.name = name;
-    this.color = color;
+  public BlackPawn(Coordinates coordinates) {
     this.coordinates = coordinates;
   }
 

@@ -1,8 +1,6 @@
 package chess;
 
-import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
-import static chess.Names.PAWN;
 
 import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
@@ -161,7 +159,7 @@ public class PieceHelper {
         } else {
           if (sideShiftHorizontal == 1) {
 
-            IPieces www = new BlackPawn(PAWN, BLACK, new Coordinates(
+            IPieces www = new BlackPawn(new Coordinates(
                 pieceAfter.getCoordinates().getVertical() - 1,
                 pieceAfter.getCoordinates().getHorizontal()
             ));

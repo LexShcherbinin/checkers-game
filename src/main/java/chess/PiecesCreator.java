@@ -25,26 +25,26 @@ public class PiecesCreator {
   public static IPieces createPiece(Colors color, Names name, Coordinates coordinate) {
     switch (name) {
       case KING:
-        return new King(name, color, coordinate);
+        return new King(color, coordinate);
 
       case QUEEN:
-        return new Queen(name, color, coordinate);
+        return new Queen(color, coordinate);
 
       case ROOK:
-        return new Rook(name, color, coordinate);
+        return new Rook(color, coordinate);
 
       case BISHOP:
-        return new Bishop(name, color, coordinate);
+        return new Bishop(color, coordinate);
 
       case KNIGHT:
-        return new Knight(name, color, coordinate);
+        return new Knight(color, coordinate);
 
       case PAWN: {
         if (color == WHITE) {
-          return new WhitePawn(name, color, coordinate);
+          return new WhitePawn(coordinate);
 
         } else {
-          return new BlackPawn(name, color, coordinate);
+          return new BlackPawn(coordinate);
         }
       }
 
