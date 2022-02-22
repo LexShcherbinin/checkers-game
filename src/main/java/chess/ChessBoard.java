@@ -18,30 +18,37 @@ import java.util.stream.Collectors;
 
 public class ChessBoard {
 
-  List<IPieces> pieces;
+  /**
+   * Список фигур на доске
+   */
+  private List<IPieces> pieces;
 
   /**
    * Приоритет хода
    */
-  Colors priority = WHITE;
+  private Colors priority = WHITE;
 
   /**
    * Последний сделанный ход
    */
-  String lastStep = "";
+  private String lastStep = "";
 
   /**
    * Количество съеденных фигур
    */
-  int eatPiecesCount = 0;
+  private int eatPiecesCount = 0;
 
   /**
    * Количество сделанных шагов
    */
-  int stepCount = 1;
+  private int stepCount = 1;
 
   public ChessBoard() {
     this.pieces = getDefaultBoard();
+  }
+
+  public ChessBoard(List<IPieces> pieceList) {
+    this.pieces = pieceList;
   }
 
   public List<IPieces> getPieces() {
