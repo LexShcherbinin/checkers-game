@@ -5,7 +5,10 @@ import static chess.Colors.WHITE;
 import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.Rook;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -13,42 +16,83 @@ import java.util.stream.Collectors;
 public class PieceHelper {
 
   /**
+   * Получить мапу со всеми фигурами, которыми можно пойти, и всеми их доступными ходами
+   */
+  private static Map<IPieces, List<Function<IPieces, IPieces>>> getMoveList(ChessBoard chessBoard) {
+    Map<IPieces, List<Function<IPieces, IPieces>>> moveList = new HashMap<>();
+
+    chessBoard.getPieces()
+        .stream()
+        .filter(piece -> piece.getColor() == chessBoard.getPriority())
+        .forEach(piece -> {
+              List<Function<IPieces, IPieces>> actionList = piece
+                  .getActions()
+                  .stream()
+                  .filter(a -> checkMove(chessBoard, piece, a))
+                  .collect(Collectors.toList());
+
+              if (actionList.size() != 0) {
+                moveList.put(piece, actionList);
+              }
+            }
+        );
+
+    return moveList;
+  }
+
+  /**
    * Выбрать фигуру, которой можно пойти
    */
   public static IPieces getPrices(ChessBoard chessBoard) {
-    Random random = new Random();
-
-    // Получить список всех фигур, которыми можно пойти
-    List<IPieces> pieceList = chessBoard.getPieces()
-        .stream()
-        .filter(p -> p.getColor() == chessBoard.getPriority())
-        .filter(p -> p
-            .getActions()
-            .stream()
-            .anyMatch(a -> checkMove(chessBoard, p, a))
-        )
-        .collect(Collectors.toList());
-
-    // Выбрать фигуру
-    return pieceList.get(random.nextInt(pieceList.size()));
+    List<IPieces> pieceList = new ArrayList<>(getMoveList(chessBoard).keySet());
+    return pieceList.get(new Random().nextInt(pieceList.size()));
   }
 
   /**
    * Выбрать ход, которым можно пойти фигурой
    */
   public static Function<IPieces, IPieces> getAction(ChessBoard chessBoard, IPieces piece) {
-    Random random = new Random();
-
-    // Получить список всех ходов, которыми можно пойти
-    List<Function<IPieces, IPieces>> actionList = piece
-        .getActions()
-        .stream()
-        .filter(a -> checkMove(chessBoard, piece, a))
-        .collect(Collectors.toList());
-
-    // Выбрать ход
-    return actionList.get(random.nextInt(actionList.size()));
+    List<Function<IPieces, IPieces>> actionList = getMoveList(chessBoard).get(piece);
+    return actionList.get(new Random().nextInt(actionList.size()));
   }
+
+//  /**
+//   * Выбрать фигуру, которой можно пойти
+//   */
+//  public static IPieces getPrices(ChessBoard chessBoard) {
+//    Random random = new Random();
+//
+//    // Получить список всех фигур, которыми можно пойти
+//    List<IPieces> pieceList = chessBoard.getPieces()
+//        .stream()
+//        .filter(p -> p.getColor() == chessBoard.getPriority())
+//        .filter(p -> p
+//            .getActions()
+//            .stream()
+//            .anyMatch(a -> checkMove(chessBoard, p, a))
+//        )
+//        .collect(Collectors.toList());
+//
+//    // Выбрать фигуру
+//    return pieceList.get(random.nextInt(pieceList.size()));
+//  }
+//
+//  /**
+//   * Выбрать ход, которым можно пойти фигурой
+//   */
+//  public static Function<IPieces, IPieces> getAction(ChessBoard chessBoard, IPieces piece) {
+//    Random random = new Random();
+//
+//    // Получить список всех ходов, которыми можно пойти
+//    List<Function<IPieces, IPieces>> actionList = piece
+//        .getActions()
+//        .stream()
+//        .filter(a -> checkMove(chessBoard, piece, a))
+//        .collect(Collectors.toList());
+//
+//    // Выбрать ход
+//    return actionList.get(random.nextInt(actionList.size()));
+//  }
 
   /**
    * Проверка, можно ли ТАК пойти (надо доработать)

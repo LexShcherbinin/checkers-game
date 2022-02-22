@@ -2,12 +2,6 @@ package chess;
 
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
-import static chess.Names.BISHOP;
-import static chess.Names.KING;
-import static chess.Names.KNIGHT;
-import static chess.Names.PAWN;
-import static chess.Names.QUEEN;
-import static chess.Names.ROOK;
 
 import chess.pieces.Bishop;
 import chess.pieces.BlackPawn;
@@ -17,82 +11,48 @@ import chess.pieces.Knight;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import chess.pieces.WhitePawn;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PiecesCreator {
 
-  public static IPieces createPiece(Colors color, Names name, Coordinates coordinate) {
-    switch (name) {
-      case KING:
-        return new King(color, coordinate);
-
-      case QUEEN:
-        return new Queen(color, coordinate);
-
-      case ROOK:
-        return new Rook(color, coordinate);
-
-      case BISHOP:
-        return new Bishop(color, coordinate);
-
-      case KNIGHT:
-        return new Knight(color, coordinate);
-
-      case PAWN: {
-        if (color == WHITE) {
-          return new WhitePawn(coordinate);
-
-        } else {
-          return new BlackPawn(coordinate);
-        }
-      }
-
-      default:
-        throw new RuntimeException("Что-то не так с фигурами");
-    }
-  }
-
   public static List<IPieces> getDefaultBoard() {
-    List<IPieces> pieces = new ArrayList<>();
+    return List.of(
+        new WhitePawn(new Coordinates(1, 0)),
+        new WhitePawn(new Coordinates(1, 1)),
+        new WhitePawn(new Coordinates(1, 2)),
+        new WhitePawn(new Coordinates(1, 3)),
+        new WhitePawn(new Coordinates(1, 4)),
+        new WhitePawn(new Coordinates(1, 5)),
+        new WhitePawn(new Coordinates(1, 6)),
+        new WhitePawn(new Coordinates(1, 7)),
 
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 0)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 1)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 2)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 3)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 4)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 5)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 6)));
-    pieces.add(createPiece(WHITE, PAWN, new Coordinates(1, 7)));
+        new Rook(WHITE, new Coordinates(0, 0)),
+        new Knight(WHITE, new Coordinates(0, 1)),
+        new Bishop(WHITE, new Coordinates(0, 2)),
+        new Queen(WHITE, new Coordinates(0, 3)),
+        new King(WHITE, new Coordinates(0, 4)),
+        new Bishop(WHITE, new Coordinates(0, 5)),
+        new Knight(WHITE, new Coordinates(0, 6)),
+        new Rook(WHITE, new Coordinates(0, 7)),
 
-    pieces.add(createPiece(WHITE, ROOK, new Coordinates(0, 0)));
-    pieces.add(createPiece(WHITE, KNIGHT, new Coordinates(0, 1)));
-    pieces.add(createPiece(WHITE, BISHOP, new Coordinates(0, 2)));
-    pieces.add(createPiece(WHITE, QUEEN, new Coordinates(0, 3)));
-    pieces.add(createPiece(WHITE, KING, new Coordinates(0, 4)));
-    pieces.add(createPiece(WHITE, BISHOP, new Coordinates(0, 5)));
-    pieces.add(createPiece(WHITE, KNIGHT, new Coordinates(0, 6)));
-    pieces.add(createPiece(WHITE, ROOK, new Coordinates(0, 7)));
+        new BlackPawn(new Coordinates(6, 0)),
+        new BlackPawn(new Coordinates(6, 1)),
+        new BlackPawn(new Coordinates(6, 2)),
+        new BlackPawn(new Coordinates(6, 3)),
+        new BlackPawn(new Coordinates(6, 4)),
+        new BlackPawn(new Coordinates(6, 5)),
+        new BlackPawn(new Coordinates(6, 6)),
+        new BlackPawn(new Coordinates(6, 7)),
 
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 0)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 1)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 2)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 3)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 4)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 5)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 6)));
-    pieces.add(createPiece(BLACK, PAWN, new Coordinates(6, 7)));
-
-    pieces.add(createPiece(BLACK, ROOK, new Coordinates(7, 0)));
-    pieces.add(createPiece(BLACK, KNIGHT, new Coordinates(7, 1)));
-    pieces.add(createPiece(BLACK, BISHOP, new Coordinates(7, 2)));
-    pieces.add(createPiece(BLACK, QUEEN, new Coordinates(7, 3)));
-    pieces.add(createPiece(BLACK, KING, new Coordinates(7, 4)));
-    pieces.add(createPiece(BLACK, BISHOP, new Coordinates(7, 5)));
-    pieces.add(createPiece(BLACK, KNIGHT, new Coordinates(7, 6)));
-    pieces.add(createPiece(BLACK, ROOK, new Coordinates(7, 7)));
-
-    return pieces;
+        new Rook(BLACK, new Coordinates(7, 0)),
+        new Knight(BLACK, new Coordinates(7, 1)),
+        new Bishop(BLACK, new Coordinates(7, 2)),
+        new Queen(BLACK, new Coordinates(7, 3)),
+        new King(BLACK, new Coordinates(7, 4)),
+        new Bishop(BLACK, new Coordinates(7, 5)),
+        new Knight(BLACK, new Coordinates(7, 6)),
+        new Rook(BLACK, new Coordinates(7, 7))
+    );
   }
 
 }

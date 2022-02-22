@@ -12,6 +12,7 @@ import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.Queen;
 import chess.pieces.WhitePawn;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -44,11 +45,13 @@ public class ChessBoard {
   private int stepCount = 1;
 
   public ChessBoard() {
-    this.pieces = getDefaultBoard();
+//    this.pieces = getDefaultBoard();
+    this.pieces = new ArrayList<>(getDefaultBoard());
   }
 
   public ChessBoard(List<IPieces> pieceList) {
-    this.pieces = pieceList;
+//    this.pieces = pieceList;
+    this.pieces = new ArrayList<>(pieceList);
   }
 
   public List<IPieces> getPieces() {
