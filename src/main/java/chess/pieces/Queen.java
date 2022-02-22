@@ -50,97 +50,125 @@ public class Queen implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Function<IPieces, IPieces> up1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 1, horizontal));
-    Function<IPieces, IPieces> up2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 2, horizontal));
-    Function<IPieces, IPieces> up3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 3, horizontal));
-    Function<IPieces, IPieces> up4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 4, horizontal));
-    Function<IPieces, IPieces> up5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 5, horizontal));
-    Function<IPieces, IPieces> up6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 6, horizontal));
-    Function<IPieces, IPieces> up7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 7, horizontal));
+    Function<IPieces, IPieces> up1 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal));
+    Function<IPieces, IPieces> up2 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 2, horizontal));
+    Function<IPieces, IPieces> up3 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 3, horizontal));
+    Function<IPieces, IPieces> up4 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 4, horizontal));
+    Function<IPieces, IPieces> up5 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 5, horizontal));
+    Function<IPieces, IPieces> up6 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 6, horizontal));
+    Function<IPieces, IPieces> up7 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 7, horizontal));
 
-    Function<IPieces, IPieces> down1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal));
-    Function<IPieces, IPieces> down2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 2, horizontal));
-    Function<IPieces, IPieces> down3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 3, horizontal));
-    Function<IPieces, IPieces> down4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 4, horizontal));
-    Function<IPieces, IPieces> down5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 5, horizontal));
-    Function<IPieces, IPieces> down6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 6, horizontal));
-    Function<IPieces, IPieces> down7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 7, horizontal));
+    Function<IPieces, IPieces> down1 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal));
+    Function<IPieces, IPieces> down2 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 2, horizontal));
+    Function<IPieces, IPieces> down3 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 3, horizontal));
+    Function<IPieces, IPieces> down4 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 4, horizontal));
+    Function<IPieces, IPieces> down5 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 5, horizontal));
+    Function<IPieces, IPieces> down6 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 6, horizontal));
+    Function<IPieces, IPieces> down7 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 7, horizontal));
 
-    Function<IPieces, IPieces> right1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 1));
-    Function<IPieces, IPieces> right2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 2));
-    Function<IPieces, IPieces> right3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 3));
-    Function<IPieces, IPieces> right4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 4));
-    Function<IPieces, IPieces> right5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 5));
-    Function<IPieces, IPieces> right6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 6));
-    Function<IPieces, IPieces> right7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal + 7));
+    Function<IPieces, IPieces> right1 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 1));
+    Function<IPieces, IPieces> right2 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 2));
+    Function<IPieces, IPieces> right3 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 3));
+    Function<IPieces, IPieces> right4 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 4));
+    Function<IPieces, IPieces> right5 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 5));
+    Function<IPieces, IPieces> right6 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 6));
+    Function<IPieces, IPieces> right7 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 7));
 
-    Function<IPieces, IPieces> left1 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 1));
-    Function<IPieces, IPieces> left2 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 2));
-    Function<IPieces, IPieces> left3 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 3));
-    Function<IPieces, IPieces> left4 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 4));
-    Function<IPieces, IPieces> left5 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 5));
-    Function<IPieces, IPieces> left6 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 6));
-    Function<IPieces, IPieces> left7 = piece -> new Queen(piece).setCoordinates(new Coordinates(vertical, horizontal - 7));
+    Function<IPieces, IPieces> left1 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 1));
+    Function<IPieces, IPieces> left2 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 2));
+    Function<IPieces, IPieces> left3 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 3));
+    Function<IPieces, IPieces> left4 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 4));
+    Function<IPieces, IPieces> left5 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 5));
+    Function<IPieces, IPieces> left6 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 6));
+    Function<IPieces, IPieces> left7 =
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 7));
 
     Function<IPieces, IPieces> upAndRight1 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
     Function<IPieces, IPieces> upAndRight2 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 2, horizontal + 2));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 2, horizontal + 2));
     Function<IPieces, IPieces> upAndRight3 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 3, horizontal + 3));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 3, horizontal + 3));
     Function<IPieces, IPieces> upAndRight4 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 4, horizontal + 4));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 4, horizontal + 4));
     Function<IPieces, IPieces> upAndRight5 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 5, horizontal + 5));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 5, horizontal + 5));
     Function<IPieces, IPieces> upAndRight6 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 6, horizontal + 6));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 6, horizontal + 6));
     Function<IPieces, IPieces> upAndRight7 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 7, horizontal + 7));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 7, horizontal + 7));
 
     Function<IPieces, IPieces> upAndLeft1 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
     Function<IPieces, IPieces> upAndLeft2 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 2, horizontal - 2));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 2, horizontal - 2));
     Function<IPieces, IPieces> upAndLeft3 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 3, horizontal - 3));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 3, horizontal - 3));
     Function<IPieces, IPieces> upAndLeft4 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 4, horizontal - 4));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 4, horizontal - 4));
     Function<IPieces, IPieces> upAndLeft5 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 5, horizontal - 5));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 5, horizontal - 5));
     Function<IPieces, IPieces> upAndLeft6 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 6, horizontal - 6));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 6, horizontal - 6));
     Function<IPieces, IPieces> upAndLeft7 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical + 7, horizontal - 7));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 7, horizontal - 7));
 
     Function<IPieces, IPieces> downAndRight1 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
     Function<IPieces, IPieces> downAndRight2 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 2, horizontal + 2));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 2, horizontal + 2));
     Function<IPieces, IPieces> downAndRight3 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 3, horizontal + 3));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 3, horizontal + 3));
     Function<IPieces, IPieces> downAndRight4 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 4, horizontal + 4));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 4, horizontal + 4));
     Function<IPieces, IPieces> downAndRight5 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 5, horizontal + 5));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 5, horizontal + 5));
     Function<IPieces, IPieces> downAndRight6 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 6, horizontal + 6));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 6, horizontal + 6));
     Function<IPieces, IPieces> downAndRight7 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 7, horizontal + 7));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 7, horizontal + 7));
 
     Function<IPieces, IPieces> downAndLeft1 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
     Function<IPieces, IPieces> downAndLeft2 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 2, horizontal - 2));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 2, horizontal - 2));
     Function<IPieces, IPieces> downAndLeft3 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 3, horizontal - 3));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 3, horizontal - 3));
     Function<IPieces, IPieces> downAndLeft4 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 4, horizontal - 4));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 4, horizontal - 4));
     Function<IPieces, IPieces> downAndLeft5 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 5, horizontal - 5));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 5, horizontal - 5));
     Function<IPieces, IPieces> downAndLeft6 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 6, horizontal - 6));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 6, horizontal - 6));
     Function<IPieces, IPieces> downAndLeft7 =
-        piece -> new Queen(piece).setCoordinates(new Coordinates(vertical - 7, horizontal - 7));
+        piece -> new Queen(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 7, horizontal - 7));
 
     List<Function<IPieces, IPieces>> actions = List.of(
         up1,

@@ -46,21 +46,14 @@ public class BlackPawn implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Function<IPieces, IPieces> down1 = piece -> new BlackPawn(piece)
-        .setMoveBefore(true)
-        .setCoordinates(new Coordinates(vertical - 1, horizontal));
-
-    Function<IPieces, IPieces> down2 = piece -> new BlackPawn(piece)
-        .setMoveBefore(false)
-        .setCoordinates(new Coordinates(vertical - 2, horizontal));
-
-    Function<IPieces, IPieces> downAndRight = piece -> new BlackPawn(piece)
-        .setMoveBefore(true)
-        .setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
-
-    Function<IPieces, IPieces> downAndLeft = piece -> new BlackPawn(piece)
-        .setMoveBefore(true)
-        .setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Function<IPieces, IPieces> down1 =
+        piece -> new BlackPawn(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal));
+    Function<IPieces, IPieces> down2 =
+        piece -> new BlackPawn(piece).setMoveBefore(false).setCoordinates(new Coordinates(vertical - 2, horizontal));
+    Function<IPieces, IPieces> downAndRight =
+        piece -> new BlackPawn(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
+    Function<IPieces, IPieces> downAndLeft =
+        piece -> new BlackPawn(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
 
     List<Function<IPieces, IPieces>> actions = List.of(
         down1,

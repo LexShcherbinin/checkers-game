@@ -50,27 +50,33 @@ public class King implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Function<IPieces, IPieces> up1 = piece -> new King(piece)
-        .setMoveBefore(true)
-        .setCoordinates(new Coordinates(vertical + 1, horizontal));
+    Function<IPieces, IPieces> up1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal));
+    Function<IPieces, IPieces> down1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal));
+    Function<IPieces, IPieces> right1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 1));
+    Function<IPieces, IPieces> left1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 1));
 
-    Function<IPieces, IPieces> down1 = piece -> new King(piece)
-        .setMoveBefore(true)
-        .setCoordinates(new Coordinates(vertical - 1, horizontal));
-
-    Function<IPieces, IPieces> right1 = piece -> new King(piece)
-        .setMoveBefore(true)
-        .setCoordinates(new Coordinates(vertical, horizontal + 1));
-
-    Function<IPieces, IPieces> left1 = piece -> new King(piece)
-        .setMoveBefore(true)
-        .setCoordinates(new Coordinates(vertical, horizontal - 1));
+    Function<IPieces, IPieces> upAndRight1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
+    Function<IPieces, IPieces> upAndLeft1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
+    Function<IPieces, IPieces> downAndRight1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
+    Function<IPieces, IPieces> downAndLeft1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
 
     List<Function<IPieces, IPieces>> actions = List.of(
         up1,
         down1,
         right1,
-        left1
+        left1,
+        upAndRight1,
+        upAndLeft1,
+        downAndRight1,
+        downAndLeft1
     );
 
     return actions;

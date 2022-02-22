@@ -22,7 +22,7 @@ public class ChessBoard {
   /**
    * Список фигур на доске
    */
-  private List<IPieces> pieces;
+  private final List<IPieces> pieces;
 
   /**
    * Приоритет хода
@@ -45,12 +45,10 @@ public class ChessBoard {
   private int stepCount = 1;
 
   public ChessBoard() {
-//    this.pieces = getDefaultBoard();
     this.pieces = new ArrayList<>(getDefaultBoard());
   }
 
   public ChessBoard(List<IPieces> pieceList) {
-//    this.pieces = pieceList;
     this.pieces = new ArrayList<>(pieceList);
   }
 
@@ -248,7 +246,7 @@ public class ChessBoard {
 
     return result +
         " \t+-------------------------+" + "\n" +
-        " \t   a  b  c  d  e  f  g  h  \n";
+        " \t   A  B  C  D  E  F  G  H  \n";
   }
 
 }

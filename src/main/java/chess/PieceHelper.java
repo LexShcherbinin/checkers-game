@@ -6,10 +6,12 @@ import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.Rook;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,7 @@ public class PieceHelper {
               List<Function<IPieces, IPieces>> actionList = piece
                   .getActions()
                   .stream()
-                  .filter(a -> checkMove(chessBoard, piece, a))
+                  .filter(action -> checkMove(chessBoard, piece, action))
                   .collect(Collectors.toList());
 
               if (actionList.size() != 0) {
@@ -44,6 +46,12 @@ public class PieceHelper {
    * Выбрать фигуру, которой можно пойти
    */
   public static IPieces getPrices(ChessBoard chessBoard) {
+    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillerPieces = checkCheckmate(chessBoard);
+
+    if (kingKillerPieces.size() != 0) {
+      return new ArrayList<>(kingKillerPieces.keySet()).get(0);
+    }
+
     List<IPieces> pieceList = new ArrayList<>(getMoveList(chessBoard).keySet());
     return pieceList.get(new Random().nextInt(pieceList.size()));
   }
@@ -52,47 +60,66 @@ public class PieceHelper {
    * Выбрать ход, которым можно пойти фигурой
    */
   public static Function<IPieces, IPieces> getAction(ChessBoard chessBoard, IPieces piece) {
+    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillerPieces = checkCheckmate(chessBoard);
+
+    if (kingKillerPieces.size() != 0) {
+      return kingKillerPieces.get(new ArrayList<>(kingKillerPieces.keySet()).get(0)).get(0);
+    }
+
     List<Function<IPieces, IPieces>> actionList = getMoveList(chessBoard).get(piece);
     return actionList.get(new Random().nextInt(actionList.size()));
   }
 
-//  /**
-//   * Выбрать фигуру, которой можно пойти
-//   */
-//  public static IPieces getPrices(ChessBoard chessBoard) {
-//    Random random = new Random();
-//
-//    // Получить список всех фигур, которыми можно пойти
-//    List<IPieces> pieceList = chessBoard.getPieces()
-//        .stream()
-//        .filter(p -> p.getColor() == chessBoard.getPriority())
-//        .filter(p -> p
-//            .getActions()
-//            .stream()
-//            .anyMatch(a -> checkMove(chessBoard, p, a))
-//        )
-//        .collect(Collectors.toList());
-//
-//    // Выбрать фигуру
-//    return pieceList.get(random.nextInt(pieceList.size()));
-//  }
-//
-//  /**
-//   * Выбрать ход, которым можно пойти фигурой
-//   */
-//  public static Function<IPieces, IPieces> getAction(ChessBoard chessBoard, IPieces piece) {
-//    Random random = new Random();
-//
-//    // Получить список всех ходов, которыми можно пойти
-//    List<Function<IPieces, IPieces>> actionList = piece
-//        .getActions()
-//        .stream()
-//        .filter(a -> checkMove(chessBoard, piece, a))
-//        .collect(Collectors.toList());
-//
-//    // Выбрать ход
-//    return actionList.get(random.nextInt(actionList.size()));
-//  }
+  /**
+   * Проверка, можно ли на данном шаге убить короля. Если можно, то запомнить какой фигурой и каким шагом
+   */
+  public static Map<IPieces, List<Function<IPieces, IPieces>>> checkCheckmate(ChessBoard chessBoard) {
+    IPieces enemyKing = chessBoard.getPieces()
+        .stream()
+        .filter(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == Names.KING)
+        .findAny()
+        .orElse(null);
+
+    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillerPieces = new HashMap<>();
+
+    chessBoard.getPieces()
+        .stream()
+        .filter(piece -> piece.getColor() == chessBoard.getPriority())
+        .forEach(piece -> {
+              List<Function<IPieces, IPieces>> actionList = piece
+                  .getActions()
+                  .stream()
+                  .filter(action -> checkMove(chessBoard, piece, action))
+                  .filter(action -> action.apply(piece).getCoordinates().equals(enemyKing.getCoordinates()))
+                  .collect(Collectors.toList());
+
+              if (actionList.size() != 0) {
+                kingKillerPieces.put(piece, actionList);
+              }
+            }
+        );
+
+    return kingKillerPieces;
+  }
+
+  /**
+   * Получить сет полей, которые может атаковать сторона color
+   */
+  public static Set<Coordinates> getAttackedFieldList(ChessBoard chessBoard, Colors color) {
+    return chessBoard.getPieces()
+        .stream()
+        .filter(piece -> piece.getColor() == color)
+        .map(piece ->
+            piece
+                .getActions()
+                .stream()
+                .filter(action -> checkMove(chessBoard, piece, action))
+                .map(action -> action.apply(piece).getCoordinates())
+                .collect(Collectors.toSet())
+        )
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+  }
 
   /**
    * Проверка, можно ли ТАК пойти (надо доработать)
