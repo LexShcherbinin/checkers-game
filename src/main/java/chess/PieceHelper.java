@@ -3,7 +3,6 @@ package chess;
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
 
-import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.Rook;
 import java.util.Collection;
@@ -56,8 +55,7 @@ public class PieceHelper {
   }
 
   /**
-   * Получить сет полей, которые может атаковать сторона color.
-   * Просто дополнительный метод
+   * Получить сет полей, которые может атаковать сторона color. Просто дополнительный метод
    */
   @Deprecated
   public static Set<Coordinates> getAttackedFieldList(ChessBoard chessBoard, Colors color) {
@@ -143,7 +141,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть чужая фигура, false - если фигур нет
    */
-  private static boolean checkOppositePieceInDestination(ChessBoard chessBoard, IPieces piece) {
+  private static boolean checkEnemyPieceInDestination(ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(p -> p.getCoordinates().equals(piece.getCoordinates()) && !p.getColor().equals(piece.getColor()));
@@ -168,7 +166,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает true, если фигура есть, и false, если фигуры нет
    */
-  private static boolean checkPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
+  public static boolean checkPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color));
@@ -182,7 +180,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает фигуру, если она там есть, и null, если в поле её нет
    */
-  private static IPieces getPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
+  public static IPieces getPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color))
@@ -203,7 +201,7 @@ public class PieceHelper {
     return chessBoard.getPriority();
   }
 
-  private Colors getRivalColor(ChessBoard chessBoard) {
+  public static Colors getRivalColor(ChessBoard chessBoard) {
     Colors color = chessBoard.getPriority();
 
     if (color == WHITE) {
@@ -226,9 +224,10 @@ public class PieceHelper {
       int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
 
       int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
+      int sideShiftVertical = verticalAfter - verticalBefore;
 
       if (pieceAfter.getColor() == WHITE) {
-        if (checkOppositePieceInDestination(chessBoard, pieceAfter)) {
+        if (checkPieceInSquare(chessBoard, pieceAfter.getCoordinates(), BLACK)) {
           if (sideShiftHorizontal == 0) {
             return false;
 
@@ -239,16 +238,14 @@ public class PieceHelper {
         } else {
           if (sideShiftHorizontal == 1) {
 
-            IPieces www = new BlackPawn(new Coordinates(
+            Coordinates coordinates = new Coordinates(
                 pieceAfter.getCoordinates().getVertical() - 1,
                 pieceAfter.getCoordinates().getHorizontal()
-            ));
+            );
 
-            www.setMoveBefore(false);
+            IPieces enemyPiece = getPieceInSquare(chessBoard, coordinates, BLACK);
 
-            IPieces pieceDestination = getDestinationPiece(chessBoard, www);
-
-            if (pieceDestination != null && !pieceDestination.getMoveBefore()) {
+            if (checkPieceInSquare(chessBoard, coordinates, BLACK) && !enemyPiece.getMoveBefore()) {
               return true;
 
             } else {
@@ -256,20 +253,27 @@ public class PieceHelper {
             }
 
           } else {
-            if (verticalAfter - verticalBefore == 1) {
-              return true;
-
-            } else if (verticalBefore == 1) {
+            if (sideShiftVertical == 1) {
               return true;
 
             } else {
-              return false;
+              Coordinates coordinates = new Coordinates(
+                  pieceAfter.getCoordinates().getVertical() - 1,
+                  pieceAfter.getCoordinates().getHorizontal()
+              );
+
+              if (checkPieceInSquare(chessBoard, coordinates, BLACK) || checkPieceInSquare(chessBoard, coordinates, WHITE)) {
+                return false;
+
+              } else {
+                return true;
+              }
             }
           }
         }
 
       } else {
-        if (checkOppositePieceInDestination(chessBoard, pieceAfter)) {
+        if (checkPieceInSquare(chessBoard, pieceAfter.getCoordinates(), WHITE)) {
           if (sideShiftHorizontal == 0) {
             return false;
 
@@ -279,17 +283,37 @@ public class PieceHelper {
 
         } else {
           if (sideShiftHorizontal == 1) {
-            return false;
 
-          } else {
-            if (verticalAfter - verticalBefore == -1) {
-              return true;
+            Coordinates coordinates = new Coordinates(
+                pieceAfter.getCoordinates().getVertical() + 1,
+                pieceAfter.getCoordinates().getHorizontal()
+            );
 
-            } else if (verticalBefore == 6) {
+            IPieces enemyPiece = getPieceInSquare(chessBoard, coordinates, WHITE);
+
+            if (checkPieceInSquare(chessBoard, coordinates, WHITE) && !enemyPiece.getMoveBefore()) {
               return true;
 
             } else {
               return false;
+            }
+
+          } else {
+            if (sideShiftVertical == -1) {
+              return true;
+
+            } else {
+              Coordinates coordinates = new Coordinates(
+                  pieceAfter.getCoordinates().getVertical() + 1,
+                  pieceAfter.getCoordinates().getHorizontal()
+              );
+
+              if (checkPieceInSquare(chessBoard, coordinates, BLACK) || checkPieceInSquare(chessBoard, coordinates, WHITE)) {
+                return false;
+
+              } else {
+                return true;
+              }
             }
           }
         }

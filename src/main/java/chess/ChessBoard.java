@@ -4,14 +4,13 @@ import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
 import static chess.Names.PAWN;
 import static chess.PieceHelper.checkEnemyKingOnBoard;
-import static chess.PieceHelper.getDestinationPiece;
 import static chess.PieceHelper.getMoveList;
+import static chess.PieceHelper.getPieceInSquare;
+import static chess.PieceHelper.getRivalColor;
 import static chess.PiecesCreator.getDefaultBoard;
 
-import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.Queen;
-import chess.pieces.WhitePawn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,35 +73,44 @@ public class ChessBoard {
     IPieces pieceAfter = action.apply(pieceBefore);
 
     // Проверить, есть ли в месте назначения фигура противоположного цвета
-    IPieces eatenPrice = getDestinationPiece(this, pieceAfter);
+    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getCoordinates(), getRivalColor(this));
 
     // Если есть, удалить её с доски
-    if (eatenPrice != null) {
-      pieces.remove(eatenPrice);
+    if (enemyPrice != null) {
+      pieces.remove(enemyPrice);
       eatPiecesCount++;
 
-    } else if (pieceAfter.getName() == PAWN && action == pieceAfter.getActions().get(1)) {
-      if (pieceAfter.getColor() == WHITE) {
-        IPieces www = new BlackPawn(new Coordinates(
+    } else if (pieceAfter.getName() == PAWN) {
+      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
+
+      if (sideShiftHorizontal == 1 && pieceAfter.getColor() == WHITE) {
+
+        Coordinates coordinates = new Coordinates(
             pieceAfter.getCoordinates().getVertical() - 1,
             pieceAfter.getCoordinates().getHorizontal()
-        ));
+        );
 
-        System.out.println("en passant");
+        IPieces enemyPiece = getPieceInSquare(this, coordinates, BLACK);
 
-        pieces.remove(getDestinationPiece(this, www));
-        eatPiecesCount++;
+        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
+          pieces.remove(enemyPiece);
+          eatPiecesCount++;
+        }
 
-      } else {
-        IPieces www = new WhitePawn(new Coordinates(
+      } else if (sideShiftHorizontal == 1 && pieceAfter.getColor() == BLACK) {
+        Coordinates coordinates = new Coordinates(
             pieceAfter.getCoordinates().getVertical() + 1,
             pieceAfter.getCoordinates().getHorizontal()
-        ));
+        );
 
-        System.out.println("en passant");
+        IPieces enemyPiece = getPieceInSquare(this, coordinates, WHITE);
 
-        pieces.remove(getDestinationPiece(this, www));
-        eatPiecesCount++;
+        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
+          pieces.remove(enemyPiece);
+          eatPiecesCount++;
+        }
       }
     }
 
@@ -123,7 +131,7 @@ public class ChessBoard {
     saveLastStep(pieceBefore, pieceAfter);
 
     // Проверить, не короля ли убили
-    if (eatenPrice != null) {
+    if (enemyPrice != null) {
       checkKing();
     }
 
