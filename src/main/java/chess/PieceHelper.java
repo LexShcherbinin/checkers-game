@@ -1,16 +1,15 @@
 package chess;
 
+import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
 
 import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.Rook;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -20,21 +19,35 @@ public class PieceHelper {
   /**
    * Получить мапу со всеми фигурами, которыми можно пойти, и всеми их доступными ходами
    */
-  private static Map<IPieces, List<Function<IPieces, IPieces>>> getMoveList(ChessBoard chessBoard) {
+  public static Map<IPieces, List<Function<IPieces, IPieces>>> getMoveList(ChessBoard chessBoard) {
+    IPieces enemyKing = chessBoard.getPieces()
+        .stream()
+        .filter(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == Names.KING)
+        .findAny()
+        .orElse(null);
+
     Map<IPieces, List<Function<IPieces, IPieces>>> moveList = new HashMap<>();
 
     chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == chessBoard.getPriority())
         .forEach(piece -> {
-              List<Function<IPieces, IPieces>> actionList = piece
+              List<Function<IPieces, IPieces>> actions = piece
                   .getActions()
                   .stream()
                   .filter(action -> checkMove(chessBoard, piece, action))
                   .collect(Collectors.toList());
 
-              if (actionList.size() != 0) {
-                moveList.put(piece, actionList);
+              List<Function<IPieces, IPieces>> kingKillers = actions
+                  .stream()
+                  .filter(action -> action.apply(piece).getCoordinates().equals(enemyKing.getCoordinates()))
+                  .collect(Collectors.toList());
+
+              if (kingKillers.size() != 0) {
+                moveList.put(piece, kingKillers);
+
+              } else if (actions.size() != 0) {
+                moveList.put(piece, actions);
               }
             }
         );
@@ -43,68 +56,10 @@ public class PieceHelper {
   }
 
   /**
-   * Выбрать фигуру, которой можно пойти
+   * Получить сет полей, которые может атаковать сторона color.
+   * Просто дополнительный метод
    */
-  public static IPieces getPrices(ChessBoard chessBoard) {
-    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillerPieces = checkCheckmate(chessBoard);
-
-    if (kingKillerPieces.size() != 0) {
-      return new ArrayList<>(kingKillerPieces.keySet()).get(0);
-    }
-
-    List<IPieces> pieceList = new ArrayList<>(getMoveList(chessBoard).keySet());
-    return pieceList.get(new Random().nextInt(pieceList.size()));
-  }
-
-  /**
-   * Выбрать ход, которым можно пойти фигурой
-   */
-  public static Function<IPieces, IPieces> getAction(ChessBoard chessBoard, IPieces piece) {
-    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillerPieces = checkCheckmate(chessBoard);
-
-    if (kingKillerPieces.size() != 0) {
-      return kingKillerPieces.get(new ArrayList<>(kingKillerPieces.keySet()).get(0)).get(0);
-    }
-
-    List<Function<IPieces, IPieces>> actionList = getMoveList(chessBoard).get(piece);
-    return actionList.get(new Random().nextInt(actionList.size()));
-  }
-
-  /**
-   * Проверка, можно ли на данном шаге убить короля. Если можно, то запомнить какой фигурой и каким шагом
-   */
-  public static Map<IPieces, List<Function<IPieces, IPieces>>> checkCheckmate(ChessBoard chessBoard) {
-    IPieces enemyKing = chessBoard.getPieces()
-        .stream()
-        .filter(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == Names.KING)
-        .findAny()
-        .orElse(null);
-
-    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillerPieces = new HashMap<>();
-
-    chessBoard.getPieces()
-        .stream()
-        .filter(piece -> piece.getColor() == chessBoard.getPriority())
-        .forEach(piece -> {
-              List<Function<IPieces, IPieces>> actionList = piece
-                  .getActions()
-                  .stream()
-                  .filter(action -> checkMove(chessBoard, piece, action))
-                  .filter(action -> action.apply(piece).getCoordinates().equals(enemyKing.getCoordinates()))
-                  .collect(Collectors.toList());
-
-              if (actionList.size() != 0) {
-                kingKillerPieces.put(piece, actionList);
-              }
-            }
-        );
-
-    return kingKillerPieces;
-  }
-
-  /**
-   * Получить сет полей, которые может атаковать сторона color
-   */
+  @Deprecated
   public static Set<Coordinates> getAttackedFieldList(ChessBoard chessBoard, Colors color) {
     return chessBoard.getPieces()
         .stream()
@@ -197,12 +152,66 @@ public class PieceHelper {
   /**
    * Проверить, есть ли в месте назначения фигура противоположного цвета
    */
-  private static IPieces getDestinationPiece(ChessBoard chessBoard, IPieces piece) {
+  public static IPieces getDestinationPiece(ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
         .filter(p -> p.getCoordinates().equals(piece.getCoordinates()) && p.getColor() != piece.getColor())
         .findFirst()
         .orElse(null);
+  }
+
+  /**
+   * Проверка, есть ли на доске в поле coordinates фигура цвета color
+   *
+   * @param chessBoard  - доска
+   * @param coordinates - координаты фигуры
+   * @param color       - цвет фигуры
+   * @return - возвращает true, если фигура есть, и false, если фигуры нет
+   */
+  private static boolean checkPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
+    return chessBoard.getPieces()
+        .stream()
+        .anyMatch(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color));
+  }
+
+  /**
+   * Возвращает фигуру цвета color, стоящую на поле coordinates
+   *
+   * @param chessBoard  - доска
+   * @param coordinates - координаты фигуры
+   * @param color       - цвет фигуры
+   * @return - возвращает фигуру, если она там есть, и null, если в поле её нет
+   */
+  private static IPieces getPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
+    return chessBoard.getPieces()
+        .stream()
+        .filter(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color))
+        .findAny()
+        .orElse(null);
+  }
+
+  /**
+   * Проверка, присутствует ли на доске вражеский король
+   */
+  public static boolean checkEnemyKingOnBoard(ChessBoard chessBoard) {
+    return chessBoard.getPieces()
+        .stream()
+        .anyMatch(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == Names.KING);
+  }
+
+  private Colors getMyColor(ChessBoard chessBoard) {
+    return chessBoard.getPriority();
+  }
+
+  private Colors getRivalColor(ChessBoard chessBoard) {
+    Colors color = chessBoard.getPriority();
+
+    if (color == WHITE) {
+      return BLACK;
+
+    } else {
+      return WHITE;
+    }
   }
 
   private static class CheckPieces {

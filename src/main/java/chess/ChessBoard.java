@@ -2,10 +2,10 @@ package chess;
 
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
-import static chess.Names.KING;
 import static chess.Names.PAWN;
-import static chess.PieceHelper.getAction;
-import static chess.PieceHelper.getPrices;
+import static chess.PieceHelper.checkEnemyKingOnBoard;
+import static chess.PieceHelper.getDestinationPiece;
+import static chess.PieceHelper.getMoveList;
 import static chess.PiecesCreator.getDefaultBoard;
 
 import chess.pieces.BlackPawn;
@@ -14,8 +14,9 @@ import chess.pieces.Queen;
 import chess.pieces.WhitePawn;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class ChessBoard {
 
@@ -64,13 +65,16 @@ public class ChessBoard {
    * Сделать какой-нибудь ход какой-нибудь фигурой
    */
   public void makeMove() {
-    IPieces pieceBefore = getPrices(this);
-    Function<IPieces, IPieces> action = getAction(this, pieceBefore);
+    //Получить полный список всех возможных ходов. Убийцы королей в приоритете
+    Map<IPieces, List<Function<IPieces, IPieces>>> moveList = getMoveList(this);
+
+    IPieces pieceBefore = getPrices(moveList);
+    Function<IPieces, IPieces> action = getAction(moveList, pieceBefore);
 
     IPieces pieceAfter = action.apply(pieceBefore);
 
     // Проверить, есть ли в месте назначения фигура противоположного цвета
-    IPieces eatenPrice = getEatenPiece(pieceAfter);
+    IPieces eatenPrice = getDestinationPiece(this, pieceAfter);
 
     // Если есть, удалить её с доски
     if (eatenPrice != null) {
@@ -86,7 +90,7 @@ public class ChessBoard {
 
         System.out.println("en passant");
 
-        pieces.remove(getEatenPiece(www));
+        pieces.remove(getDestinationPiece(this, www));
         eatPiecesCount++;
 
       } else {
@@ -97,7 +101,7 @@ public class ChessBoard {
 
         System.out.println("en passant");
 
-        pieces.remove(getEatenPiece(www));
+        pieces.remove(getDestinationPiece(this, www));
         eatPiecesCount++;
       }
     }
@@ -128,6 +132,22 @@ public class ChessBoard {
   }
 
   /**
+   * Выбрать фигуру, которой можно пойти
+   */
+  public IPieces getPrices(Map<IPieces, List<Function<IPieces, IPieces>>> moveList) {
+    List<IPieces> pieceList = new ArrayList<>(moveList.keySet());
+    return pieceList.get(new Random().nextInt(pieceList.size()));
+  }
+
+  /**
+   * Выбрать ход, которым можно пойти фигурой
+   */
+  public Function<IPieces, IPieces> getAction(Map<IPieces, List<Function<IPieces, IPieces>>> moveList, IPieces piece) {
+    List<Function<IPieces, IPieces>> actionList = moveList.get(piece);
+    return actionList.get(new Random().nextInt(actionList.size()));
+  }
+
+  /**
    * Запомнить последний ход
    */
   private void saveLastStep(IPieces pieceBefore, IPieces pieceAfter) {
@@ -138,31 +158,11 @@ public class ChessBoard {
   }
 
   /**
-   * Проверить, есть ли в месте назначения фигура противоположного цвета
-   *
-   * @param piece - фигура после того, как сделает ход
-   * @return - возвращает фигуру, которую надо съесть, если она там есть, или null, если её там нет
-   */
-  private IPieces getEatenPiece(IPieces piece) {
-    return pieces
-        .stream()
-        .filter(p -> p.getCoordinates().equals(piece.getCoordinates()) && p.getColor() != piece.getColor())
-        .findFirst()
-        .orElse(null);
-  }
-
-  /**
    * Проверить, не убили ли одного из королей
    */
   private void checkKing() {
-    List<IPieces> kings = pieces.stream()
-        .filter(p -> p.getName() == KING)
-        .collect(Collectors.toList());
-
-    if (kings.size() < 2) {
-      Colors color = kings.get(0).getColor();
-
-      if (color == WHITE) {
+    if (!checkEnemyKingOnBoard(this)) {
+      if (this.getPriority() == WHITE) {
         System.out.println("WHITE win");
 
       } else {
