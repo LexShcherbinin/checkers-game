@@ -2,6 +2,7 @@ package chess;
 
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
+import static chess.Names.KING;
 import static chess.Names.PAWN;
 import static chess.PieceHelper.checkEnemyKingOnBoard;
 import static chess.PieceHelper.getMoveList;
@@ -11,6 +12,7 @@ import static chess.PiecesCreator.getDefaultBoard;
 
 import chess.pieces.IPieces;
 import chess.pieces.Queen;
+import chess.pieces.Rook;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +129,50 @@ public class ChessBoard {
     }
 
     pieces.add(pieceAfter);
+
+    //Проверка на рокировку
+    if (pieceAfter.getName() == KING) {
+      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
+
+      if (sideShiftHorizontal == 2) {
+        if (pieceBefore.getColor() == WHITE) {
+          IPieces rightRook = getPieceInSquare(this, new Coordinates(0, 7), WHITE);
+
+          pieces.remove(rightRook);
+          pieces.add(new Rook(WHITE, new Coordinates(0, 5)));
+
+          System.out.println("<===================================================>");
+
+        } else {
+          IPieces rightRook = getPieceInSquare(this, new Coordinates(7, 7), BLACK);
+
+          pieces.remove(rightRook);
+          pieces.add(new Rook(BLACK, new Coordinates(7, 5)));
+
+          System.out.println("<===================================================>");
+        }
+
+      } else if (sideShiftHorizontal == -2) {
+        if (pieceBefore.getColor() == WHITE) {
+          IPieces leftRook = getPieceInSquare(this, new Coordinates(0, 0), WHITE);
+
+          pieces.remove(leftRook);
+          pieces.add(new Rook(WHITE, new Coordinates(0, 3)));
+
+          System.out.println("<===================================================>");
+
+        } else {
+          IPieces leftRook = getPieceInSquare(this, new Coordinates(7, 0), BLACK);
+
+          pieces.remove(leftRook);
+          pieces.add(new Rook(BLACK, new Coordinates(7, 3)));
+
+          System.out.println("<===================================================>");
+        }
+      }
+    }
 
     saveLastStep(pieceBefore, pieceAfter);
 

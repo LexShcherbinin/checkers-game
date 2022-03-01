@@ -2,6 +2,8 @@ package chess;
 
 import static chess.Colors.BLACK;
 import static chess.Colors.WHITE;
+import static chess.Names.KING;
+import static chess.Names.ROOK;
 
 import chess.pieces.IPieces;
 import chess.pieces.Rook;
@@ -19,11 +21,13 @@ public class PieceHelper {
    * Получить мапу со всеми фигурами, которыми можно пойти, и всеми их доступными ходами
    */
   public static Map<IPieces, List<Function<IPieces, IPieces>>> getMoveList(ChessBoard chessBoard) {
-    IPieces enemyKing = chessBoard.getPieces()
-        .stream()
-        .filter(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == Names.KING)
-        .findAny()
-        .orElse(null);
+//    IPieces enemyKing = chessBoard.getPieces()
+//        .stream()
+//        .filter(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == KING)
+//        .findAny()
+//        .orElse(null);
+
+    IPieces enemyKing = getPiece(chessBoard, KING, getRivalColor(chessBoard));
 
     Map<IPieces, List<Function<IPieces, IPieces>>> moveList = new HashMap<>();
     Map<IPieces, List<Function<IPieces, IPieces>>> kingKillersList = new HashMap<>();
@@ -57,6 +61,17 @@ public class PieceHelper {
     }
 
     return moveList;
+  }
+
+  /**
+   * Найти и получить фигуру на доске, если она есть
+   */
+  private static IPieces getPiece(ChessBoard chessBoard, Names name, Colors color) {
+    return chessBoard.getPieces()
+        .stream()
+        .filter(piece -> piece.getColor() == color && piece.getName() == name)
+        .findAny()
+        .orElse(null);
   }
 
   /**
@@ -98,6 +113,7 @@ public class PieceHelper {
       case ROOK -> new CheckPieces().checkRook(chessBoard, piece, action);
       case BISHOP -> new CheckPieces().checkBishop(chessBoard, piece, action);
       case QUEEN -> new CheckPieces().checkQueen(chessBoard, piece, action);
+      case KING -> new CheckPieces().checkKing(chessBoard, piece, action);
       default -> true;
     };
 
@@ -199,7 +215,7 @@ public class PieceHelper {
   public static boolean checkEnemyKingOnBoard(ChessBoard chessBoard) {
     return chessBoard.getPieces()
         .stream()
-        .anyMatch(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == Names.KING);
+        .anyMatch(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == KING);
   }
 
   private Colors getMyColor(ChessBoard chessBoard) {
@@ -489,6 +505,79 @@ public class PieceHelper {
 
     private boolean checkQueen(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       return checkRook(chessBoard, piece, action) && checkBishop(chessBoard, piece, action);
+    }
+
+    private boolean checkKing(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
+      if (chessBoard.getPriority() == WHITE) {
+        IPieces king = getPiece(chessBoard, KING, WHITE);
+        IPieces leftRook = getPieceInSquare(chessBoard, new Coordinates(0, 0), WHITE);
+        IPieces rightRook = getPieceInSquare(chessBoard, new Coordinates(0, 7), WHITE);
+
+        IPieces leftKnight = getPieceInSquare(chessBoard, new Coordinates(0, 1), WHITE);
+        IPieces rightKnight = getPieceInSquare(chessBoard, new Coordinates(0, 6), WHITE);
+
+        IPieces leftBishop = getPieceInSquare(chessBoard, new Coordinates(0, 2), WHITE);
+        IPieces rightBishop = getPieceInSquare(chessBoard, new Coordinates(0, 5), WHITE);
+
+        IPieces queen = getPieceInSquare(chessBoard, new Coordinates(0, 3), WHITE);
+
+        Set<Coordinates> whiteList = Set.of(
+            new Coordinates(0, 1),
+            new Coordinates(0, 2),
+            new Coordinates(0, 3),
+            new Coordinates(0, 4),
+            new Coordinates(0, 5),
+            new Coordinates(0, 6)
+        );
+
+//        Set<Coordinates> attackedFields = getAttackedFieldList(chessBoard, BLACK)
+//            .stream()
+//            .filter(whiteList::contains)
+//            .collect(Collectors.toSet());
+//
+//        return attackedFields.size() == 0 && !king.getMoveBefore() && leftRook != null && rightRook!= null &&
+//            !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
+//            leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
+
+        return !king.getMoveBefore() && leftRook != null && rightRook!= null &&
+            !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
+            leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
+
+      } else {
+        IPieces king = getPiece(chessBoard, KING, BLACK);
+        IPieces leftRook = getPieceInSquare(chessBoard, new Coordinates(7, 0), BLACK);
+        IPieces rightRook = getPieceInSquare(chessBoard, new Coordinates(7, 7), BLACK);
+
+        IPieces leftKnight = getPieceInSquare(chessBoard, new Coordinates(7, 1), BLACK);
+        IPieces rightKnight = getPieceInSquare(chessBoard, new Coordinates(7, 6), BLACK);
+
+        IPieces leftBishop = getPieceInSquare(chessBoard, new Coordinates(7, 2), BLACK);
+        IPieces rightBishop = getPieceInSquare(chessBoard, new Coordinates(7, 5), BLACK);
+
+        IPieces queen = getPieceInSquare(chessBoard, new Coordinates(7, 3), BLACK);
+
+        Set<Coordinates> whiteList = Set.of(
+            new Coordinates(7, 1),
+            new Coordinates(7, 2),
+            new Coordinates(7, 3),
+            new Coordinates(7, 4),
+            new Coordinates(7, 5),
+            new Coordinates(7, 6)
+        );
+
+//        Set<Coordinates> attackedFields = getAttackedFieldList(chessBoard, WHITE)
+//            .stream()
+//            .filter(whiteList::contains)
+//            .collect(Collectors.toSet());
+//
+//        return attackedFields.size() == 0 && !king.getMoveBefore() && leftRook != null && rightRook!= null &&
+//            !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
+//            leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
+
+        return !king.getMoveBefore() && leftRook != null && rightRook!= null &&
+            !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
+            leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
+      }
     }
 
   }

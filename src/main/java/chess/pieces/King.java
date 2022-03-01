@@ -68,6 +68,11 @@ public class King implements IPieces {
     Function<IPieces, IPieces> downAndLeft1 =
         piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
 
+    Function<IPieces, IPieces> castling1 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 2));
+    Function<IPieces, IPieces> castling2 =
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 2));
+
     List<Function<IPieces, IPieces>> actions = List.of(
         up1,
         down1,
@@ -76,7 +81,9 @@ public class King implements IPieces {
         upAndRight1,
         upAndLeft1,
         downAndRight1,
-        downAndLeft1
+        downAndLeft1,
+        castling1,
+        castling2
     );
 
     return actions;
