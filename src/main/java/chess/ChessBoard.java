@@ -5,6 +5,7 @@ import static chess.Colors.WHITE;
 import static chess.Names.KING;
 import static chess.Names.PAWN;
 import static chess.PieceHelper.checkEnemyKingOnBoard;
+import static chess.PieceHelper.getAttackedFieldList;
 import static chess.PieceHelper.getMoveList;
 import static chess.PieceHelper.getPieceInSquare;
 import static chess.PieceHelper.getRivalColor;
@@ -14,9 +15,11 @@ import chess.pieces.IPieces;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Function;
 
 public class ChessBoard {
@@ -46,6 +49,11 @@ public class ChessBoard {
    */
   private int stepCount = 1;
 
+  /**
+   * Список атакуемых полей
+   */
+  private Set<Coordinates> attackedFields = new HashSet<>();
+
   public ChessBoard() {
     this.pieces = new ArrayList<>(getDefaultBoard());
   }
@@ -60,6 +68,10 @@ public class ChessBoard {
 
   public Colors getPriority() {
     return priority;
+  }
+
+  public Set<Coordinates> getAttackedFields() {
+    return attackedFields;
   }
 
   /**
@@ -181,6 +193,9 @@ public class ChessBoard {
       checkKing();
     }
 
+    //Запомнить поля, которые находятся под ударом
+    attackedFields = getAttackedFieldList(this, priority);
+
     // Передать ход другой стороне
     changePriority();
   }
@@ -190,6 +205,20 @@ public class ChessBoard {
    */
   public IPieces getPrices(Map<IPieces, List<Function<IPieces, IPieces>>> moveList) {
     List<IPieces> pieceList = new ArrayList<>(moveList.keySet());
+
+    if (pieceList.size() == 0) {
+      System.out.println("Move list is null");
+
+      if (this.getPriority() == WHITE) {
+        System.out.println("BLACK win");
+
+      } else {
+        System.out.println("WHITE win");
+      }
+
+      System.exit(0);
+    }
+
     return pieceList.get(new Random().nextInt(pieceList.size()));
   }
 
