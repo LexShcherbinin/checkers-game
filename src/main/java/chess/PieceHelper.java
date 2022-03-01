@@ -26,6 +26,7 @@ public class PieceHelper {
         .orElse(null);
 
     Map<IPieces, List<Function<IPieces, IPieces>>> moveList = new HashMap<>();
+    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillersList = new HashMap<>();
 
     chessBoard.getPieces()
         .stream()
@@ -43,13 +44,17 @@ public class PieceHelper {
                   .collect(Collectors.toList());
 
               if (kingKillers.size() != 0) {
-                moveList.put(piece, kingKillers);
+                kingKillersList.put(piece, kingKillers);
 
               } else if (actions.size() != 0) {
                 moveList.put(piece, actions);
               }
             }
         );
+
+    if (kingKillersList.size() !=0) {
+      return kingKillersList;
+    }
 
     return moveList;
   }
