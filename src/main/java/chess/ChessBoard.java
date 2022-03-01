@@ -155,15 +155,11 @@ public class ChessBoard {
           pieces.remove(rightRook);
           pieces.add(new Rook(WHITE, new Coordinates(0, 5)));
 
-          System.out.println("<===================================================>");
-
         } else {
           IPieces rightRook = getPieceInSquare(this, new Coordinates(7, 7), BLACK);
 
           pieces.remove(rightRook);
           pieces.add(new Rook(BLACK, new Coordinates(7, 5)));
-
-          System.out.println("<===================================================>");
         }
 
       } else if (sideShiftHorizontal == -2) {
@@ -173,15 +169,11 @@ public class ChessBoard {
           pieces.remove(leftRook);
           pieces.add(new Rook(WHITE, new Coordinates(0, 3)));
 
-          System.out.println("<===================================================>");
-
         } else {
           IPieces leftRook = getPieceInSquare(this, new Coordinates(7, 0), BLACK);
 
           pieces.remove(leftRook);
           pieces.add(new Rook(BLACK, new Coordinates(7, 3)));
-
-          System.out.println("<===================================================>");
         }
       }
     }
@@ -206,18 +198,18 @@ public class ChessBoard {
   public IPieces getPrices(Map<IPieces, List<Function<IPieces, IPieces>>> moveList) {
     List<IPieces> pieceList = new ArrayList<>(moveList.keySet());
 
-    if (pieceList.size() == 0) {
-      System.out.println("Move list is null");
-
-      if (this.getPriority() == WHITE) {
-        System.out.println("BLACK win");
-
-      } else {
-        System.out.println("WHITE win");
-      }
-
-      System.exit(0);
-    }
+//    if (pieceList.size() == 0) {
+//      System.out.println("Move list is null");
+//
+//      if (this.getPriority() == WHITE) {
+//        System.out.println("BLACK win");
+//
+//      } else {
+//        System.out.println("WHITE win");
+//      }
+//
+//      System.exit(0);
+//    }
 
     return pieceList.get(new Random().nextInt(pieceList.size()));
   }

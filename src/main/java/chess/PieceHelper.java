@@ -506,9 +506,9 @@ public class PieceHelper {
       int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
       int sideShiftHorizontal = Math.abs(horizontalAfter - horizontalBefore);
 
-      if (chessBoard.getAttackedFields().stream().anyMatch(field -> field.equals(piece.getCoordinates()))) {
-        return false;
-      }
+//      if (chessBoard.getAttackedFields().stream().anyMatch(field -> field.equals(piece.getCoordinates()))) {
+//        return false;
+//      }
 
       if (sideShiftHorizontal < 2) {
         return true;
