@@ -24,6 +24,8 @@ import java.util.function.Function;
 
 public class ChessBoard {
 
+  ChessBoard chessBoard;
+
   /**
    * Список фигур на доске
    */
@@ -62,6 +64,11 @@ public class ChessBoard {
     this.pieces = new ArrayList<>(pieceList);
   }
 
+  public ChessBoard(ChessBoard chessBoard) {
+    this.chessBoard = chessBoard;
+    this.pieces = chessBoard.getPieces();
+  }
+
   public List<IPieces> getPieces() {
     return pieces;
   }
@@ -74,12 +81,20 @@ public class ChessBoard {
     return attackedFields;
   }
 
+  public String getLastStep() {
+    return lastStep;
+  }
+
+  public Map<IPieces, List<Function<IPieces, IPieces>>> getMoveMap() {
+    return getMoveList(this);
+  }
+
   /**
    * Сделать какой-нибудь ход какой-нибудь фигурой
    */
   public void makeMove() {
     //Получить полный список всех возможных ходов. Убийцы королей в приоритете
-    Map<IPieces, List<Function<IPieces, IPieces>>> moveList = getMoveList(this);
+    Map<IPieces, List<Function<IPieces, IPieces>>> moveList = getMoveMap();
 
     IPieces pieceBefore = getPrices(moveList);
     Function<IPieces, IPieces> action = getAction(moveList, pieceBefore);
@@ -129,6 +144,117 @@ public class ChessBoard {
     }
 
     pieces.remove(pieceBefore);
+
+    // Если пешка добралась до противоположной стороны, превратить её в ферзя
+    if (pieceAfter.getName() == PAWN) {
+      if (pieceAfter.getColor() == WHITE && pieceAfter.getCoordinates().getVertical() == 7) {
+        pieceAfter = new Queen(WHITE, pieceAfter.getCoordinates());
+
+      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getCoordinates().getVertical() == 0) {
+        pieceAfter = new Queen(BLACK, pieceAfter.getCoordinates());
+      }
+    }
+
+    pieces.add(pieceAfter);
+
+    //Проверка на рокировку
+    if (pieceAfter.getName() == KING) {
+      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
+
+      if (sideShiftHorizontal == 2) {
+        if (pieceBefore.getColor() == WHITE) {
+          IPieces rightRook = getPieceInSquare(this, new Coordinates(0, 7), WHITE);
+
+          pieces.remove(rightRook);
+          pieces.add(new Rook(WHITE, new Coordinates(0, 5)));
+
+        } else {
+          IPieces rightRook = getPieceInSquare(this, new Coordinates(7, 7), BLACK);
+
+          pieces.remove(rightRook);
+          pieces.add(new Rook(BLACK, new Coordinates(7, 5)));
+        }
+
+      } else if (sideShiftHorizontal == -2) {
+        if (pieceBefore.getColor() == WHITE) {
+          IPieces leftRook = getPieceInSquare(this, new Coordinates(0, 0), WHITE);
+
+          pieces.remove(leftRook);
+          pieces.add(new Rook(WHITE, new Coordinates(0, 3)));
+
+        } else {
+          IPieces leftRook = getPieceInSquare(this, new Coordinates(7, 0), BLACK);
+
+          pieces.remove(leftRook);
+          pieces.add(new Rook(BLACK, new Coordinates(7, 3)));
+        }
+      }
+    }
+
+    saveLastStep(pieceBefore, pieceAfter);
+
+    // Проверить, не короля ли убили
+    if (enemyPrice != null) {
+      checkKing();
+    }
+
+    //Запомнить поля, которые находятся под ударом
+    attackedFields = getAttackedFieldList(this, priority);
+
+    // Передать ход другой стороне
+    changePriority();
+  }
+
+  public void makeMove(IPieces piece, Function<IPieces, IPieces> action) {
+    IPieces pieceBefore = piece;
+    IPieces pieceAfter = action.apply(pieceBefore);
+
+    // Проверить, есть ли в месте назначения фигура противоположного цвета
+    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getCoordinates(), getRivalColor(this));
+
+    // Если есть, удалить её с доски
+    if (enemyPrice != null) {
+      pieces.remove(enemyPrice);
+      eatPiecesCount++;
+
+    } else if (pieceAfter.getName() == PAWN) {
+      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
+      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
+
+      if (sideShiftHorizontal == 1 && pieceAfter.getColor() == WHITE) {
+
+        Coordinates coordinates = new Coordinates(
+            pieceAfter.getCoordinates().getVertical() - 1,
+            pieceAfter.getCoordinates().getHorizontal()
+        );
+
+        IPieces enemyPiece = getPieceInSquare(this, coordinates, BLACK);
+
+        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
+          pieces.remove(enemyPiece);
+          eatPiecesCount++;
+        }
+
+      } else if (sideShiftHorizontal == 1 && pieceAfter.getColor() == BLACK) {
+        Coordinates coordinates = new Coordinates(
+            pieceAfter.getCoordinates().getVertical() + 1,
+            pieceAfter.getCoordinates().getHorizontal()
+        );
+
+        IPieces enemyPiece = getPieceInSquare(this, coordinates, WHITE);
+
+        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
+          pieces.remove(enemyPiece);
+          eatPiecesCount++;
+        }
+      }
+    }
+
+//    pieces.remove(pieceBefore);
+    pieces.remove(PieceHelper.getPieceInSquare(this, pieceBefore.getCoordinates(), pieceBefore.getColor()));
 
     // Если пешка добралась до противоположной стороны, превратить её в ферзя
     if (pieceAfter.getName() == PAWN) {
