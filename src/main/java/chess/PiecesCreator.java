@@ -6,13 +6,12 @@ import static chess.enums.Names.KNIGHT;
 import static chess.enums.Position.Horizontal.A;
 import static chess.enums.Position.Vertical.$1;
 
-import chess.enums.Position.Vertical;
 import chess.pieces.Bishop;
 import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.King;
 import chess.pieces.Knight;
-import chess.pieces.Piece;
+import chess.newversion.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import chess.pieces.WhitePawn;

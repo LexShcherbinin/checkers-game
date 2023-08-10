@@ -1,11 +1,17 @@
-package chess.pieces;
+package chess.newversion;
 
-import chess.enums.Colors;
+import static chess.enums.Moves.KNIGHT_1;
+import static chess.enums.Moves.KNIGHT_2;
+
 import chess.Coordinates;
+import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
 import chess.enums.Position;
+import chess.pieces.IPieces;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Piece {
 
@@ -63,11 +69,32 @@ public class Piece {
     return this;
   }
 
+  public List<Moves> getMoveList() {
+    return moveList;
+  }
+
+  public Piece setMoveList(List<Moves> moveList) {
+    this.moveList = moveList;
+    return this;
+  }
+
+  public List<Function<IPieces, IPieces>> getActions() {
+    switch (getName()) {
+      case KNIGHT -> moveList = List.of(
+          KNIGHT_1
+      );
+
+      case KING -> moveList = List.of(
+          KNIGHT_2
+      );
+
+    }
+
+    return moveList.stream().map(Moves::getMove).collect(Collectors.toList());
+  }
+
   @Override
   public String toString() {
-    String color = this.getColor().toString();
-    String name = this.getName().toString();
-
-    return color + name;
+    return this.color.toString() + this.name.toString();
   }
 }
