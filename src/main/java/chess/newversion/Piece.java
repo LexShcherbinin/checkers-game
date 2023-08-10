@@ -87,7 +87,6 @@ import chess.Coordinates;
 import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
-import chess.pieces.IPieces;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -106,7 +105,7 @@ public class Piece {
     this.coordinates = coordinates;
   }
 
-  public Piece(Names name, Colors color, int horizontal, int vertical) {
+  public Piece(Names name, Colors color, int vertical, int horizontal) {
     this.name = name;
     this.color = color;
     this.coordinates = new Coordinates(vertical, horizontal);
@@ -157,8 +156,8 @@ public class Piece {
     return this;
   }
 
-  public List<Function<IPieces, IPieces>> getActions() {
-    switch (getName()) {
+  public List<Function<Piece, Piece>> getActions() {
+    switch (this.getName()) {
       case PAWN -> {
         if (color.equals(Colors.WHITE)) {
           moveList = List.of(

@@ -1,6 +1,6 @@
 package chess.enums;
 
-import chess.pieces.IPieces;
+import chess.newversion.Piece;
 import java.util.function.Function;
 
 /**
@@ -107,17 +107,17 @@ public enum Moves {
   BISHOP_DOWN_LEFT_6(makeMove(-6, -6)),
   BISHOP_DOWN_LEFT_7(makeMove(-7, -7));
 
-  private final Function<IPieces, IPieces> move;
+  private final Function<Piece, Piece> move;
 
-  Moves(Function<IPieces, IPieces> move) {
+  Moves(Function<Piece, Piece> move) {
     this.move = move;
   }
 
-  public Function<IPieces, IPieces> getMove() {
+  public Function<Piece, Piece> getMove() {
     return this.move;
   }
 
-  private static Function<IPieces, IPieces> makeMove(int heightShift, int sideShift) {
+  private static Function<Piece, Piece> makeMove(int heightShift, int sideShift) {
     return piece -> piece
         .setMoveBefore(true)
         .setCoordinates(piece.getCoordinates().shift(heightShift, sideShift));
