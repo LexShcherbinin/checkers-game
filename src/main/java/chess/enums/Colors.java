@@ -6,6 +6,9 @@ public enum Colors {
 
   @Override
   public String toString() {
-    return this.equals(BLACK) ? "B" : "W";
+    return switch (this) {
+      case WHITE -> "W";
+      case BLACK -> "B";
+    };
   }
 }

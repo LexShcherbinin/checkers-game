@@ -87,7 +87,6 @@ import chess.Coordinates;
 import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
-import chess.enums.Position;
 import chess.pieces.IPieces;
 import java.util.List;
 import java.util.function.Function;
@@ -107,10 +106,10 @@ public class Piece {
     this.coordinates = coordinates;
   }
 
-  public Piece(Names name, Colors color, Position.Horizontal horizontal, Position.Vertical vertical) {
+  public Piece(Names name, Colors color, int horizontal, int vertical) {
     this.name = name;
     this.color = color;
-    this.coordinates = new Coordinates(vertical.getValue(), horizontal.getValue());
+    this.coordinates = new Coordinates(vertical, horizontal);
   }
 
   public Names getName() {

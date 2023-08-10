@@ -2,16 +2,19 @@ package chess;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
+import static chess.enums.Names.BISHOP;
+import static chess.enums.Names.KING;
 import static chess.enums.Names.KNIGHT;
-import static chess.enums.Position.Horizontal.A;
-import static chess.enums.Position.Vertical.$1;
+import static chess.enums.Names.PAWN;
+import static chess.enums.Names.QUEEN;
+import static chess.enums.Names.ROOK;
 
+import chess.newversion.Piece;
 import chess.pieces.Bishop;
 import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.King;
 import chess.pieces.Knight;
-import chess.newversion.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import chess.pieces.WhitePawn;
@@ -19,10 +22,48 @@ import java.util.List;
 
 public class PiecesCreator {
 
-  public static List<IPieces> getDefaultBoard() {
-    new Piece(KNIGHT, WHITE, new Coordinates(1, 0));
-    new Piece(KNIGHT, WHITE, A, $1);
+  public static List<Piece> getDefaultBoard2() {
+    return List.of(
+        new Piece(PAWN, WHITE, 1, 0),
+        new Piece(PAWN, WHITE, 1, 1),
+        new Piece(PAWN, WHITE, 1, 2),
+        new Piece(PAWN, WHITE, 1, 3),
+        new Piece(PAWN, WHITE, 1, 4),
+        new Piece(PAWN, WHITE, 1, 5),
+        new Piece(PAWN, WHITE, 1, 6),
+        new Piece(PAWN, WHITE, 1, 7),
 
+        new Piece(PAWN, BLACK, 6, 0),
+        new Piece(PAWN, BLACK, 6, 1),
+        new Piece(PAWN, BLACK, 6, 2),
+        new Piece(PAWN, BLACK, 6, 3),
+        new Piece(PAWN, BLACK, 6, 4),
+        new Piece(PAWN, BLACK, 6, 5),
+        new Piece(PAWN, BLACK, 6, 6),
+        new Piece(PAWN, BLACK, 6, 7),
+
+        new Piece(ROOK, WHITE, 0, 0),
+        new Piece(KNIGHT, WHITE, 0, 1),
+        new Piece(BISHOP, WHITE, 0, 2),
+        new Piece(QUEEN, WHITE, 0, 3),
+        new Piece(KING, WHITE, 0, 4),
+        new Piece(BISHOP, WHITE, 0, 5),
+        new Piece(KNIGHT, WHITE, 0, 6),
+        new Piece(ROOK, WHITE, 0, 7),
+
+        new Piece(ROOK, BLACK, 7, 0),
+        new Piece(KNIGHT, BLACK, 7, 1),
+        new Piece(BISHOP, BLACK, 7, 2),
+        new Piece(QUEEN, BLACK, 7, 3),
+        new Piece(KING, BLACK, 7, 4),
+        new Piece(BISHOP, BLACK, 7, 5),
+        new Piece(KNIGHT, BLACK, 7, 6),
+        new Piece(ROOK, BLACK, 7, 7)
+    );
+  }
+
+  @Deprecated
+  public static List<IPieces> getDefaultBoard() {
     return List.of(
         new WhitePawn(new Coordinates(1, 0)),
         new WhitePawn(new Coordinates(1, 1)),
