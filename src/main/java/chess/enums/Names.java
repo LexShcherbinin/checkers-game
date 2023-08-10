@@ -1,7 +1,7 @@
-package chess;
+package chess.enums;
 
 public enum Names {
-  KING,    //король
+  KING,     //король
   QUEEN,    //ферзь
   ROOK,     //ладья, тура
   BISHOP,   //слон, офицер

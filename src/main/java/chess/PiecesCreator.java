@@ -1,13 +1,18 @@
 package chess;
 
-import static chess.Colors.BLACK;
-import static chess.Colors.WHITE;
+import static chess.enums.Colors.BLACK;
+import static chess.enums.Colors.WHITE;
+import static chess.enums.Names.KNIGHT;
+import static chess.enums.Position.Horizontal.A;
+import static chess.enums.Position.Vertical.$1;
 
+import chess.enums.Position.Vertical;
 import chess.pieces.Bishop;
 import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.King;
 import chess.pieces.Knight;
+import chess.pieces.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import chess.pieces.WhitePawn;
@@ -16,6 +21,9 @@ import java.util.List;
 public class PiecesCreator {
 
   public static List<IPieces> getDefaultBoard() {
+    new Piece(KNIGHT, WHITE, new Coordinates(1, 0));
+    new Piece(KNIGHT, WHITE, A, $1);
+
     return List.of(
         new WhitePawn(new Coordinates(1, 0)),
         new WhitePawn(new Coordinates(1, 1)),

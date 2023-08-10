@@ -1,13 +1,11 @@
-import static chess.Colors.BLACK;
-import static chess.Colors.WHITE;
+import static chess.enums.Colors.BLACK;
+import static chess.enums.Colors.WHITE;
 
 import chess.ChessBoard;
 import chess.Coordinates;
-import chess.pieces.BlackPawn;
 import chess.pieces.IPieces;
 import chess.pieces.King;
 import chess.pieces.Queen;
-import chess.pieces.WhitePawn;
 import java.util.List;
 
 public class KingTest {

@@ -1,9 +1,9 @@
 package chess;
 
-import static chess.Colors.BLACK;
-import static chess.Colors.WHITE;
-import static chess.Names.KING;
-import static chess.Names.PAWN;
+import static chess.enums.Colors.BLACK;
+import static chess.enums.Colors.WHITE;
+import static chess.enums.Names.KING;
+import static chess.enums.Names.PAWN;
 import static chess.PieceHelper.checkEnemyKingOnBoard;
 import static chess.PieceHelper.getAttackedFieldList;
 import static chess.PieceHelper.getMoveList;
@@ -11,6 +11,7 @@ import static chess.PieceHelper.getPieceInSquare;
 import static chess.PieceHelper.getRivalColor;
 import static chess.PiecesCreator.getDefaultBoard;
 
+import chess.enums.Colors;
 import chess.pieces.IPieces;
 import chess.pieces.Queen;
 import chess.pieces.Rook;

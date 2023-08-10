@@ -29,6 +29,12 @@ public class Coordinates {
     return this;
   }
 
+  public Coordinates shift(int heightShift, int sideShift) {
+    this.vertical = this.vertical + heightShift;
+    this.horizontal = this.horizontal + sideShift;
+    return this;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof Coordinates) {

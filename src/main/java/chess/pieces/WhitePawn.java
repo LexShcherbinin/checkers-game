@@ -1,8 +1,8 @@
 package chess.pieces;
 
-import chess.Colors;
+import chess.enums.Colors;
 import chess.Coordinates;
-import chess.Names;
+import chess.enums.Names;
 import java.util.List;
 import java.util.function.Function;
 

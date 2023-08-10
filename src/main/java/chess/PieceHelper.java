@@ -1,9 +1,11 @@
 package chess;
 
-import static chess.Colors.BLACK;
-import static chess.Colors.WHITE;
-import static chess.Names.KING;
+import static chess.enums.Colors.BLACK;
+import static chess.enums.Colors.WHITE;
+import static chess.enums.Names.KING;
 
+import chess.enums.Colors;
+import chess.enums.Names;
 import chess.pieces.IPieces;
 import chess.pieces.Rook;
 import java.util.Collection;
