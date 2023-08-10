@@ -61,7 +61,7 @@ public class PieceHelper {
   /**
    * Найти и получить фигуру на доске, если она есть
    */
-  private static IPieces getPiece(ChessBoard chessBoard, Names name, Colors color) {
+  public static IPieces getPiece(ChessBoard chessBoard, Names name, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == color && piece.getName() == name)
