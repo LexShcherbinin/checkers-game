@@ -16,7 +16,7 @@ public class Knight implements IPieces {
 
   public Knight(IPieces piece) {
     this.color = piece.getColor();
-    this.coordinates = piece.getCoordinates();
+    this.coordinates = piece.getSquare();
   }
 
   public Knight(Colors color, Square coordinates) {
@@ -35,7 +35,7 @@ public class Knight implements IPieces {
   }
 
   @Override
-  public Square getCoordinates() {
+  public Square getSquare() {
     return coordinates;
   }
 
@@ -47,8 +47,8 @@ public class Knight implements IPieces {
 
   @Override
   public List<Function<IPieces, IPieces>> getActions() {
-    int vertical = getCoordinates().getVertical();
-    int horizontal = getCoordinates().getHorizontal();
+    int vertical = getSquare().getVertical();
+    int horizontal = getSquare().getHorizontal();
 
     Function<IPieces, IPieces> jump1 = piece -> new Knight(piece).setCoordinates(new Square(vertical + 2, horizontal + 1));
     Function<IPieces, IPieces> jump2 = piece -> new Knight(piece).setCoordinates(new Square(vertical + 1, horizontal + 2));

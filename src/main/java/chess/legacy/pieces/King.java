@@ -16,7 +16,7 @@ public class King implements IPieces {
 
   public King(IPieces piece) {
     this.color = piece.getColor();
-    this.coordinates = piece.getCoordinates();
+    this.coordinates = piece.getSquare();
   }
 
   public King(Colors color, Square coordinates) {
@@ -35,7 +35,7 @@ public class King implements IPieces {
   }
 
   @Override
-  public Square getCoordinates() {
+  public Square getSquare() {
     return coordinates;
   }
 
@@ -47,8 +47,8 @@ public class King implements IPieces {
 
   @Override
   public List<Function<IPieces, IPieces>> getActions() {
-    int vertical = getCoordinates().getVertical();
-    int horizontal = getCoordinates().getHorizontal();
+    int vertical = getSquare().getVertical();
+    int horizontal = getSquare().getHorizontal();
 
     Function<IPieces, IPieces> up1 =
         piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical + 1, horizontal));

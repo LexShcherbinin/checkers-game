@@ -16,7 +16,8 @@ public final class Square {
     return new Square(vertical, horizontal);
   }
 
-  private Square(int vertical, int horizontal) {
+  //Сделать приватным
+  public Square(int vertical, int horizontal) {
     this.vertical = vertical;
     this.horizontal = horizontal;
   }

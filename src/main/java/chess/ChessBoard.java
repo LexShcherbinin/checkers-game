@@ -163,5 +163,43 @@ public final class ChessBoard {
         " \t   A  B  C  D  E  F  G  H  \n";
   }
 
+  public static void main(String[] args) {
+    List<Piece> pieceList = PiecesCreator.getDefaultPieceList();
+    String[][] board = fillBoard(pieceList);
+
+    printMatrix(board);
+  }
+
+  private static String[][] fillBoard(List<Piece> pieceList) {
+    String[][] board = new String[][]{
+        {" *", " *", " *", " *", " *", " *", " *", " *"},
+        {" *", " *", " *", " *", " *", " *", " *", " *"},
+        {" *", " *", " *", " *", " *", " *", " *", " *"},
+        {" *", " *", " *", " *", " *", " *", " *", " *"},
+        {" *", " *", " *", " *", " *", " *", " *", " *"},
+        {" *", " *", " *", " *", " *", " *", " *", " *"},
+        {" *", " *", " *", " *", " *", " *", " *", " *"},
+        {" *", " *", " *", " *", " *", " *", " *", " *"}
+    };
+
+    for (Piece piece : pieceList) {
+      int vertical = piece.getSquare().getVertical();
+      int horizontal = piece.getSquare().getHorizontal();
+
+      board[vertical][horizontal] = piece.toString();
+    }
+
+    return board;
+  }
+
+  private static void printMatrix(String[][] matrix) {
+    for (int i = 0; i < matrix.length; i++) {
+      for (int j = 0; j < matrix.length; j++) {
+        System.out.print(matrix[i][j] + "\t\t");
+      }
+      System.out.println();
+    }
+  }
+
 
 }

@@ -1,16 +1,10 @@
 package chess.legacy.pieces;
 
-import static chess.enums.Moves.KNIGHT_1;
-import static chess.enums.Moves.KNIGHT_2;
-
 import chess.enums.Colors;
 import chess.Square;
-import chess.enums.Moves;
 import chess.enums.Names;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Deprecated
 public interface IPieces {
@@ -19,7 +13,7 @@ public interface IPieces {
 
   Colors getColor();
 
-  Square getCoordinates();
+  Square getSquare();
 
   IPieces setCoordinates(Square coordinates);
 

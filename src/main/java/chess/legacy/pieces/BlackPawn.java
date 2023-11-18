@@ -13,7 +13,7 @@ public class BlackPawn implements IPieces {
   private boolean moveBefore = false;
 
   public BlackPawn(IPieces piece) {
-    this.coordinates = piece.getCoordinates();
+    this.coordinates = piece.getSquare();
   }
 
   public BlackPawn(Square coordinates) {
@@ -31,7 +31,7 @@ public class BlackPawn implements IPieces {
   }
 
   @Override
-  public Square getCoordinates() {
+  public Square getSquare() {
     return coordinates;
   }
 
@@ -43,8 +43,8 @@ public class BlackPawn implements IPieces {
 
   @Override
   public List<Function<IPieces, IPieces>> getActions() {
-    int vertical = getCoordinates().getVertical();
-    int horizontal = getCoordinates().getHorizontal();
+    int vertical = getSquare().getVertical();
+    int horizontal = getSquare().getHorizontal();
 
     Function<IPieces, IPieces> down1 =
         piece -> new BlackPawn(piece).setMoveBefore(true).setCoordinates(new Square(vertical - 1, horizontal));

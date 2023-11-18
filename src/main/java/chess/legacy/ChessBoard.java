@@ -104,7 +104,7 @@ public class ChessBoard {
     IPieces pieceAfter = action.apply(pieceBefore);
 
     // Проверить, есть ли в месте назначения фигура противоположного цвета
-    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getCoordinates(), getRivalColor(this));
+    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getSquare(), getRivalColor(this));
 
     // Если есть, удалить её с доски
     if (enemyPrice != null) {
@@ -112,15 +112,15 @@ public class ChessBoard {
       eatPiecesCount++;
 
     } else if (pieceAfter.getName() == PAWN) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = pieceBefore.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
       int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
 
       if (sideShiftHorizontal == 1 && pieceAfter.getColor() == WHITE) {
 
         Square coordinates = new Square(
-            pieceAfter.getCoordinates().getVertical() - 1,
-            pieceAfter.getCoordinates().getHorizontal()
+            pieceAfter.getSquare().getVertical() - 1,
+            pieceAfter.getSquare().getHorizontal()
         );
 
         IPieces enemyPiece = getPieceInSquare(this, coordinates, BLACK);
@@ -132,8 +132,8 @@ public class ChessBoard {
 
       } else if (sideShiftHorizontal == 1 && pieceAfter.getColor() == BLACK) {
         Square coordinates = new Square(
-            pieceAfter.getCoordinates().getVertical() + 1,
-            pieceAfter.getCoordinates().getHorizontal()
+            pieceAfter.getSquare().getVertical() + 1,
+            pieceAfter.getSquare().getHorizontal()
         );
 
         IPieces enemyPiece = getPieceInSquare(this, coordinates, WHITE);
@@ -149,11 +149,11 @@ public class ChessBoard {
 
     // Если пешка добралась до противоположной стороны, превратить её в ферзя
     if (pieceAfter.getName() == PAWN) {
-      if (pieceAfter.getColor() == WHITE && pieceAfter.getCoordinates().getVertical() == 7) {
-        pieceAfter = new Queen(WHITE, pieceAfter.getCoordinates());
+      if (pieceAfter.getColor() == WHITE && pieceAfter.getSquare().getVertical() == 7) {
+        pieceAfter = new Queen(WHITE, pieceAfter.getSquare());
 
-      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getCoordinates().getVertical() == 0) {
-        pieceAfter = new Queen(BLACK, pieceAfter.getCoordinates());
+      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getSquare().getVertical() == 0) {
+        pieceAfter = new Queen(BLACK, pieceAfter.getSquare());
       }
     }
 
@@ -161,8 +161,8 @@ public class ChessBoard {
 
     //Проверка на рокировку
     if (pieceAfter.getName() == KING) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = pieceBefore.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
       int sideShiftHorizontal = horizontalAfter - horizontalBefore;
 
       if (sideShiftHorizontal == 2) {
@@ -214,7 +214,7 @@ public class ChessBoard {
     IPieces pieceAfter = action.apply(pieceBefore);
 
     // Проверить, есть ли в месте назначения фигура противоположного цвета
-    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getCoordinates(), getRivalColor(this));
+    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getSquare(), getRivalColor(this));
 
     // Если есть, удалить её с доски
     if (enemyPrice != null) {
@@ -222,15 +222,15 @@ public class ChessBoard {
       eatPiecesCount++;
 
     } else if (pieceAfter.getName() == PAWN) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = pieceBefore.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
       int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
 
       if (sideShiftHorizontal == 1 && pieceAfter.getColor() == WHITE) {
 
         Square coordinates = new Square(
-            pieceAfter.getCoordinates().getVertical() - 1,
-            pieceAfter.getCoordinates().getHorizontal()
+            pieceAfter.getSquare().getVertical() - 1,
+            pieceAfter.getSquare().getHorizontal()
         );
 
         IPieces enemyPiece = getPieceInSquare(this, coordinates, BLACK);
@@ -242,8 +242,8 @@ public class ChessBoard {
 
       } else if (sideShiftHorizontal == 1 && pieceAfter.getColor() == BLACK) {
         Square coordinates = new Square(
-            pieceAfter.getCoordinates().getVertical() + 1,
-            pieceAfter.getCoordinates().getHorizontal()
+            pieceAfter.getSquare().getVertical() + 1,
+            pieceAfter.getSquare().getHorizontal()
         );
 
         IPieces enemyPiece = getPieceInSquare(this, coordinates, WHITE);
@@ -256,15 +256,15 @@ public class ChessBoard {
     }
 
 //    pieces.remove(pieceBefore);
-    pieces.remove(PieceHelper.getPieceInSquare(this, pieceBefore.getCoordinates(), pieceBefore.getColor()));
+    pieces.remove(PieceHelper.getPieceInSquare(this, pieceBefore.getSquare(), pieceBefore.getColor()));
 
     // Если пешка добралась до противоположной стороны, превратить её в ферзя
     if (pieceAfter.getName() == PAWN) {
-      if (pieceAfter.getColor() == WHITE && pieceAfter.getCoordinates().getVertical() == 7) {
-        pieceAfter = new Queen(WHITE, pieceAfter.getCoordinates());
+      if (pieceAfter.getColor() == WHITE && pieceAfter.getSquare().getVertical() == 7) {
+        pieceAfter = new Queen(WHITE, pieceAfter.getSquare());
 
-      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getCoordinates().getVertical() == 0) {
-        pieceAfter = new Queen(BLACK, pieceAfter.getCoordinates());
+      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getSquare().getVertical() == 0) {
+        pieceAfter = new Queen(BLACK, pieceAfter.getSquare());
       }
     }
 
@@ -272,8 +272,8 @@ public class ChessBoard {
 
     //Проверка на рокировку
     if (pieceAfter.getName() == KING) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = pieceBefore.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
       int sideShiftHorizontal = horizontalAfter - horizontalBefore;
 
       if (sideShiftHorizontal == 2) {
@@ -356,7 +356,7 @@ public class ChessBoard {
   private void saveLastStep(IPieces pieceBefore, IPieces pieceAfter) {
     lastStep = String.format(
         "%s[%s -> %s] (Killing pieces = %s, step = %s)",
-        pieceBefore, pieceBefore.getCoordinates(), pieceAfter.getCoordinates(), eatPiecesCount, stepCount
+        pieceBefore, pieceBefore.getSquare(), pieceAfter.getSquare(), eatPiecesCount, stepCount
     );
   }
 
@@ -419,8 +419,8 @@ public class ChessBoard {
     };
 
     for (IPieces piece : pieces) {
-      int vertical = piece.getCoordinates().getVertical();
-      int horizontal = piece.getCoordinates().getHorizontal();
+      int vertical = piece.getSquare().getVertical();
+      int horizontal = piece.getSquare().getHorizontal();
 
       board[vertical][horizontal] = piece.toString();
     }

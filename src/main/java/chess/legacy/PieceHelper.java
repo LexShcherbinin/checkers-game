@@ -40,7 +40,7 @@ public class PieceHelper {
 
               List<Function<IPieces, IPieces>> kingKillers = actions
                   .stream()
-                  .filter(action -> action.apply(piece).getCoordinates().equals(enemyKing.getCoordinates()))
+                  .filter(action -> action.apply(piece).getSquare().equals(enemyKing.getSquare()))
                   .collect(Collectors.toList());
 
               if (kingKillers.size() != 0) {
@@ -82,7 +82,7 @@ public class PieceHelper {
                 .getActions()
                 .stream()
                 .filter(action -> checkMove(chessBoard, piece, action))
-                .map(action -> action.apply(piece).getCoordinates())
+                .map(action -> action.apply(piece).getSquare())
                 .collect(Collectors.toSet())
         )
         .flatMap(Collection::stream)
@@ -121,8 +121,8 @@ public class PieceHelper {
    * @return - возвращает true, если фигура остаётся на доске, false, если выходит за неё
    */
   private static boolean checkBoardBorders(IPieces piece) {
-    int vertical = piece.getCoordinates().getVertical();
-    int horizontal = piece.getCoordinates().getHorizontal();
+    int vertical = piece.getSquare().getVertical();
+    int horizontal = piece.getSquare().getHorizontal();
 
     return vertical < 8 && vertical >= 0 && horizontal < 8 && horizontal >= 0;
   }
@@ -136,7 +136,7 @@ public class PieceHelper {
   private static boolean checkPieceInDestination(ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
-        .anyMatch(p -> p.getCoordinates().equals(piece.getCoordinates()));
+        .anyMatch(p -> p.getSquare().equals(piece.getSquare()));
   }
 
   /**
@@ -148,7 +148,7 @@ public class PieceHelper {
   private static boolean checkMyPieceInDestination(ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
-        .anyMatch(p -> p.getCoordinates().equals(piece.getCoordinates()) && p.getColor().equals(piece.getColor()));
+        .anyMatch(p -> p.getSquare().equals(piece.getSquare()) && p.getColor().equals(piece.getColor()));
   }
 
   /**
@@ -160,7 +160,7 @@ public class PieceHelper {
   private static boolean checkEnemyPieceInDestination(ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
-        .anyMatch(p -> p.getCoordinates().equals(piece.getCoordinates()) && !p.getColor().equals(piece.getColor()));
+        .anyMatch(p -> p.getSquare().equals(piece.getSquare()) && !p.getColor().equals(piece.getColor()));
   }
 
   /**
@@ -169,7 +169,7 @@ public class PieceHelper {
   public static IPieces getDestinationPiece(ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
-        .filter(p -> p.getCoordinates().equals(piece.getCoordinates()) && p.getColor() != piece.getColor())
+        .filter(p -> p.getSquare().equals(piece.getSquare()) && p.getColor() != piece.getColor())
         .findFirst()
         .orElse(null);
   }
@@ -185,7 +185,7 @@ public class PieceHelper {
   public static boolean checkPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
-        .anyMatch(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color));
+        .anyMatch(piece -> piece.getSquare().equals(coordinates) && piece.getColor().equals(color));
   }
 
   /**
@@ -199,7 +199,7 @@ public class PieceHelper {
   public static IPieces getPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
-        .filter(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color))
+        .filter(piece -> piece.getSquare().equals(coordinates) && piece.getColor().equals(color))
         .findAny()
         .orElse(null);
   }
@@ -233,17 +233,17 @@ public class PieceHelper {
     private boolean checkPawn(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       IPieces pieceAfter = action.apply(piece);
 
-      int verticalBefore = piece.getCoordinates().getVertical();
-      int verticalAfter = pieceAfter.getCoordinates().getVertical();
+      int verticalBefore = piece.getSquare().getVertical();
+      int verticalAfter = pieceAfter.getSquare().getVertical();
 
-      int horizontalBefore = piece.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = piece.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
 
       int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
       int sideShiftVertical = verticalAfter - verticalBefore;
 
       if (pieceAfter.getColor() == WHITE) {
-        if (checkPieceInSquare(chessBoard, pieceAfter.getCoordinates(), BLACK)) {
+        if (checkPieceInSquare(chessBoard, pieceAfter.getSquare(), BLACK)) {
           if (sideShiftHorizontal == 0) {
             return false;
 
@@ -255,8 +255,8 @@ public class PieceHelper {
           if (sideShiftHorizontal == 1) {
 
             Square coordinates = new Square(
-                pieceAfter.getCoordinates().getVertical() - 1,
-                pieceAfter.getCoordinates().getHorizontal()
+                pieceAfter.getSquare().getVertical() - 1,
+                pieceAfter.getSquare().getHorizontal()
             );
 
             IPieces enemyPiece = getPieceInSquare(chessBoard, coordinates, BLACK);
@@ -274,8 +274,8 @@ public class PieceHelper {
 
             } else {
               Square coordinates = new Square(
-                  pieceAfter.getCoordinates().getVertical() - 1,
-                  pieceAfter.getCoordinates().getHorizontal()
+                  pieceAfter.getSquare().getVertical() - 1,
+                  pieceAfter.getSquare().getHorizontal()
               );
 
               if (checkPieceInSquare(chessBoard, coordinates, BLACK) || checkPieceInSquare(chessBoard, coordinates, WHITE)) {
@@ -289,7 +289,7 @@ public class PieceHelper {
         }
 
       } else {
-        if (checkPieceInSquare(chessBoard, pieceAfter.getCoordinates(), WHITE)) {
+        if (checkPieceInSquare(chessBoard, pieceAfter.getSquare(), WHITE)) {
           if (sideShiftHorizontal == 0) {
             return false;
 
@@ -301,8 +301,8 @@ public class PieceHelper {
           if (sideShiftHorizontal == 1) {
 
             Square coordinates = new Square(
-                pieceAfter.getCoordinates().getVertical() + 1,
-                pieceAfter.getCoordinates().getHorizontal()
+                pieceAfter.getSquare().getVertical() + 1,
+                pieceAfter.getSquare().getHorizontal()
             );
 
             IPieces enemyPiece = getPieceInSquare(chessBoard, coordinates, WHITE);
@@ -320,8 +320,8 @@ public class PieceHelper {
 
             } else {
               Square coordinates = new Square(
-                  pieceAfter.getCoordinates().getVertical() + 1,
-                  pieceAfter.getCoordinates().getHorizontal()
+                  pieceAfter.getSquare().getVertical() + 1,
+                  pieceAfter.getSquare().getHorizontal()
               );
 
               if (checkPieceInSquare(chessBoard, coordinates, BLACK) || checkPieceInSquare(chessBoard, coordinates, WHITE)) {
@@ -340,12 +340,12 @@ public class PieceHelper {
       IPieces pieceAfter = action.apply(piece);
       boolean result = true;
 
-      int verticalBefore = piece.getCoordinates().getVertical();
-      int verticalAfter = pieceAfter.getCoordinates().getVertical();
+      int verticalBefore = piece.getSquare().getVertical();
+      int verticalAfter = pieceAfter.getSquare().getVertical();
       int sideShiftVertical = verticalAfter - verticalBefore;
 
-      int horizontalBefore = piece.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = piece.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
       int sideShiftHorizontal = horizontalAfter - horizontalBefore;
 
       if (sideShiftVertical > 0 && sideShiftHorizontal == 0) {
@@ -353,7 +353,7 @@ public class PieceHelper {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
-                  piece.getCoordinates().getVertical() + i,
+                  piece.getSquare().getVertical() + i,
                   horizontalAfter
               )
           );
@@ -369,7 +369,7 @@ public class PieceHelper {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
-                  piece.getCoordinates().getVertical() + i,
+                  piece.getSquare().getVertical() + i,
                   horizontalAfter
               )
           );
@@ -386,7 +386,7 @@ public class PieceHelper {
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
                   verticalAfter,
-                  piece.getCoordinates().getHorizontal() + i
+                  piece.getSquare().getHorizontal() + i
               )
           );
 
@@ -402,7 +402,7 @@ public class PieceHelper {
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
                   verticalAfter,
-                  piece.getCoordinates().getHorizontal() + i
+                  piece.getSquare().getHorizontal() + i
               )
           );
 
@@ -421,12 +421,12 @@ public class PieceHelper {
       IPieces pieceAfter = action.apply(piece);
       boolean result = true;
 
-      int verticalBefore = piece.getCoordinates().getVertical();
-      int verticalAfter = pieceAfter.getCoordinates().getVertical();
+      int verticalBefore = piece.getSquare().getVertical();
+      int verticalAfter = pieceAfter.getSquare().getVertical();
       int sideShiftVertical = verticalAfter - verticalBefore;
 
-      int horizontalBefore = piece.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = piece.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
       int sideShiftHorizontal = horizontalAfter - horizontalBefore;
 
       if (sideShiftVertical > 0 && sideShiftHorizontal > 0) {
@@ -434,8 +434,8 @@ public class PieceHelper {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
-                  piece.getCoordinates().getVertical() + i,
-                  piece.getCoordinates().getHorizontal() + i
+                  piece.getSquare().getVertical() + i,
+                  piece.getSquare().getHorizontal() + i
               )
           );
 
@@ -450,8 +450,8 @@ public class PieceHelper {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
-                  piece.getCoordinates().getVertical() + i,
-                  piece.getCoordinates().getHorizontal() + i
+                  piece.getSquare().getVertical() + i,
+                  piece.getSquare().getHorizontal() + i
               )
           );
 
@@ -466,8 +466,8 @@ public class PieceHelper {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
-                  piece.getCoordinates().getVertical() + i,
-                  piece.getCoordinates().getHorizontal() - i
+                  piece.getSquare().getVertical() + i,
+                  piece.getSquare().getHorizontal() - i
               )
           );
 
@@ -482,8 +482,8 @@ public class PieceHelper {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
               new Square(
-                  piece.getCoordinates().getVertical() + i,
-                  piece.getCoordinates().getHorizontal() - i
+                  piece.getSquare().getVertical() + i,
+                  piece.getSquare().getHorizontal() - i
               )
           );
 
@@ -505,8 +505,8 @@ public class PieceHelper {
     private boolean checkKing(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       IPieces pieceAfter = action.apply(piece);
 
-      int horizontalBefore = piece.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
+      int horizontalBefore = piece.getSquare().getHorizontal();
+      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
       int sideShiftHorizontal = Math.abs(horizontalAfter - horizontalBefore);
 
 //      if (chessBoard.getAttackedFields().stream().anyMatch(field -> field.equals(piece.getCoordinates()))) {
