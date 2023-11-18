@@ -109,10 +109,16 @@ public final class Piece {
     this.square = square;
   }
 
+  /**
+   * Получение списка всех ходов фигуры.
+   */
   public List<Move<Piece, Piece>> getMoveList() {
     return getMovesForPiece(this);
   }
 
+  /**
+   * Получение списка всех ходов фигуры piece.
+   */
   public List<Move<Piece, Piece>> getMovesForPiece(Piece piece) {
     switch (piece.getName()) {
       case PAWN -> {
@@ -281,7 +287,9 @@ public final class Piece {
 
     }
 
-    return moveList.stream().map(Moves::getMove).collect(Collectors.toList());
+    return moveList.stream()
+        .map(Moves::getMove)
+        .collect(Collectors.toList());
   }
 
   //TODO: Разобраться, что не так с одним единственным символом белого коня ♘

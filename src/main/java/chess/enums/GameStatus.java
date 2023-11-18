@@ -1,5 +1,8 @@
 package chess.enums;
 
+/**
+ * Статусы игры.
+ */
 public enum GameStatus {
 
   /**

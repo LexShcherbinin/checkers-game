@@ -4,7 +4,7 @@ import chess.Move;
 import chess.Piece;
 
 /**
- * Список всех возможных ходов
+ * Список всех возможных ходов фигур.
  */
 public enum Moves {
 

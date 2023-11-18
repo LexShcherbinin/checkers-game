@@ -11,6 +11,9 @@ import static chess.enums.Names.ROOK;
 
 import java.util.List;
 
+/**
+ * Вспомогательный класс для создания шахматной доски.
+ */
 public final class PiecesCreator {
 
   public static List<Piece> getDefaultPieceList() {
