@@ -1,5 +1,5 @@
-import chess.ChessBoard;
-import chess.pieces.IPieces;
+import chess.legacy.ChessBoard;
+import chess.legacy.pieces.IPieces;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

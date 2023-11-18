@@ -1,7 +1,7 @@
-package chess.pieces;
+package chess.legacy.pieces;
 
 import chess.enums.Colors;
-import chess.Coordinates;
+import chess.Square;
 import chess.enums.Names;
 import java.util.List;
 import java.util.function.Function;
@@ -10,7 +10,7 @@ public class Bishop implements IPieces {
 
   private final Colors color;
 
-  private Coordinates coordinates;
+  private Square coordinates;
 
   private boolean moveBefore = false;
 
@@ -19,7 +19,7 @@ public class Bishop implements IPieces {
     this.coordinates = piece.getCoordinates();
   }
 
-  public Bishop(Colors color, Coordinates coordinates) {
+  public Bishop(Colors color, Square coordinates) {
     this.color = color;
     this.coordinates = coordinates;
   }
@@ -35,12 +35,12 @@ public class Bishop implements IPieces {
   }
 
   @Override
-  public Coordinates getCoordinates() {
+  public Square getCoordinates() {
     return coordinates;
   }
 
   @Override
-  public IPieces setCoordinates(Coordinates coordinates) {
+  public IPieces setCoordinates(Square coordinates) {
     this.coordinates = coordinates;
     return this;
   }
@@ -51,64 +51,64 @@ public class Bishop implements IPieces {
     int horizontal = getCoordinates().getHorizontal();
 
     Function<IPieces, IPieces> upAndRight1 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 1, horizontal + 1));
     Function<IPieces, IPieces> upAndRight2 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 2, horizontal + 2));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 2, horizontal + 2));
     Function<IPieces, IPieces> upAndRight3 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 3, horizontal + 3));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 3, horizontal + 3));
     Function<IPieces, IPieces> upAndRight4 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 4, horizontal + 4));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 4, horizontal + 4));
     Function<IPieces, IPieces> upAndRight5 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 5, horizontal + 5));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 5, horizontal + 5));
     Function<IPieces, IPieces> upAndRight6 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 6, horizontal + 6));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 6, horizontal + 6));
     Function<IPieces, IPieces> upAndRight7 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 7, horizontal + 7));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 7, horizontal + 7));
 
     Function<IPieces, IPieces> upAndLeft1 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 1, horizontal - 1));
     Function<IPieces, IPieces> upAndLeft2 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 2, horizontal - 2));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 2, horizontal - 2));
     Function<IPieces, IPieces> upAndLeft3 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 3, horizontal - 3));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 3, horizontal - 3));
     Function<IPieces, IPieces> upAndLeft4 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 4, horizontal - 4));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 4, horizontal - 4));
     Function<IPieces, IPieces> upAndLeft5 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 5, horizontal - 5));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 5, horizontal - 5));
     Function<IPieces, IPieces> upAndLeft6 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 6, horizontal - 6));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 6, horizontal - 6));
     Function<IPieces, IPieces> upAndLeft7 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical + 7, horizontal - 7));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical + 7, horizontal - 7));
 
     Function<IPieces, IPieces> downAndRight1 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 1, horizontal + 1));
     Function<IPieces, IPieces> downAndRight2 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 2, horizontal + 2));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 2, horizontal + 2));
     Function<IPieces, IPieces> downAndRight3 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 3, horizontal + 3));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 3, horizontal + 3));
     Function<IPieces, IPieces> downAndRight4 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 4, horizontal + 4));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 4, horizontal + 4));
     Function<IPieces, IPieces> downAndRight5 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 5, horizontal + 5));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 5, horizontal + 5));
     Function<IPieces, IPieces> downAndRight6 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 6, horizontal + 6));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 6, horizontal + 6));
     Function<IPieces, IPieces> downAndRight7 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 7, horizontal + 7));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 7, horizontal + 7));
 
     Function<IPieces, IPieces> downAndLeft1 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 1, horizontal - 1));
     Function<IPieces, IPieces> downAndLeft2 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 2, horizontal - 2));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 2, horizontal - 2));
     Function<IPieces, IPieces> downAndLeft3 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 3, horizontal - 3));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 3, horizontal - 3));
     Function<IPieces, IPieces> downAndLeft4 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 4, horizontal - 4));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 4, horizontal - 4));
     Function<IPieces, IPieces> downAndLeft5 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 5, horizontal - 5));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 5, horizontal - 5));
     Function<IPieces, IPieces> downAndLeft6 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 6, horizontal - 6));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 6, horizontal - 6));
     Function<IPieces, IPieces> downAndLeft7 =
-        piece -> new Bishop(piece).setCoordinates(new Coordinates(vertical - 7, horizontal - 7));
+        piece -> new Bishop(piece).setCoordinates(new Square(vertical - 7, horizontal - 7));
 
     List<Function<IPieces, IPieces>> actions = List.of(
         upAndRight1,

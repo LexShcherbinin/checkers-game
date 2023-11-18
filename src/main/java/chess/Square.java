@@ -1,35 +1,24 @@
 package chess;
 
-public class Coordinates {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Getter()
+@Setter()
+@Accessors(chain = true, makeFinal = true)
+public class Square {
 
   int vertical;
 
   int horizontal;
 
-  public Coordinates(int vertical, int horizontal) {
+  public Square(int vertical, int horizontal) {
     this.vertical = vertical;
     this.horizontal = horizontal;
   }
 
-  public int getVertical() {
-    return vertical;
-  }
-
-  public Coordinates setVertical(int vertical) {
-    this.vertical = vertical;
-    return this;
-  }
-
-  public int getHorizontal() {
-    return horizontal;
-  }
-
-  public Coordinates setHorizontal(int horizontal) {
-    this.horizontal = horizontal;
-    return this;
-  }
-
-  public Coordinates shift(int heightShift, int sideShift) {
+  public Square shift(int heightShift, int sideShift) {
     this.vertical = this.vertical + heightShift;
     this.horizontal = this.horizontal + sideShift;
     return this;
@@ -37,9 +26,9 @@ public class Coordinates {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof Coordinates) {
-      boolean v = ((Coordinates) obj).getVertical() == this.getVertical();
-      boolean h = ((Coordinates) obj).getHorizontal() == this.getHorizontal();
+    if (obj instanceof Square) {
+      boolean v = ((Square) obj).getVertical() == this.getVertical();
+      boolean h = ((Square) obj).getHorizontal() == this.getHorizontal();
 
       return v && h;
 

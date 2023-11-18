@@ -1,13 +1,14 @@
-package chess;
+package chess.legacy;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
 
+import chess.Square;
 import chess.enums.Colors;
 import chess.enums.Names;
-import chess.pieces.IPieces;
-import chess.pieces.Rook;
+import chess.legacy.pieces.IPieces;
+import chess.legacy.pieces.Rook;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +73,7 @@ public class PieceHelper {
   /**
    * Получить сет полей, которые может атаковать сторона color
    */
-  public static Set<Coordinates> getAttackedFieldList(ChessBoard chessBoard, Colors color) {
+  public static Set<Square> getAttackedFieldList(ChessBoard chessBoard, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == color)
@@ -181,7 +182,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает true, если фигура есть, и false, если фигуры нет
    */
-  public static boolean checkPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
+  public static boolean checkPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color));
@@ -195,7 +196,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает фигуру, если она там есть, и null, если в поле её нет
    */
-  public static IPieces getPieceInSquare(ChessBoard chessBoard, Coordinates coordinates, Colors color) {
+  public static IPieces getPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getCoordinates().equals(coordinates) && piece.getColor().equals(color))
@@ -253,7 +254,7 @@ public class PieceHelper {
         } else {
           if (sideShiftHorizontal == 1) {
 
-            Coordinates coordinates = new Coordinates(
+            Square coordinates = new Square(
                 pieceAfter.getCoordinates().getVertical() - 1,
                 pieceAfter.getCoordinates().getHorizontal()
             );
@@ -272,7 +273,7 @@ public class PieceHelper {
               return true;
 
             } else {
-              Coordinates coordinates = new Coordinates(
+              Square coordinates = new Square(
                   pieceAfter.getCoordinates().getVertical() - 1,
                   pieceAfter.getCoordinates().getHorizontal()
               );
@@ -299,7 +300,7 @@ public class PieceHelper {
         } else {
           if (sideShiftHorizontal == 1) {
 
-            Coordinates coordinates = new Coordinates(
+            Square coordinates = new Square(
                 pieceAfter.getCoordinates().getVertical() + 1,
                 pieceAfter.getCoordinates().getHorizontal()
             );
@@ -318,7 +319,7 @@ public class PieceHelper {
               return true;
 
             } else {
-              Coordinates coordinates = new Coordinates(
+              Square coordinates = new Square(
                   pieceAfter.getCoordinates().getVertical() + 1,
                   pieceAfter.getCoordinates().getHorizontal()
               );
@@ -351,7 +352,7 @@ public class PieceHelper {
         for (int i = 1; i < sideShiftVertical; i++) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   piece.getCoordinates().getVertical() + i,
                   horizontalAfter
               )
@@ -367,7 +368,7 @@ public class PieceHelper {
         for (int i = -1; i > sideShiftVertical; i--) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   piece.getCoordinates().getVertical() + i,
                   horizontalAfter
               )
@@ -383,7 +384,7 @@ public class PieceHelper {
         for (int i = 1; i < sideShiftHorizontal; i++) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   verticalAfter,
                   piece.getCoordinates().getHorizontal() + i
               )
@@ -399,7 +400,7 @@ public class PieceHelper {
         for (int i = -1; i > sideShiftHorizontal; i--) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   verticalAfter,
                   piece.getCoordinates().getHorizontal() + i
               )
@@ -432,7 +433,7 @@ public class PieceHelper {
         for (int i = 1; i < sideShiftVertical; i++) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   piece.getCoordinates().getVertical() + i,
                   piece.getCoordinates().getHorizontal() + i
               )
@@ -448,7 +449,7 @@ public class PieceHelper {
         for (int i = -1; i > sideShiftVertical; i--) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   piece.getCoordinates().getVertical() + i,
                   piece.getCoordinates().getHorizontal() + i
               )
@@ -464,7 +465,7 @@ public class PieceHelper {
         for (int i = 1; i < sideShiftVertical; i++) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   piece.getCoordinates().getVertical() + i,
                   piece.getCoordinates().getHorizontal() - i
               )
@@ -480,7 +481,7 @@ public class PieceHelper {
         for (int i = -1; i > sideShiftVertical; i--) {
 
           IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Coordinates(
+              new Square(
                   piece.getCoordinates().getVertical() + i,
                   piece.getCoordinates().getHorizontal() - i
               )
@@ -518,27 +519,27 @@ public class PieceHelper {
       } else {
         if (chessBoard.getPriority() == WHITE) {
           IPieces king = getPiece(chessBoard, KING, WHITE);
-          IPieces leftRook = getPieceInSquare(chessBoard, new Coordinates(0, 0), WHITE);
-          IPieces rightRook = getPieceInSquare(chessBoard, new Coordinates(0, 7), WHITE);
+          IPieces leftRook = getPieceInSquare(chessBoard, new Square(0, 0), WHITE);
+          IPieces rightRook = getPieceInSquare(chessBoard, new Square(0, 7), WHITE);
 
-          IPieces leftKnight = getPieceInSquare(chessBoard, new Coordinates(0, 1), WHITE);
-          IPieces rightKnight = getPieceInSquare(chessBoard, new Coordinates(0, 6), WHITE);
+          IPieces leftKnight = getPieceInSquare(chessBoard, new Square(0, 1), WHITE);
+          IPieces rightKnight = getPieceInSquare(chessBoard, new Square(0, 6), WHITE);
 
-          IPieces leftBishop = getPieceInSquare(chessBoard, new Coordinates(0, 2), WHITE);
-          IPieces rightBishop = getPieceInSquare(chessBoard, new Coordinates(0, 5), WHITE);
+          IPieces leftBishop = getPieceInSquare(chessBoard, new Square(0, 2), WHITE);
+          IPieces rightBishop = getPieceInSquare(chessBoard, new Square(0, 5), WHITE);
 
-          IPieces queen = getPieceInSquare(chessBoard, new Coordinates(0, 3), WHITE);
+          IPieces queen = getPieceInSquare(chessBoard, new Square(0, 3), WHITE);
 
-          Set<Coordinates> whiteList = Set.of(
-              new Coordinates(0, 1),
-              new Coordinates(0, 2),
-              new Coordinates(0, 3),
-              new Coordinates(0, 4),
-              new Coordinates(0, 5),
-              new Coordinates(0, 6)
+          Set<Square> whiteList = Set.of(
+              new Square(0, 1),
+              new Square(0, 2),
+              new Square(0, 3),
+              new Square(0, 4),
+              new Square(0, 5),
+              new Square(0, 6)
           );
 
-          Set<Coordinates> attackedFields = chessBoard.getAttackedFields()
+          Set<Square> attackedFields = chessBoard.getAttackedFields()
               .stream()
               .filter(whiteList::contains)
               .collect(Collectors.toSet());
@@ -549,27 +550,27 @@ public class PieceHelper {
 
         } else {
           IPieces king = getPiece(chessBoard, KING, BLACK);
-          IPieces leftRook = getPieceInSquare(chessBoard, new Coordinates(7, 0), BLACK);
-          IPieces rightRook = getPieceInSquare(chessBoard, new Coordinates(7, 7), BLACK);
+          IPieces leftRook = getPieceInSquare(chessBoard, new Square(7, 0), BLACK);
+          IPieces rightRook = getPieceInSquare(chessBoard, new Square(7, 7), BLACK);
 
-          IPieces leftKnight = getPieceInSquare(chessBoard, new Coordinates(7, 1), BLACK);
-          IPieces rightKnight = getPieceInSquare(chessBoard, new Coordinates(7, 6), BLACK);
+          IPieces leftKnight = getPieceInSquare(chessBoard, new Square(7, 1), BLACK);
+          IPieces rightKnight = getPieceInSquare(chessBoard, new Square(7, 6), BLACK);
 
-          IPieces leftBishop = getPieceInSquare(chessBoard, new Coordinates(7, 2), BLACK);
-          IPieces rightBishop = getPieceInSquare(chessBoard, new Coordinates(7, 5), BLACK);
+          IPieces leftBishop = getPieceInSquare(chessBoard, new Square(7, 2), BLACK);
+          IPieces rightBishop = getPieceInSquare(chessBoard, new Square(7, 5), BLACK);
 
-          IPieces queen = getPieceInSquare(chessBoard, new Coordinates(7, 3), BLACK);
+          IPieces queen = getPieceInSquare(chessBoard, new Square(7, 3), BLACK);
 
-          Set<Coordinates> whiteList = Set.of(
-              new Coordinates(7, 1),
-              new Coordinates(7, 2),
-              new Coordinates(7, 3),
-              new Coordinates(7, 4),
-              new Coordinates(7, 5),
-              new Coordinates(7, 6)
+          Set<Square> whiteList = Set.of(
+              new Square(7, 1),
+              new Square(7, 2),
+              new Square(7, 3),
+              new Square(7, 4),
+              new Square(7, 5),
+              new Square(7, 6)
           );
 
-          Set<Coordinates> attackedFields = chessBoard.getAttackedFields()
+          Set<Square> attackedFields = chessBoard.getAttackedFields()
               .stream()
               .filter(whiteList::contains)
               .collect(Collectors.toSet());

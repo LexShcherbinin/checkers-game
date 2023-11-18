@@ -1,6 +1,6 @@
 package chess.enums;
 
-import chess.newversion.Piece;
+import chess.Piece;
 import java.util.function.Function;
 
 /**

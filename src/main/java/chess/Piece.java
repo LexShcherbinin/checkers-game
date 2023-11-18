@@ -1,4 +1,4 @@
-package chess.newversion;
+package chess;
 
 import static chess.enums.Moves.BISHOP_DOWN_LEFT_1;
 import static chess.enums.Moves.BISHOP_DOWN_LEFT_2;
@@ -83,23 +83,28 @@ import static chess.enums.Moves.ROOK_UP_5;
 import static chess.enums.Moves.ROOK_UP_6;
 import static chess.enums.Moves.ROOK_UP_7;
 
-import chess.Coordinates;
 import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
+@Getter()
+@Setter()
+@Accessors(chain = true, makeFinal = true)
 public class Piece {
 
-  private Names name;
-  private Colors color;
-  private Coordinates coordinates;
-  private boolean moveBefore = false;
-  private List<Moves> moveList;
+  Names name;
+  Colors color;
+  Square coordinates;
+  boolean moveBefore = false;
+  List<Moves> moveList;
 
-  public Piece(Names name, Colors color, Coordinates coordinates) {
+  public Piece(Names name, Colors color, Square coordinates) {
     this.name = name;
     this.color = color;
     this.coordinates = coordinates;
@@ -108,52 +113,7 @@ public class Piece {
   public Piece(Names name, Colors color, int vertical, int horizontal) {
     this.name = name;
     this.color = color;
-    this.coordinates = new Coordinates(vertical, horizontal);
-  }
-
-  public Names getName() {
-    return name;
-  }
-
-  public Piece setName(Names name) {
-    this.name = name;
-    return this;
-  }
-
-  public Colors getColor() {
-    return color;
-  }
-
-  public Piece setColor(Colors color) {
-    this.color = color;
-    return this;
-  }
-
-  public Coordinates getCoordinates() {
-    return coordinates;
-  }
-
-  public Piece setCoordinates(Coordinates coordinates) {
-    this.coordinates = coordinates;
-    return this;
-  }
-
-  public boolean isMoveBefore() {
-    return moveBefore;
-  }
-
-  public Piece setMoveBefore(boolean moveBefore) {
-    this.moveBefore = moveBefore;
-    return this;
-  }
-
-  public List<Moves> getMoveList() {
-    return moveList;
-  }
-
-  public Piece setMoveList(List<Moves> moveList) {
-    this.moveList = moveList;
-    return this;
+    this.coordinates = new Square(vertical, horizontal);
   }
 
   public List<Function<Piece, Piece>> getActions() {

@@ -1,7 +1,7 @@
-package chess.pieces;
+package chess.legacy.pieces;
 
 import chess.enums.Colors;
-import chess.Coordinates;
+import chess.Square;
 import chess.enums.Names;
 import java.util.List;
 import java.util.function.Function;
@@ -10,7 +10,7 @@ public class King implements IPieces {
 
   private final Colors color;
 
-  private Coordinates coordinates;
+  private Square coordinates;
 
   private boolean moveBefore = false;
 
@@ -19,7 +19,7 @@ public class King implements IPieces {
     this.coordinates = piece.getCoordinates();
   }
 
-  public King(Colors color, Coordinates coordinates) {
+  public King(Colors color, Square coordinates) {
     this.color = color;
     this.coordinates = coordinates;
   }
@@ -35,12 +35,12 @@ public class King implements IPieces {
   }
 
   @Override
-  public Coordinates getCoordinates() {
+  public Square getCoordinates() {
     return coordinates;
   }
 
   @Override
-  public IPieces setCoordinates(Coordinates coordinates) {
+  public IPieces setCoordinates(Square coordinates) {
     this.coordinates = coordinates;
     return this;
   }
@@ -51,27 +51,27 @@ public class King implements IPieces {
     int horizontal = getCoordinates().getHorizontal();
 
     Function<IPieces, IPieces> up1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical + 1, horizontal));
     Function<IPieces, IPieces> down1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical - 1, horizontal));
     Function<IPieces, IPieces> right1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 1));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical, horizontal + 1));
     Function<IPieces, IPieces> left1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 1));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical, horizontal - 1));
 
     Function<IPieces, IPieces> upAndRight1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal + 1));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical + 1, horizontal + 1));
     Function<IPieces, IPieces> upAndLeft1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical + 1, horizontal - 1));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical + 1, horizontal - 1));
     Function<IPieces, IPieces> downAndRight1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical - 1, horizontal + 1));
     Function<IPieces, IPieces> downAndLeft1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical - 1, horizontal - 1));
 
     Function<IPieces, IPieces> castling1 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal + 2));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical, horizontal + 2));
     Function<IPieces, IPieces> castling2 =
-        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical, horizontal - 2));
+        piece -> new King(piece).setMoveBefore(true).setCoordinates(new Square(vertical, horizontal - 2));
 
     List<Function<IPieces, IPieces>> actions = List.of(
         up1,

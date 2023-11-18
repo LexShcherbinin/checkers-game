@@ -1,22 +1,22 @@
-package chess.pieces;
+package chess.legacy.pieces;
 
 import chess.enums.Colors;
-import chess.Coordinates;
+import chess.Square;
 import chess.enums.Names;
 import java.util.List;
 import java.util.function.Function;
 
-public class BlackPawn implements IPieces {
+public class WhitePawn implements IPieces {
 
-  private Coordinates coordinates;
+  private Square coordinates;
 
   private boolean moveBefore = false;
 
-  public BlackPawn(IPieces piece) {
+  public WhitePawn(IPieces piece) {
     this.coordinates = piece.getCoordinates();
   }
 
-  public BlackPawn(Coordinates coordinates) {
+  public WhitePawn(Square coordinates) {
     this.coordinates = coordinates;
   }
 
@@ -27,16 +27,16 @@ public class BlackPawn implements IPieces {
 
   @Override
   public Colors getColor() {
-    return Colors.BLACK;
+    return Colors.WHITE;
   }
 
   @Override
-  public Coordinates getCoordinates() {
+  public Square getCoordinates() {
     return coordinates;
   }
 
   @Override
-  public IPieces setCoordinates(Coordinates coordinates) {
+  public IPieces setCoordinates(Square coordinates) {
     this.coordinates = coordinates;
     return this;
   }
@@ -46,20 +46,20 @@ public class BlackPawn implements IPieces {
     int vertical = getCoordinates().getVertical();
     int horizontal = getCoordinates().getHorizontal();
 
-    Function<IPieces, IPieces> down1 =
-        piece -> new BlackPawn(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal));
-    Function<IPieces, IPieces> down2 =
-        piece -> new BlackPawn(piece).setMoveBefore(false).setCoordinates(new Coordinates(vertical - 2, horizontal));
-    Function<IPieces, IPieces> downAndRight =
-        piece -> new BlackPawn(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal + 1));
-    Function<IPieces, IPieces> downAndLeft =
-        piece -> new BlackPawn(piece).setMoveBefore(true).setCoordinates(new Coordinates(vertical - 1, horizontal - 1));
+    Function<IPieces, IPieces> up1 =
+        piece -> new WhitePawn(piece).setMoveBefore(true).setCoordinates(new Square(vertical + 1, horizontal));
+    Function<IPieces, IPieces> up2 =
+        piece -> new WhitePawn(piece).setMoveBefore(false).setCoordinates(new Square(vertical + 2, horizontal));
+    Function<IPieces, IPieces> upAndRight =
+        piece -> new WhitePawn(piece).setMoveBefore(true).setCoordinates(new Square(vertical + 1, horizontal + 1));
+    Function<IPieces, IPieces> upAndLeft =
+        piece -> new WhitePawn(piece).setMoveBefore(true).setCoordinates(new Square(vertical + 1, horizontal - 1));
 
     List<Function<IPieces, IPieces>> actions = List.of(
-        down1,
-        down2,
-        downAndRight,
-        downAndLeft
+        up1,
+        up2,
+        upAndRight,
+        upAndLeft
     );
 
     return actions;

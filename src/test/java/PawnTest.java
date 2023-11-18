@@ -1,19 +1,19 @@
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 
-import chess.ChessBoard;
-import chess.Coordinates;
-import chess.pieces.BlackPawn;
-import chess.pieces.IPieces;
-import chess.pieces.King;
-import chess.pieces.WhitePawn;
+import chess.legacy.ChessBoard;
+import chess.Square;
+import chess.legacy.pieces.BlackPawn;
+import chess.legacy.pieces.IPieces;
+import chess.legacy.pieces.King;
+import chess.legacy.pieces.WhitePawn;
 import java.util.List;
 
 public class PawnTest {
 
   public static void main(String[] args) {
-    IPieces whitePawn = new WhitePawn(new Coordinates(3, 4)).setMoveBefore(false);
-    IPieces blackPawn = new BlackPawn(new Coordinates(3, 5)).setMoveBefore(true);
+    IPieces whitePawn = new WhitePawn(new Square(3, 4)).setMoveBefore(false);
+    IPieces blackPawn = new BlackPawn(new Square(3, 5)).setMoveBefore(true);
 
     List<IPieces> pieceList = List.of(
 //        new WhitePawn(new Coordinates(1, 0)),
@@ -40,8 +40,8 @@ public class PawnTest {
         whitePawn,
         blackPawn,
 
-        new King(WHITE, new Coordinates(0, 4)),
-        new King(BLACK, new Coordinates(7, 4))
+        new King(WHITE, new Square(0, 4)),
+        new King(BLACK, new Square(7, 4))
     );
 
     ChessBoard chessBoard = new ChessBoard(pieceList);
