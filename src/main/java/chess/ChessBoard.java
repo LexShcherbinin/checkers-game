@@ -1,5 +1,9 @@
 package chess;
 
+import static chess.TextColor.BLACK;
+import static chess.TextColor.GREEN;
+import static chess.TextColor.RESET;
+
 import chess.enums.Colors;
 import chess.enums.GameStatus;
 import chess.enums.Moves;
@@ -118,16 +122,19 @@ public final class ChessBoard {
   @Override
   public String toString() {
 
-    String[][] board = new String[][]{
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"}
-    };
+    String[][] board = new String[8][8];
+
+    for (int i = 0; i < board.length; i ++) {
+      for (int j = 0; j < board.length; j ++) {
+        if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
+          board[i][j] = TextColor.BLACK + "■" + TextColor.RESET;
+
+        } else {
+          board[i][j] = TextColor.WHITE + "■" + TextColor.RESET;
+        }
+
+      }
+    }
 
     for (Piece piece : pieces) {
       int vertical = piece.getSquare().getVertical();
@@ -171,16 +178,19 @@ public final class ChessBoard {
   }
 
   private static String[][] fillBoard(List<Piece> pieceList) {
-    String[][] board = new String[][]{
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"}
-    };
+    String[][] board = new String[8][8];
+
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board.length; j++) {
+        if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
+          board[i][j] = TextColor.WHITE + "■\t" + TextColor.RESET;
+
+        } else {
+          board[i][j] = BLACK + "■\t" + TextColor.RESET;
+        }
+
+      }
+    }
 
     for (Piece piece : pieceList) {
       int vertical = piece.getSquare().getVertical();
@@ -195,7 +205,7 @@ public final class ChessBoard {
   private static void printMatrix(String[][] matrix) {
     for (int i = 0; i < matrix.length; i++) {
       for (int j = 0; j < matrix.length; j++) {
-        System.out.print(matrix[i][j] + "\t\t");
+        System.out.print(matrix[i][j] + "\t");
       }
       System.out.println();
     }

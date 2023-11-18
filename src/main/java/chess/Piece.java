@@ -286,6 +286,27 @@ public final class Piece {
 
   @Override
   public String toString() {
-    return this.color.toString() + this.name.toString();
+    if (this.color.equals(Colors.WHITE)) {
+      return switch (this.name) {
+        case KING -> TextColor.WHITE + "♚" + TextColor.RESET;
+        case QUEEN -> TextColor.WHITE + "♛" + TextColor.RESET;
+        case ROOK -> TextColor.WHITE + "♜" + TextColor.RESET;
+        case BISHOP -> TextColor.WHITE + "♝" + TextColor.RESET;
+        case KNIGHT -> TextColor.WHITE + "♞" + TextColor.RESET;
+        case PAWN -> TextColor.WHITE + "♟" + TextColor.RESET;
+      };
+
+    } else {
+      return switch (this.name) {
+        case KING -> TextColor.BLACK + "♔" + TextColor.RESET;
+        case QUEEN -> TextColor.BLACK + "♛" + TextColor.RESET;
+        case ROOK -> TextColor.BLACK + "♜" + TextColor.RESET;
+        case BISHOP -> TextColor.BLACK + "♝" + TextColor.RESET;
+        case KNIGHT -> TextColor.BLACK + "♞" + TextColor.RESET;
+        case PAWN -> TextColor.BLACK + "♟" + TextColor.RESET;
+      };
+    }
+
+//    return this.color.toString() + this.name.toString();
   }
 }
