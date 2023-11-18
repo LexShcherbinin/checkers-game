@@ -94,29 +94,27 @@ import lombok.experimental.Accessors;
 
 @Getter()
 @Setter()
-@Accessors(chain = true, makeFinal = true)
+@Accessors(chain = true)
 public final class Piece {
 
-  Names name;
-  Colors color;
-  Square coordinates;
-  boolean moveBefore = false;
-  List<Moves> moveList;
+  private Names name;
+  private Colors color;
+  private Square square;
+  private boolean moveBefore = false;
+  private List<Moves> moveList;
 
-  public Piece(Names name, Colors color, Square coordinates) {
+  public Piece(Names name, Colors color, Square square) {
     this.name = name;
     this.color = color;
-    this.coordinates = coordinates;
+    this.square = square;
   }
 
-  public Piece(Names name, Colors color, int vertical, int horizontal) {
-    this.name = name;
-    this.color = color;
-    this.coordinates = Square.of(vertical, horizontal);
+  public List<Move<Piece, Piece>> getMoveList() {
+    return getMovesForPiece(this);
   }
 
-  public List<Move<Piece, Piece>> getAllMoves() {
-    switch (this.getName()) {
+  public List<Move<Piece, Piece>> getMovesForPiece(Piece piece) {
+    switch (piece.getName()) {
       case PAWN -> {
         if (color.equals(Colors.WHITE)) {
           moveList = List.of(

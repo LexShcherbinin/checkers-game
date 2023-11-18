@@ -12,34 +12,34 @@ import lombok.experimental.Accessors;
 
 @Getter()
 @Setter()
-@Accessors(chain = true, makeFinal = true)
+@Accessors(chain = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ChessBoard {
 
   /**
    * Список фигур на доске.
    */
-  List<Piece> pieces;
+  private List<Piece> pieces;
 
   /**
    * Чья очередь ходить.
    */
-  Colors priority;
+  private Colors priority;
 
   /**
    * Статус игры.
    */
-  GameStatus status;
+  private GameStatus status;
 
   /**
    * Количество съеденных фигур.
    */
-  int eatPiecesCount;
+  private int eatPiecesCount;
 
   /**
    * Количество сделанных шагов.
    */
-  int stepCount;
+  private int stepCount;
 
   /**
    * Последний сделанный ход.
@@ -130,8 +130,8 @@ public final class ChessBoard {
     };
 
     for (Piece piece : pieces) {
-      int vertical = piece.getCoordinates().getVertical();
-      int horizontal = piece.getCoordinates().getHorizontal();
+      int vertical = piece.getSquare().getVertical();
+      int horizontal = piece.getSquare().getHorizontal();
 
       board[vertical][horizontal] = piece.toString();
     }

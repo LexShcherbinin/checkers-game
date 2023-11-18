@@ -6,12 +6,11 @@ import lombok.experimental.Accessors;
 
 @Getter()
 @Setter()
-@Accessors(chain = true, makeFinal = true)
+@Accessors(chain = true)
 public final class Square {
 
-  int vertical;
-
-  int horizontal;
+  private int vertical;
+  private int horizontal;
 
   public static Square of(int vertical, int horizontal) {
     return new Square(vertical, horizontal);
