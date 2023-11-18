@@ -12,7 +12,12 @@ repositories {
 }
 
 dependencies {
+
+    //Config
     implementation 'com.typesafe:config:1.4.1'
+
+    //Project Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
 }
 
 tasks.withType(JavaCompile) {
