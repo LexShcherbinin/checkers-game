@@ -1,7 +1,7 @@
 package chess.enums;
 
+import chess.Move;
 import chess.Piece;
-import java.util.function.Function;
 
 /**
  * Список всех возможных ходов
@@ -107,17 +107,17 @@ public enum Moves {
   BISHOP_DOWN_LEFT_6(makeMove(-6, -6)),
   BISHOP_DOWN_LEFT_7(makeMove(-7, -7));
 
-  private final Function<Piece, Piece> move;
+  private final Move<Piece, Piece> move;
 
-  Moves(Function<Piece, Piece> move) {
+  Moves(Move<Piece, Piece> move) {
     this.move = move;
   }
 
-  public Function<Piece, Piece> getMove() {
+  public Move<Piece, Piece> getMove() {
     return this.move;
   }
 
-  private static Function<Piece, Piece> makeMove(int heightShift, int sideShift) {
+  private static Move<Piece, Piece> makeMove(int heightShift, int sideShift) {
     return piece -> piece
         .setMoveBefore(true)
         .setCoordinates(piece.getCoordinates().shift(heightShift, sideShift));

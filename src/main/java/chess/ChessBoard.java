@@ -2,15 +2,19 @@ package chess;
 
 import chess.enums.Colors;
 import chess.enums.GameStatus;
+import chess.enums.Moves;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter()
 @Setter()
 @Accessors(chain = true, makeFinal = true)
-public class ChessBoard {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ChessBoard {
 
   /**
    * Список фигур на доске.
@@ -41,6 +45,62 @@ public class ChessBoard {
    * Последний сделанный ход.
    */
   private String lastStep;
+
+  private ChessBoard(List<Piece> pieces, Colors priority) {
+    this.pieces = pieces;
+    this.priority = priority;
+    this.status = GameStatus.IN_PROGRESS;
+    this.eatPiecesCount = 0;
+    this.stepCount = 0;
+    this.lastStep = "";
+  }
+
+  public static ChessBoard createChessBoard(List<Piece> pieces, Colors priority) {
+    return new ChessBoard(pieces, priority);
+  }
+
+  public static ChessBoard createDefaultChessBoard() {
+    List<Piece> pieces = PiecesCreator.getDefaultPieceList();
+    Colors priority = Colors.WHITE;
+
+    return new ChessBoard(pieces, priority);
+  }
+
+  public void makeMove() {
+
+  }
+
+  public void makeMove(Piece piece, Moves move) {
+
+  }
+
+  public void makeRandomMove() {
+
+  }
+
+  public boolean addPiece(Piece piece) {
+    return true;
+  }
+
+  public boolean removePiece(Piece piece) {
+    return true;
+  }
+
+  public boolean clearSquare(Square square) {
+    return true;
+  }
+
+  public boolean isSquareEmpty(Square square) {
+    return true;
+  }
+
+  public boolean isPieceOnBoard(Piece piece) {
+    return true;
+  }
+
+  public boolean isBothKingOnBoard() {
+    return true;
+  }
 
   /**
    * @return

@@ -87,7 +87,6 @@ import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -96,7 +95,7 @@ import lombok.experimental.Accessors;
 @Getter()
 @Setter()
 @Accessors(chain = true, makeFinal = true)
-public class Piece {
+public final class Piece {
 
   Names name;
   Colors color;
@@ -113,10 +112,10 @@ public class Piece {
   public Piece(Names name, Colors color, int vertical, int horizontal) {
     this.name = name;
     this.color = color;
-    this.coordinates = new Square(vertical, horizontal);
+    this.coordinates = Square.of(vertical, horizontal);
   }
 
-  public List<Function<Piece, Piece>> getActions() {
+  public List<Move<Piece, Piece>> getAllMoves() {
     switch (this.getName()) {
       case PAWN -> {
         if (color.equals(Colors.WHITE)) {

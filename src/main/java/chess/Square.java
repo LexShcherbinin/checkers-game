@@ -7,13 +7,17 @@ import lombok.experimental.Accessors;
 @Getter()
 @Setter()
 @Accessors(chain = true, makeFinal = true)
-public class Square {
+public final class Square {
 
   int vertical;
 
   int horizontal;
 
-  public Square(int vertical, int horizontal) {
+  public static Square of(int vertical, int horizontal) {
+    return new Square(vertical, horizontal);
+  }
+
+  private Square(int vertical, int horizontal) {
     this.vertical = vertical;
     this.horizontal = horizontal;
   }
