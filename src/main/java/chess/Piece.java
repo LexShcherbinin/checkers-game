@@ -88,6 +88,7 @@ import chess.enums.Moves;
 import chess.enums.Names;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -95,6 +96,7 @@ import lombok.experimental.Accessors;
 @Getter()
 @Setter()
 @Accessors(chain = true)
+@EqualsAndHashCode
 public final class Piece {
 
   private Names name;
