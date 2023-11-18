@@ -1,8 +1,11 @@
 package chess;
 
 import static chess.TextColor.BLACK;
+import static chess.TextColor.BLACK_BOLD;
+import static chess.TextColor.BLACK_BRIGHT;
 import static chess.TextColor.GREEN;
 import static chess.TextColor.RESET;
+import static chess.TextColor.WHITE;
 
 import chess.enums.Colors;
 import chess.enums.GameStatus;
@@ -124,13 +127,13 @@ public final class ChessBoard {
 
     String[][] board = new String[8][8];
 
-    for (int i = 0; i < board.length; i ++) {
-      for (int j = 0; j < board.length; j ++) {
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board.length; j++) {
         if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
-          board[i][j] = TextColor.BLACK + "■" + TextColor.RESET;
+          board[i][j] = TextColor.WHITE_BRIGHT + "*\t" + TextColor.RESET;
 
         } else {
-          board[i][j] = TextColor.WHITE + "■" + TextColor.RESET;
+          board[i][j] = BLACK + "*\t" + TextColor.RESET;
         }
 
       }
@@ -143,18 +146,17 @@ public final class ChessBoard {
       board[vertical][horizontal] = piece.toString();
     }
 
-    StringBuilder result = new StringBuilder(" \t+-------------------------+\n");
+    StringBuilder result = new StringBuilder(" \t+---------------------------------+\n");
 
     for (int i = 7; i >= 0; i--) {
       StringBuilder row = new StringBuilder();
 
       for (int j = 0; j < 8; j++) {
-        row.append(board[i][j]).append(" ");
+        row.append(board[i][j]).append("\t");
       }
 
       switch (i) {
-//        case 7 -> result += "8\t| " + row + "|\n";
-        case 7 -> result.append("8\t| ").append(row).append("| ").append(lastStep).append("\n");
+        case 7 -> result.append("8\t| ").append(row).append("|\n");
         case 6 -> result.append("7\t| ").append(row).append("|\n");
         case 5 -> result.append("6\t| ").append(row).append("|\n");
         case 4 -> result.append("5\t| ").append(row).append("|\n");
@@ -166,15 +168,21 @@ public final class ChessBoard {
     }
 
     return result +
-        " \t+-------------------------+" + "\n" +
-        " \t   A  B  C  D  E  F  G  H  \n";
+        " \t+---------------------------------+" + "\n" +
+        " \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH  \n";
   }
 
   public static void main(String[] args) {
     List<Piece> pieceList = PiecesCreator.getDefaultPieceList();
     String[][] board = fillBoard(pieceList);
 
-    printMatrix(board);
+//    printMatrix(board);
+
+//    String qqq = addLettersAroundBoard(board);
+//    System.out.println(qqq);
+
+    ChessBoard chessBoard = new ChessBoard(pieceList, Colors.WHITE);
+    System.out.println(chessBoard);
   }
 
   private static String[][] fillBoard(List<Piece> pieceList) {
@@ -183,10 +191,10 @@ public final class ChessBoard {
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board.length; j++) {
         if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
-          board[i][j] = TextColor.WHITE + "■\t" + TextColor.RESET;
+          board[i][j] = TextColor.WHITE_BRIGHT + "*\t" + TextColor.RESET;
 
         } else {
-          board[i][j] = BLACK + "■\t" + TextColor.RESET;
+          board[i][j] = BLACK + "*\t" + TextColor.RESET;
         }
 
       }
@@ -200,6 +208,33 @@ public final class ChessBoard {
     }
 
     return board;
+  }
+
+  private static String addLettersAroundBoard(String[][] board) {
+    StringBuilder result = new StringBuilder(" \t+---------------------------------+\n");
+
+    for (int i = 7; i >= 0; i--) {
+      StringBuilder row = new StringBuilder();
+
+      for (int j = 0; j < 8; j++) {
+        row.append(board[i][j]).append("\t");
+      }
+
+      switch (i) {
+        case 7 -> result.append("8\t| ").append(row).append("|\n");
+        case 6 -> result.append("7\t| ").append(row).append("|\n");
+        case 5 -> result.append("6\t| ").append(row).append("|\n");
+        case 4 -> result.append("5\t| ").append(row).append("|\n");
+        case 3 -> result.append("4\t| ").append(row).append("|\n");
+        case 2 -> result.append("3\t| ").append(row).append("|\n");
+        case 1 -> result.append("2\t| ").append(row).append("|\n");
+        case 0 -> result.append("1\t| ").append(row).append("|\n");
+      }
+    }
+
+    return result +
+        " \t+---------------------------------+" + "\n" +
+        " \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH  \n";
   }
 
   private static void printMatrix(String[][] matrix) {
