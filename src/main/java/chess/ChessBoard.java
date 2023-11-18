@@ -5,6 +5,7 @@ import static chess.TextColor.BLACK;
 import chess.enums.Colors;
 import chess.enums.GameStatus;
 import chess.enums.Moves;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -57,24 +58,41 @@ public final class ChessBoard {
     this.lastStep = "";
   }
 
+  private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
+    this.pieces = pieces;
+    this.priority = priority;
+    this.status = status;
+    this.eatPiecesCount = 0;
+    this.stepCount = 0;
+    this.lastStep = "";
+  }
+
   public static ChessBoard createChessBoard(List<Piece> pieces) {
     return new ChessBoard(pieces);
+  }
+
+  public static ChessBoard createChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
+    return new ChessBoard(pieces, priority, status);
   }
 
   public static ChessBoard createDefaultChessBoard() {
     return new ChessBoard(PiecesCreator.getDefaultPieceList());
   }
 
-  public void makeMove() {
-
+  public static ChessBoard createEmptyChessBoard() {
+    return new ChessBoard(new ArrayList<>());
   }
 
-  public void makeMove(Piece piece, Moves move) {
-
+  public boolean makeMove() {
+    return true;
   }
 
-  public void makeRandomMove() {
+  public boolean makeMove(Piece piece, Moves move) {
+    return true;
+  }
 
+  public boolean makeRandomMove() {
+    return true;
   }
 
   public boolean addPiece(Piece piece) {

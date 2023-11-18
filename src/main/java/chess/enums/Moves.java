@@ -123,4 +123,10 @@ public enum Moves {
         .setSquare(piece.getSquare().shift(heightShift, sideShift));
   }
 
+//  private static Move<Piece, Piece> move(int heightShift, int sideShift) {
+//    return piece -> new Piece(piece)
+//        .setSquare(piece.getSquare().shift(heightShift, sideShift))
+//        .setMoveBefore(true);
+//  }
+
 }

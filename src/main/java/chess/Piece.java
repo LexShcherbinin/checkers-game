@@ -102,19 +102,28 @@ public final class Piece {
   private Names name;
   private Colors color;
   private Square square;
-  private boolean moveBefore = false;
+  private boolean moveBefore;
   private List<Moves> moveList;
 
   public Piece(Names name, Colors color, Square square) {
     this.name = name;
     this.color = color;
     this.square = square;
+    this.moveBefore = false;
   }
+
+//  public Piece(Piece piece) {
+//    this.name = piece.getName();
+//    this.color = piece.getColor();
+//    this.square = piece.getSquare();
+//    this.moveBefore = piece.isMoveBefore();
+//    this.moveList = piece.getMoveList();
+//  }
 
   /**
    * Получение списка всех ходов фигуры.
    */
-  public List<Move<Piece, Piece>> getMoveList() {
+  public List<Move<Piece, Piece>> getMovesForPiece() {
     return getMovesForPiece(this);
   }
 
