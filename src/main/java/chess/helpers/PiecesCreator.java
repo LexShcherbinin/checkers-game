@@ -1,4 +1,4 @@
-package chess;
+package chess.helpers;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
@@ -9,6 +9,8 @@ import static chess.enums.Names.PAWN;
 import static chess.enums.Names.QUEEN;
 import static chess.enums.Names.ROOK;
 
+import chess.pojo.Piece;
+import chess.pojo.Square;
 import java.util.ArrayList;
 import java.util.List;
 

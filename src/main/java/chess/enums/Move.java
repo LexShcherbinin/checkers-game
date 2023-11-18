@@ -1,4 +1,4 @@
-package chess;
+package chess.enums;
 
 @FunctionalInterface
 public interface Move<T, R> {

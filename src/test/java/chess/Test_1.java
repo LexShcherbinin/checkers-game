@@ -4,6 +4,9 @@ import static org.testng.Assert.assertTrue;
 
 import chess.enums.Colors;
 import chess.enums.Names;
+import chess.helpers.PiecesCreator;
+import chess.pojo.Piece;
+import chess.pojo.Square;
 import java.util.List;
 import org.testng.annotations.Test;
 

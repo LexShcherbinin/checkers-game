@@ -1,7 +1,7 @@
 package chess.legacy.pieces;
 
 import chess.enums.Colors;
-import chess.Square;
+import chess.pojo.Square;
 import chess.enums.Names;
 import java.util.List;
 import java.util.function.Function;

@@ -1,24 +1,7 @@
 package chess.legacy;
 
-import static chess.enums.Colors.BLACK;
-import static chess.enums.Colors.WHITE;
-import static chess.enums.Names.BISHOP;
-import static chess.enums.Names.KING;
-import static chess.enums.Names.KNIGHT;
-import static chess.enums.Names.PAWN;
-import static chess.enums.Names.QUEEN;
-import static chess.enums.Names.ROOK;
-
-import chess.Square;
-import chess.Piece;
-import chess.legacy.pieces.Bishop;
-import chess.legacy.pieces.BlackPawn;
+import chess.pojo.Piece;
 import chess.legacy.pieces.IPieces;
-import chess.legacy.pieces.King;
-import chess.legacy.pieces.Knight;
-import chess.legacy.pieces.Queen;
-import chess.legacy.pieces.Rook;
-import chess.legacy.pieces.WhitePawn;
 import java.util.List;
 
 public class PiecesCreator {

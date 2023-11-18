@@ -1,4 +1,4 @@
-package chess;
+package chess.pojo;
 
 import static chess.enums.Moves.BISHOP_DOWN_LEFT_1;
 import static chess.enums.Moves.BISHOP_DOWN_LEFT_2;
@@ -86,6 +86,8 @@ import static chess.enums.Moves.ROOK_UP_7;
 import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
+import chess.enums.Move;
+import chess.helpers.TextColor;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;

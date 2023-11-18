@@ -11,7 +11,7 @@ import static chess.legacy.PieceHelper.getPieceInSquare;
 import static chess.legacy.PieceHelper.getRivalColor;
 import static chess.legacy.PiecesCreator.getDefaultBoard;
 
-import chess.Square;
+import chess.pojo.Square;
 import chess.enums.Colors;
 import chess.legacy.pieces.IPieces;
 import chess.legacy.pieces.Queen;

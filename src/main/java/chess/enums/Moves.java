@@ -1,7 +1,6 @@
 package chess.enums;
 
-import chess.Move;
-import chess.Piece;
+import chess.pojo.Piece;
 
 /**
  * Список всех возможных ходов фигур.

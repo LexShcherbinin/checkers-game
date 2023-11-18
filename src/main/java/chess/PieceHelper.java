@@ -1,14 +1,15 @@
-package chess.legacy;
+package chess;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
 
-import chess.pojo.Square;
 import chess.enums.Colors;
 import chess.enums.Names;
+import chess.legacy.ChessBoard;
 import chess.legacy.pieces.IPieces;
 import chess.legacy.pieces.Rook;
+import chess.pojo.Square;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +23,7 @@ public class PieceHelper {
   /**
    * Получить мапу со всеми фигурами, которыми можно пойти, и всеми их доступными ходами
    */
-  public static Map<IPieces, List<Function<IPieces, IPieces>>> getMoveList(ChessBoard chessBoard) {
+  public static Map<IPieces, List<Function<IPieces, IPieces>>> getMoveList(chess.legacy.ChessBoard chessBoard) {
     IPieces enemyKing = getPiece(chessBoard, KING, getRivalColor(chessBoard));
 
     Map<IPieces, List<Function<IPieces, IPieces>>> moveList = new HashMap<>();
@@ -62,7 +63,7 @@ public class PieceHelper {
   /**
    * Найти и получить фигуру на доске, если она есть
    */
-  public static IPieces getPiece(ChessBoard chessBoard, Names name, Colors color) {
+  public static IPieces getPiece(chess.legacy.ChessBoard chessBoard, Names name, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == color && piece.getName() == name)
@@ -73,7 +74,7 @@ public class PieceHelper {
   /**
    * Получить сет полей, которые может атаковать сторона color
    */
-  public static Set<Square> getAttackedFieldList(ChessBoard chessBoard, Colors color) {
+  public static Set<Square> getAttackedFieldList(chess.legacy.ChessBoard chessBoard, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == color)
@@ -92,7 +93,7 @@ public class PieceHelper {
   /**
    * Проверка, можно ли ТАК пойти (надо доработать)
    */
-  private static boolean checkMove(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
+  private static boolean checkMove(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
     IPieces pieceAfter = action.apply(piece);
 
     if (!checkBoardBorders(pieceAfter)) {
@@ -133,7 +134,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть фигура, false, если фигур нет
    */
-  private static boolean checkPieceInDestination(ChessBoard chessBoard, IPieces piece) {
+  private static boolean checkPieceInDestination(chess.legacy.ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(p -> p.getSquare().equals(piece.getSquare()));
@@ -145,7 +146,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть своя фигура, false - если фигур нет
    */
-  private static boolean checkMyPieceInDestination(ChessBoard chessBoard, IPieces piece) {
+  private static boolean checkMyPieceInDestination(chess.legacy.ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(p -> p.getSquare().equals(piece.getSquare()) && p.getColor().equals(piece.getColor()));
@@ -157,7 +158,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть чужая фигура, false - если фигур нет
    */
-  private static boolean checkEnemyPieceInDestination(ChessBoard chessBoard, IPieces piece) {
+  private static boolean checkEnemyPieceInDestination(chess.legacy.ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(p -> p.getSquare().equals(piece.getSquare()) && !p.getColor().equals(piece.getColor()));
@@ -166,7 +167,7 @@ public class PieceHelper {
   /**
    * Проверить, есть ли в месте назначения фигура противоположного цвета
    */
-  public static IPieces getDestinationPiece(ChessBoard chessBoard, IPieces piece) {
+  public static IPieces getDestinationPiece(chess.legacy.ChessBoard chessBoard, IPieces piece) {
     return chessBoard.getPieces()
         .stream()
         .filter(p -> p.getSquare().equals(piece.getSquare()) && p.getColor() != piece.getColor())
@@ -182,7 +183,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает true, если фигура есть, и false, если фигуры нет
    */
-  public static boolean checkPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
+  public static boolean checkPieceInSquare(chess.legacy.ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(piece -> piece.getSquare().equals(coordinates) && piece.getColor().equals(color));
@@ -196,7 +197,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает фигуру, если она там есть, и null, если в поле её нет
    */
-  public static IPieces getPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
+  public static IPieces getPieceInSquare(chess.legacy.ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getSquare().equals(coordinates) && piece.getColor().equals(color))
@@ -207,17 +208,17 @@ public class PieceHelper {
   /**
    * Проверка, присутствует ли на доске вражеский король
    */
-  public static boolean checkEnemyKingOnBoard(ChessBoard chessBoard) {
+  public static boolean checkEnemyKingOnBoard(chess.legacy.ChessBoard chessBoard) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == KING);
   }
 
-  private Colors getMyColor(ChessBoard chessBoard) {
+  private Colors getMyColor(chess.legacy.ChessBoard chessBoard) {
     return chessBoard.getPriority();
   }
 
-  public static Colors getRivalColor(ChessBoard chessBoard) {
+  public static Colors getRivalColor(chess.legacy.ChessBoard chessBoard) {
     Colors color = chessBoard.getPriority();
 
     if (color == WHITE) {
@@ -230,7 +231,7 @@ public class PieceHelper {
 
   private static class CheckPieces {
 
-    private boolean checkPawn(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
+    private boolean checkPawn(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       IPieces pieceAfter = action.apply(piece);
 
       int verticalBefore = piece.getSquare().getVertical();
@@ -336,7 +337,7 @@ public class PieceHelper {
       }
     }
 
-    private boolean checkRook(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
+    private boolean checkRook(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       IPieces pieceAfter = action.apply(piece);
       boolean result = true;
 
@@ -417,7 +418,7 @@ public class PieceHelper {
       return result;
     }
 
-    private boolean checkBishop(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
+    private boolean checkBishop(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       IPieces pieceAfter = action.apply(piece);
       boolean result = true;
 
@@ -498,7 +499,7 @@ public class PieceHelper {
       return result;
     }
 
-    private boolean checkQueen(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
+    private boolean checkQueen(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       return checkRook(chessBoard, piece, action) && checkBishop(chessBoard, piece, action);
     }
 

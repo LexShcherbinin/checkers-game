@@ -1,10 +1,14 @@
 package chess;
 
-import static chess.TextColor.BLACK;
+import static chess.helpers.TextColor.BLACK;
 
 import chess.enums.Colors;
 import chess.enums.GameStatus;
 import chess.enums.Moves;
+import chess.helpers.PiecesCreator;
+import chess.helpers.TextColor;
+import chess.pojo.Piece;
+import chess.pojo.Square;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -49,6 +53,15 @@ public final class ChessBoard {
    */
   private String lastStep;
 
+  private ChessBoard(ChessBoard chessBoard) {
+    this.pieces = chessBoard.getPieces();
+    this.priority = chessBoard.getPriority();
+    this.status = chessBoard.getStatus();
+    this.eatPiecesCount = chessBoard.getEatPiecesCount();
+    this.stepCount = chessBoard.getStepCount();
+    this.lastStep = chessBoard.getLastStep();
+  }
+
   private ChessBoard(List<Piece> pieces) {
     this.pieces = pieces;
     this.priority = Colors.WHITE;
@@ -67,6 +80,15 @@ public final class ChessBoard {
     this.lastStep = "";
   }
 
+  private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status, int eatPiecesCount, int stepCount, String lastStep) {
+    this.pieces = pieces;
+    this.priority = priority;
+    this.status = status;
+    this.eatPiecesCount = eatPiecesCount;
+    this.stepCount = stepCount;
+    this.lastStep = lastStep;
+  }
+
   public static ChessBoard createChessBoard(List<Piece> pieces) {
     return new ChessBoard(pieces);
   }
@@ -83,15 +105,7 @@ public final class ChessBoard {
     return new ChessBoard(new ArrayList<>());
   }
 
-  public boolean makeMove() {
-    return true;
-  }
-
   public boolean makeMove(Piece piece, Moves move) {
-    return true;
-  }
-
-  public boolean makeRandomMove() {
     return true;
   }
 
@@ -117,6 +131,36 @@ public final class ChessBoard {
 
   public boolean isBothKingOnBoard() {
     return true;
+  }
+
+  private boolean checkMoveIsPossible(Piece piece, Moves move) {
+    return true;
+  }
+
+  private boolean checkCastlingIsPossible() {
+    return true;
+  }
+
+  private void changePriority() {
+    stepCount++;
+
+    if (priority == Colors.WHITE) {
+      priority = Colors.BLACK;
+
+    } else {
+      priority = Colors.WHITE;
+    }
+  }
+
+  private void giveUp() {
+    status = GameStatus.CHECKMATE;
+  }
+
+  private void saveLastStep(Piece pieceBefore, Piece pieceAfter) {
+    lastStep = String.format(
+        "%s[%s -> %s] (Killing pieces = %s, step = %s)",
+        pieceBefore, pieceBefore.getSquare(), pieceAfter.getSquare(), eatPiecesCount, stepCount
+    );
   }
 
   /**

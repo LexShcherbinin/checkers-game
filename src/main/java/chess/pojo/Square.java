@@ -1,4 +1,4 @@
-package chess;
+package chess.pojo;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
