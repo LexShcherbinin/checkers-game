@@ -421,8 +421,8 @@ public final class ChessBoard {
       return true;
     }
 
-    private boolean checkQueen(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      return checkRook(chessBoard, piece, action) && checkBishop(chessBoard, piece, action);
+    private boolean checkQueen(Piece piece, Moves move) {
+      return checkRook(piece, move) && checkBishop(piece, move);
     }
 
     private boolean checkKing(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
