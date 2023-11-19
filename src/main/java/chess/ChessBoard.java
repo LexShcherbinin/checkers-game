@@ -225,15 +225,15 @@ public final class ChessBoard {
   }
 
   /**
-   *  	+---------------------------------+
+   *   +---------------------------------+
    * 8	| ♜	♞	♝	♛	♚	♝	♞	♜	|
    * 7	| ♟	♟	♟	♟	♟	♟	♟	♟	|
-   * 6	| *		*		*		*		*		*		*		*		|
-   * 5	| *		*		*		*		*		*		*		*		|
-   * 4	| *		*		*		*		*		*		*		*		|
-   * 3	| *		*		*		*		*		*		*		*		|
-   * 2	| ♟	♟	♟	♟	♟	♟	♟	♟	|
-   * 1	| ♜	♞	♝	♛	♚	♝	♞	♜	|
+   * 6	| ֎		֎		֎		֎		֎		֎		֎		֎		|
+   * 5	| ֎		֎		֎		֎		֎		֎		֎		֎		|
+   * 4	| ֎		֎		֎		֎		֎		֎		֎		֎		|
+   * 3	| ֎		֎		֎		֎		֎		֎		֎		֎		|
+   * 2	| ♙	♙	♙	♙	♙	♙	♙	♙	|
+   * 1	| ♖	♘	♗	♕	♔	♗	♘	♖	|
    *  	+---------------------------------+
    *  		A		B		C		D		E		F		G		H
    */
@@ -245,10 +245,10 @@ public final class ChessBoard {
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board.length; j++) {
         if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
-          board[i][j] = TextColor.WHITE_BRIGHT + "*\t" + TextColor.RESET;
+          board[i][j] = TextColor.BLACK + "֎\t" + TextColor.RESET;
 
         } else {
-          board[i][j] = BLACK + "*\t" + TextColor.RESET;
+          board[i][j] = TextColor.WHITE_BRIGHT + "֎\t" + TextColor.RESET;
         }
 
       }

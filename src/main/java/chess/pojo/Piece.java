@@ -84,9 +84,9 @@ import static chess.enums.Moves.ROOK_UP_6;
 import static chess.enums.Moves.ROOK_UP_7;
 
 import chess.enums.Colors;
+import chess.enums.Move;
 import chess.enums.Moves;
 import chess.enums.Names;
-import chess.enums.Move;
 import chess.helpers.TextColor;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -305,17 +305,16 @@ public final class Piece {
         .collect(Collectors.toList());
   }
 
-  //TODO: Разобраться, что не так с одним единственным символом белого коня ♘
   @Override
   public String toString() {
     if (this.color.equals(Colors.WHITE)) {
       return switch (this.name) {
-        case KING -> TextColor.WHITE_BRIGHT + "♚" + TextColor.RESET;
-        case QUEEN -> TextColor.WHITE_BRIGHT + "♛" + TextColor.RESET;
-        case ROOK -> TextColor.WHITE_BRIGHT + "♜" + TextColor.RESET;
-        case BISHOP -> TextColor.WHITE_BRIGHT + "♝" + TextColor.RESET;
-        case KNIGHT -> TextColor.WHITE_BRIGHT + "♞" + TextColor.RESET;
-        case PAWN -> TextColor.WHITE_BRIGHT + "♟" + TextColor.RESET;
+        case KING -> TextColor.WHITE_BRIGHT + "♔" + TextColor.RESET;
+        case QUEEN -> TextColor.WHITE_BRIGHT + "♕" + TextColor.RESET;
+        case ROOK -> TextColor.WHITE_BRIGHT + "♖" + TextColor.RESET;
+        case BISHOP -> TextColor.WHITE_BRIGHT + "♗" + TextColor.RESET;
+        case KNIGHT -> TextColor.WHITE_BRIGHT + "♘" + TextColor.RESET;
+        case PAWN -> TextColor.WHITE_BRIGHT + "♙" + TextColor.RESET;
       };
 
     } else {
