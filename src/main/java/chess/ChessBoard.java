@@ -17,6 +17,7 @@ import chess.legacy.pieces.IPieces;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -44,6 +45,11 @@ public final class ChessBoard {
   private Colors priority;
 
   /**
+   * Список атакуемых полей
+   */
+  private List<Square> attackedFields;
+
+  /**
    * Статус игры.
    */
   private GameStatus status;
@@ -58,6 +64,7 @@ public final class ChessBoard {
     this.priority = chessBoard.getPriority();
     this.status = chessBoard.getStatus();
     this.gameInfo = chessBoard.getGameInfo();
+    this.attackedFields = chessBoard.getAttackedFields();
   }
 
   private ChessBoard(List<Piece> pieces) {
@@ -65,6 +72,7 @@ public final class ChessBoard {
     this.priority = Colors.WHITE;
     this.status = GameStatus.IN_PROGRESS;
     this.gameInfo = GameInfo.newGame();
+//    this.attackedFields = getAttackedFieldList();
   }
 
   private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
@@ -72,6 +80,7 @@ public final class ChessBoard {
     this.priority = priority;
     this.status = status;
     this.gameInfo = GameInfo.newGame();
+//    this.attackedFields = getAttackedFieldList();
   }
 
   public static ChessBoard createChessBoard() {
@@ -434,32 +443,27 @@ public final class ChessBoard {
 
       int horizontalBefore = piece.getSquare().getHorizontal();
       int horizontalAfter = after.getSquare().getHorizontal();
-      int sideShiftHorizontal = Math.abs(horizontalAfter - horizontalBefore);
+      int sideShift = Math.abs(horizontalAfter - horizontalBefore);
 
-      if (sideShiftHorizontal < 2) {
+      if (sideShift < 2) {
         return true;
 
       } else {
         if (getPriority() == WHITE) {
           Piece king = getPieceIfPresent(KING, WHITE);
-          Piece leftRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 0)));
-          Piece rightRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 7)));
+//          Piece leftRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 0)));
+//          Piece rightRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 7)));
 
-          Piece leftKnight = getPieceIfPresent(new Piece(KNIGHT, WHITE, Square.of(0, 1)));
-          Piece rightKnight = getPieceIfPresent(new Piece(KNIGHT, WHITE, Square.of(0, 6)));
+          boolean leftRook = pieces.stream()
+              .anyMatch(p -> p.getName().equals(ROOK) && p.getColor().equals(getFriendlyColor()) && p.getSquare().equals(Square.of(0, 0)));
 
-          Piece leftBishop = getPieceIfPresent(new Piece(BISHOP, WHITE, Square.of(0, 2)));
-          Piece rightBishop = getPieceIfPresent(new Piece(BISHOP, WHITE, Square.of(0, 5)));
-
-          Piece queen = getPieceIfPresent(new Piece(QUEEN, WHITE, Square.of(0, 3)));
-
-          Set<Square> whiteList = Set.of(
-              new Square(0, 1),
-              new Square(0, 2),
-              new Square(0, 3),
-              new Square(0, 4),
-              new Square(0, 5),
-              new Square(0, 6)
+              List<Square> whiteList = List.of(
+              Square.of(0, 1),
+              Square.of(0, 2),
+              Square.of(0, 3),
+              Square.of(0, 4),
+              Square.of(0, 5),
+              Square.of(0, 6)
           );
 
           Set<Square> attackedFields = getAttackedFields()
@@ -467,9 +471,10 @@ public final class ChessBoard {
               .filter(whiteList::contains)
               .collect(Collectors.toSet());
 
-          return attackedFields.size() == 0 && !king.getMoveBefore() && leftRook != null && rightRook != null &&
-              !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
-              leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
+          return attackedFields.size() == 0 && !king.isMoveBefore() && leftRook != null && rightRook != null &&
+              !leftRook.isMoveBefore() && !rightRook.isMoveBefore() &&
+              !containsPiece(Square.of(0, 1)) && !containsPiece(Square.of(0, 2)) && !containsPiece(Square.of(0, 3)) &&
+              !containsPiece(Square.of(0, 5)) && !containsPiece(Square.of(0, 6));
 
         } else {
           Piece king = getPiece(chessBoard, KING, BLACK);

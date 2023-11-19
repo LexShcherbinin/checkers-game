@@ -113,6 +113,7 @@ public final class Piece {
     this.color = color;
     this.square = square;
     this.moveBefore = false;
+    this.previousMove = null;
   }
 
 //  public Piece(Piece piece) {
