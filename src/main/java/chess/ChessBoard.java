@@ -2,7 +2,11 @@ package chess;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
+import static chess.enums.Names.BISHOP;
 import static chess.enums.Names.KING;
+import static chess.enums.Names.KNIGHT;
+import static chess.enums.Names.QUEEN;
+import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
 import chess.enums.GameStatus;
@@ -425,33 +429,29 @@ public final class ChessBoard {
       return checkRook(piece, move) && checkBishop(piece, move);
     }
 
-    private boolean checkKing(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      IPieces pieceAfter = action.apply(piece);
+    private boolean checkKing(Piece piece, Moves move) {
+      Piece after = move.getMove().move(piece);
 
       int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
+      int horizontalAfter = after.getSquare().getHorizontal();
       int sideShiftHorizontal = Math.abs(horizontalAfter - horizontalBefore);
-
-//      if (chessBoard.getAttackedFields().stream().anyMatch(field -> field.equals(piece.getCoordinates()))) {
-//        return false;
-//      }
 
       if (sideShiftHorizontal < 2) {
         return true;
 
       } else {
-        if (chessBoard.getPriority() == WHITE) {
-          IPieces king = getPiece(chessBoard, KING, WHITE);
-          IPieces leftRook = getPieceInSquare(chessBoard, new Square(0, 0), WHITE);
-          IPieces rightRook = getPieceInSquare(chessBoard, new Square(0, 7), WHITE);
+        if (getPriority() == WHITE) {
+          Piece king = getPieceIfPresent(KING, WHITE);
+          Piece leftRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 0)));
+          Piece rightRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 7)));
 
-          IPieces leftKnight = getPieceInSquare(chessBoard, new Square(0, 1), WHITE);
-          IPieces rightKnight = getPieceInSquare(chessBoard, new Square(0, 6), WHITE);
+          Piece leftKnight = getPieceIfPresent(new Piece(KNIGHT, WHITE, Square.of(0, 1)));
+          Piece rightKnight = getPieceIfPresent(new Piece(KNIGHT, WHITE, Square.of(0, 6)));
 
-          IPieces leftBishop = getPieceInSquare(chessBoard, new Square(0, 2), WHITE);
-          IPieces rightBishop = getPieceInSquare(chessBoard, new Square(0, 5), WHITE);
+          Piece leftBishop = getPieceIfPresent(new Piece(BISHOP, WHITE, Square.of(0, 2)));
+          Piece rightBishop = getPieceIfPresent(new Piece(BISHOP, WHITE, Square.of(0, 5)));
 
-          IPieces queen = getPieceInSquare(chessBoard, new Square(0, 3), WHITE);
+          Piece queen = getPieceIfPresent(new Piece(QUEEN, WHITE, Square.of(0, 3)));
 
           Set<Square> whiteList = Set.of(
               new Square(0, 1),
@@ -462,7 +462,7 @@ public final class ChessBoard {
               new Square(0, 6)
           );
 
-          Set<Square> attackedFields = chessBoard.getAttackedFields()
+          Set<Square> attackedFields = getAttackedFields()
               .stream()
               .filter(whiteList::contains)
               .collect(Collectors.toSet());
@@ -472,17 +472,17 @@ public final class ChessBoard {
               leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
 
         } else {
-          IPieces king = getPiece(chessBoard, KING, BLACK);
-          IPieces leftRook = getPieceInSquare(chessBoard, new Square(7, 0), BLACK);
-          IPieces rightRook = getPieceInSquare(chessBoard, new Square(7, 7), BLACK);
+          Piece king = getPiece(chessBoard, KING, BLACK);
+          Piece leftRook = getPieceInSquare(chessBoard, new Square(7, 0), BLACK);
+          Piece rightRook = getPieceInSquare(chessBoard, new Square(7, 7), BLACK);
 
-          IPieces leftKnight = getPieceInSquare(chessBoard, new Square(7, 1), BLACK);
-          IPieces rightKnight = getPieceInSquare(chessBoard, new Square(7, 6), BLACK);
+          Piece leftKnight = getPieceInSquare(chessBoard, new Square(7, 1), BLACK);
+          Piece rightKnight = getPieceInSquare(chessBoard, new Square(7, 6), BLACK);
 
-          IPieces leftBishop = getPieceInSquare(chessBoard, new Square(7, 2), BLACK);
-          IPieces rightBishop = getPieceInSquare(chessBoard, new Square(7, 5), BLACK);
+          Piece leftBishop = getPieceInSquare(chessBoard, new Square(7, 2), BLACK);
+          Piece rightBishop = getPieceInSquare(chessBoard, new Square(7, 5), BLACK);
 
-          IPieces queen = getPieceInSquare(chessBoard, new Square(7, 3), BLACK);
+          Piece queen = getPieceInSquare(chessBoard, new Square(7, 3), BLACK);
 
           Set<Square> whiteList = Set.of(
               new Square(7, 1),
