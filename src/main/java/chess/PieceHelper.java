@@ -5,17 +5,15 @@ import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
 
 import chess.enums.Colors;
+import chess.enums.Move;
 import chess.enums.Names;
-import chess.legacy.ChessBoard;
-import chess.legacy.pieces.IPieces;
-import chess.legacy.pieces.Rook;
+import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PieceHelper {
@@ -23,25 +21,25 @@ public class PieceHelper {
   /**
    * Получить мапу со всеми фигурами, которыми можно пойти, и всеми их доступными ходами
    */
-  public static Map<IPieces, List<Function<IPieces, IPieces>>> getMoveList(chess.legacy.ChessBoard chessBoard) {
-    IPieces enemyKing = getPiece(chessBoard, KING, getRivalColor(chessBoard));
+  public static Map<Piece, List<Move<Piece, Piece>>> getMoveList(ChessBoard chessBoard) {
+    Piece enemyKing = getPiece(chessBoard, KING, getEnemyColor(chessBoard));
 
-    Map<IPieces, List<Function<IPieces, IPieces>>> moveList = new HashMap<>();
-    Map<IPieces, List<Function<IPieces, IPieces>>> kingKillersList = new HashMap<>();
+    Map<Piece, List<Move<Piece, Piece>>> moveList = new HashMap<>();
+    Map<Piece, List<Move<Piece, Piece>>> kingKillersList = new HashMap<>();
 
     chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == chessBoard.getPriority())
         .forEach(piece -> {
-              List<Function<IPieces, IPieces>> actions = piece
-                  .getActions()
+              List<Move<Piece, Piece>> actions = piece
+                  .getMovesForPiece()
                   .stream()
                   .filter(action -> checkMove(chessBoard, piece, action))
                   .collect(Collectors.toList());
 
-              List<Function<IPieces, IPieces>> kingKillers = actions
+              List<Move<Piece, Piece>> kingKillers = actions
                   .stream()
-                  .filter(action -> action.apply(piece).getSquare().equals(enemyKing.getSquare()))
+                  .filter(action -> action.move(piece).getSquare().equals(enemyKing.getSquare()))
                   .collect(Collectors.toList());
 
               if (kingKillers.size() != 0) {
@@ -63,7 +61,7 @@ public class PieceHelper {
   /**
    * Найти и получить фигуру на доске, если она есть
    */
-  public static IPieces getPiece(chess.legacy.ChessBoard chessBoard, Names name, Colors color) {
+  public static Piece getPiece(ChessBoard chessBoard, Names name, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == color && piece.getName() == name)
@@ -74,16 +72,16 @@ public class PieceHelper {
   /**
    * Получить сет полей, которые может атаковать сторона color
    */
-  public static Set<Square> getAttackedFieldList(chess.legacy.ChessBoard chessBoard, Colors color) {
+  public static Set<Square> getAttackedFieldList(ChessBoard chessBoard, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == color)
         .map(piece ->
             piece
-                .getActions()
+                .getMovesForPiece()
                 .stream()
                 .filter(action -> checkMove(chessBoard, piece, action))
-                .map(action -> action.apply(piece).getSquare())
+                .map(action -> action.move(piece).getSquare())
                 .collect(Collectors.toSet())
         )
         .flatMap(Collection::stream)
@@ -93,8 +91,8 @@ public class PieceHelper {
   /**
    * Проверка, можно ли ТАК пойти (надо доработать)
    */
-  private static boolean checkMove(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-    IPieces pieceAfter = action.apply(piece);
+  private static boolean checkMove(ChessBoard chessBoard, Piece piece, Move<Piece, Piece> action) {
+    Piece pieceAfter = action.move(piece);
 
     if (!checkBoardBorders(pieceAfter)) {
       return false;
@@ -105,11 +103,11 @@ public class PieceHelper {
     }
 
     return switch (pieceAfter.getName()) {
-      case PAWN -> new CheckPieces().checkPawn(chessBoard, piece, action);
-      case ROOK -> new CheckPieces().checkRook(chessBoard, piece, action);
-      case BISHOP -> new CheckPieces().checkBishop(chessBoard, piece, action);
-      case QUEEN -> new CheckPieces().checkQueen(chessBoard, piece, action);
-      case KING -> new CheckPieces().checkKing(chessBoard, piece, action);
+//      case PAWN -> new CheckPieces().checkPawn(chessBoard, piece, action);
+//      case ROOK -> new CheckPieces().checkRook(chessBoard, piece, action);
+//      case BISHOP -> new CheckPieces().checkBishop(chessBoard, piece, action);
+//      case QUEEN -> new CheckPieces().checkQueen(chessBoard, piece, action);
+//      case KING -> new CheckPieces().checkKing(chessBoard, piece, action);
       default -> true;
     };
 
@@ -121,7 +119,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход
    * @return - возвращает true, если фигура остаётся на доске, false, если выходит за неё
    */
-  private static boolean checkBoardBorders(IPieces piece) {
+  private static boolean checkBoardBorders(Piece piece) {
     int vertical = piece.getSquare().getVertical();
     int horizontal = piece.getSquare().getHorizontal();
 
@@ -134,7 +132,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть фигура, false, если фигур нет
    */
-  private static boolean checkPieceInDestination(chess.legacy.ChessBoard chessBoard, IPieces piece) {
+  private static boolean checkPieceInDestination(ChessBoard chessBoard, Piece piece) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(p -> p.getSquare().equals(piece.getSquare()));
@@ -146,7 +144,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть своя фигура, false - если фигур нет
    */
-  private static boolean checkMyPieceInDestination(chess.legacy.ChessBoard chessBoard, IPieces piece) {
+  private static boolean checkMyPieceInDestination(ChessBoard chessBoard, Piece piece) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(p -> p.getSquare().equals(piece.getSquare()) && p.getColor().equals(piece.getColor()));
@@ -158,7 +156,7 @@ public class PieceHelper {
    * @param piece - фигура после того, как сделает ход (ходящая фигура)
    * @return - возвращает true, если в конечной точке есть чужая фигура, false - если фигур нет
    */
-  private static boolean checkEnemyPieceInDestination(chess.legacy.ChessBoard chessBoard, IPieces piece) {
+  private static boolean checkEnemyPieceInDestination(ChessBoard chessBoard, Piece piece) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(p -> p.getSquare().equals(piece.getSquare()) && !p.getColor().equals(piece.getColor()));
@@ -167,7 +165,7 @@ public class PieceHelper {
   /**
    * Проверить, есть ли в месте назначения фигура противоположного цвета
    */
-  public static IPieces getDestinationPiece(chess.legacy.ChessBoard chessBoard, IPieces piece) {
+  public static Piece getDestinationPiece(ChessBoard chessBoard, Piece piece) {
     return chessBoard.getPieces()
         .stream()
         .filter(p -> p.getSquare().equals(piece.getSquare()) && p.getColor() != piece.getColor())
@@ -183,7 +181,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает true, если фигура есть, и false, если фигуры нет
    */
-  public static boolean checkPieceInSquare(chess.legacy.ChessBoard chessBoard, Square coordinates, Colors color) {
+  public static boolean checkPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(piece -> piece.getSquare().equals(coordinates) && piece.getColor().equals(color));
@@ -197,7 +195,7 @@ public class PieceHelper {
    * @param color       - цвет фигуры
    * @return - возвращает фигуру, если она там есть, и null, если в поле её нет
    */
-  public static IPieces getPieceInSquare(chess.legacy.ChessBoard chessBoard, Square coordinates, Colors color) {
+  public static Piece getPieceInSquare(ChessBoard chessBoard, Square coordinates, Colors color) {
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getSquare().equals(coordinates) && piece.getColor().equals(color))
@@ -208,17 +206,17 @@ public class PieceHelper {
   /**
    * Проверка, присутствует ли на доске вражеский король
    */
-  public static boolean checkEnemyKingOnBoard(chess.legacy.ChessBoard chessBoard) {
+  public static boolean checkEnemyKingOnBoard(ChessBoard chessBoard) {
     return chessBoard.getPieces()
         .stream()
         .anyMatch(piece -> piece.getColor() != chessBoard.getPriority() && piece.getName() == KING);
   }
 
-  private Colors getMyColor(chess.legacy.ChessBoard chessBoard) {
+  private Colors getMyColor(ChessBoard chessBoard) {
     return chessBoard.getPriority();
   }
 
-  public static Colors getRivalColor(chess.legacy.ChessBoard chessBoard) {
+  public static Colors getEnemyColor(ChessBoard chessBoard) {
     Colors color = chessBoard.getPriority();
 
     if (color == WHITE) {
@@ -226,361 +224,6 @@ public class PieceHelper {
 
     } else {
       return WHITE;
-    }
-  }
-
-  private static class CheckPieces {
-
-    private boolean checkPawn(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      IPieces pieceAfter = action.apply(piece);
-
-      int verticalBefore = piece.getSquare().getVertical();
-      int verticalAfter = pieceAfter.getSquare().getVertical();
-
-      int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
-
-      int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
-      int sideShiftVertical = verticalAfter - verticalBefore;
-
-      if (pieceAfter.getColor() == WHITE) {
-        if (checkPieceInSquare(chessBoard, pieceAfter.getSquare(), BLACK)) {
-          if (sideShiftHorizontal == 0) {
-            return false;
-
-          } else {
-            return true;
-          }
-
-        } else {
-          if (sideShiftHorizontal == 1) {
-
-            Square coordinates = new Square(
-                pieceAfter.getSquare().getVertical() - 1,
-                pieceAfter.getSquare().getHorizontal()
-            );
-
-            IPieces enemyPiece = getPieceInSquare(chessBoard, coordinates, BLACK);
-
-            if (checkPieceInSquare(chessBoard, coordinates, BLACK) && !enemyPiece.getMoveBefore()) {
-              return true;
-
-            } else {
-              return false;
-            }
-
-          } else {
-            if (sideShiftVertical == 1) {
-              return true;
-
-            } else {
-              Square coordinates = new Square(
-                  pieceAfter.getSquare().getVertical() - 1,
-                  pieceAfter.getSquare().getHorizontal()
-              );
-
-              if (checkPieceInSquare(chessBoard, coordinates, BLACK) || checkPieceInSquare(chessBoard, coordinates, WHITE)) {
-                return false;
-
-              } else {
-                return true;
-              }
-            }
-          }
-        }
-
-      } else {
-        if (checkPieceInSquare(chessBoard, pieceAfter.getSquare(), WHITE)) {
-          if (sideShiftHorizontal == 0) {
-            return false;
-
-          } else {
-            return true;
-          }
-
-        } else {
-          if (sideShiftHorizontal == 1) {
-
-            Square coordinates = new Square(
-                pieceAfter.getSquare().getVertical() + 1,
-                pieceAfter.getSquare().getHorizontal()
-            );
-
-            IPieces enemyPiece = getPieceInSquare(chessBoard, coordinates, WHITE);
-
-            if (checkPieceInSquare(chessBoard, coordinates, WHITE) && !enemyPiece.getMoveBefore()) {
-              return true;
-
-            } else {
-              return false;
-            }
-
-          } else {
-            if (sideShiftVertical == -1) {
-              return true;
-
-            } else {
-              Square coordinates = new Square(
-                  pieceAfter.getSquare().getVertical() + 1,
-                  pieceAfter.getSquare().getHorizontal()
-              );
-
-              if (checkPieceInSquare(chessBoard, coordinates, BLACK) || checkPieceInSquare(chessBoard, coordinates, WHITE)) {
-                return false;
-
-              } else {
-                return true;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    private boolean checkRook(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      IPieces pieceAfter = action.apply(piece);
-      boolean result = true;
-
-      int verticalBefore = piece.getSquare().getVertical();
-      int verticalAfter = pieceAfter.getSquare().getVertical();
-      int sideShiftVertical = verticalAfter - verticalBefore;
-
-      int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
-      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
-
-      if (sideShiftVertical > 0 && sideShiftHorizontal == 0) {
-        for (int i = 1; i < sideShiftVertical; i++) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  horizontalAfter
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      } else if (sideShiftVertical < 0 && sideShiftHorizontal == 0) {
-        for (int i = -1; i > sideShiftVertical; i--) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  horizontalAfter
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      } else if (sideShiftHorizontal > 0 && sideShiftVertical == 0) {
-        for (int i = 1; i < sideShiftHorizontal; i++) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  verticalAfter,
-                  piece.getSquare().getHorizontal() + i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      } else if (sideShiftHorizontal < 0 && sideShiftVertical == 0) {
-        for (int i = -1; i > sideShiftHorizontal; i--) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  verticalAfter,
-                  piece.getSquare().getHorizontal() + i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      }
-
-      return result;
-    }
-
-    private boolean checkBishop(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      IPieces pieceAfter = action.apply(piece);
-      boolean result = true;
-
-      int verticalBefore = piece.getSquare().getVertical();
-      int verticalAfter = pieceAfter.getSquare().getVertical();
-      int sideShiftVertical = verticalAfter - verticalBefore;
-
-      int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
-      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
-
-      if (sideShiftVertical > 0 && sideShiftHorizontal > 0) {
-        for (int i = 1; i < sideShiftVertical; i++) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() + i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      } else if (sideShiftVertical < 0 && sideShiftHorizontal < 0) {
-        for (int i = -1; i > sideShiftVertical; i--) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() + i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      } else if (sideShiftVertical > 0 && sideShiftHorizontal < 0) {
-        for (int i = 1; i < sideShiftVertical; i++) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() - i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      } else if (sideShiftVertical < 0 && sideShiftHorizontal > 0) {
-        for (int i = -1; i > sideShiftVertical; i--) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() - i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
-          }
-        }
-
-      }
-
-      return result;
-    }
-
-    private boolean checkQueen(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      return checkRook(chessBoard, piece, action) && checkBishop(chessBoard, piece, action);
-    }
-
-    private boolean checkKing(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      IPieces pieceAfter = action.apply(piece);
-
-      int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
-      int sideShiftHorizontal = Math.abs(horizontalAfter - horizontalBefore);
-
-//      if (chessBoard.getAttackedFields().stream().anyMatch(field -> field.equals(piece.getCoordinates()))) {
-//        return false;
-//      }
-
-      if (sideShiftHorizontal < 2) {
-        return true;
-
-      } else {
-        if (chessBoard.getPriority() == WHITE) {
-          IPieces king = getPiece(chessBoard, KING, WHITE);
-          IPieces leftRook = getPieceInSquare(chessBoard, new Square(0, 0), WHITE);
-          IPieces rightRook = getPieceInSquare(chessBoard, new Square(0, 7), WHITE);
-
-          IPieces leftKnight = getPieceInSquare(chessBoard, new Square(0, 1), WHITE);
-          IPieces rightKnight = getPieceInSquare(chessBoard, new Square(0, 6), WHITE);
-
-          IPieces leftBishop = getPieceInSquare(chessBoard, new Square(0, 2), WHITE);
-          IPieces rightBishop = getPieceInSquare(chessBoard, new Square(0, 5), WHITE);
-
-          IPieces queen = getPieceInSquare(chessBoard, new Square(0, 3), WHITE);
-
-          Set<Square> whiteList = Set.of(
-              new Square(0, 1),
-              new Square(0, 2),
-              new Square(0, 3),
-              new Square(0, 4),
-              new Square(0, 5),
-              new Square(0, 6)
-          );
-
-          Set<Square> attackedFields = chessBoard.getAttackedFields()
-              .stream()
-              .filter(whiteList::contains)
-              .collect(Collectors.toSet());
-
-          return attackedFields.size() == 0 && !king.getMoveBefore() && leftRook != null && rightRook != null &&
-              !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
-              leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
-
-        } else {
-          IPieces king = getPiece(chessBoard, KING, BLACK);
-          IPieces leftRook = getPieceInSquare(chessBoard, new Square(7, 0), BLACK);
-          IPieces rightRook = getPieceInSquare(chessBoard, new Square(7, 7), BLACK);
-
-          IPieces leftKnight = getPieceInSquare(chessBoard, new Square(7, 1), BLACK);
-          IPieces rightKnight = getPieceInSquare(chessBoard, new Square(7, 6), BLACK);
-
-          IPieces leftBishop = getPieceInSquare(chessBoard, new Square(7, 2), BLACK);
-          IPieces rightBishop = getPieceInSquare(chessBoard, new Square(7, 5), BLACK);
-
-          IPieces queen = getPieceInSquare(chessBoard, new Square(7, 3), BLACK);
-
-          Set<Square> whiteList = Set.of(
-              new Square(7, 1),
-              new Square(7, 2),
-              new Square(7, 3),
-              new Square(7, 4),
-              new Square(7, 5),
-              new Square(7, 6)
-          );
-
-          Set<Square> attackedFields = chessBoard.getAttackedFields()
-              .stream()
-              .filter(whiteList::contains)
-              .collect(Collectors.toSet());
-
-          return attackedFields.size() == 0 && !king.getMoveBefore() && leftRook != null && rightRook != null &&
-              !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
-              leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
-        }
-      }
     }
   }
 

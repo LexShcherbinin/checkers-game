@@ -5,6 +5,7 @@ import static chess.helpers.TextColor.BLACK;
 import chess.enums.Colors;
 import chess.enums.GameStatus;
 import chess.enums.Moves;
+import chess.enums.Names;
 import chess.helpers.PiecesCreator;
 import chess.helpers.TextColor;
 import chess.pojo.Piece;
@@ -110,57 +111,105 @@ public final class ChessBoard {
   }
 
   public boolean addPiece(Piece piece) {
-    return true;
+    if (isEmptySquare(piece.getSquare())) {
+      pieces.add(piece);
+      return true;
+    }
+
+    return false;
   }
 
   public boolean removePiece(Piece piece) {
-    return true;
+    if (pieces.contains(piece)) {
+      pieces.remove(piece);
+      return true;
+    }
+
+    return false;
   }
 
   public boolean clearSquare(Square square) {
-    return true;
+    Piece piece = pieces.stream()
+        .filter(p -> p.getSquare().equals(square))
+        .findAny()
+        .orElse(null);
+
+    if (piece != null) {
+      pieces.remove(piece);
+      return true;
+    }
+
+    return false;
   }
 
-  public boolean isSquareEmpty(Square square) {
-    return true;
+  public boolean isEmptySquare(Square square) {
+    return pieces.stream().anyMatch(piece -> piece.getSquare().equals(square));
   }
 
-  public boolean isPieceOnBoard(Piece piece) {
-    return true;
+  public boolean containsPiece(Piece piece) {
+    return pieces.contains(piece);
   }
 
   public boolean isBothKingOnBoard() {
+    return pieces.stream().filter(piece -> piece.getName().equals(Names.KING)).count() == 2;
+  }
+
+  public boolean checkMoveIsPossible(Piece piece, Moves move) {
     return true;
   }
 
-  private boolean checkMoveIsPossible(Piece piece, Moves move) {
+  public boolean checkCastlingIsPossible() {
     return true;
   }
 
-  private boolean checkCastlingIsPossible() {
-    return true;
+  public Piece getPieceIfPresent(Square square) {
+    return pieces
+        .stream()
+        .filter(piece -> piece.getSquare().equals(square))
+        .findAny()
+        .orElse(null);
   }
 
-  private void changePriority() {
-    stepCount++;
-
-    if (priority == Colors.WHITE) {
-      priority = Colors.BLACK;
-
-    } else {
-      priority = Colors.WHITE;
-    }
+  public Piece getPieceIfPresent(Names name, Colors color) {
+    return pieces
+        .stream()
+        .filter(piece -> piece.getColor() == color && piece.getName() == name)
+        .findAny()
+        .orElse(null);
   }
 
-  private void giveUp() {
+  public Colors getEnemyColor() {
+    return priority == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+  }
+
+  public void changePriority() {
+    priority = getEnemyColor();
+  }
+
+  public void giveUp() {
     status = GameStatus.CHECKMATE;
   }
 
-  private void saveLastStep(Piece pieceBefore, Piece pieceAfter) {
+  public void saveLastStep(Piece pieceBefore, Piece pieceAfter) {
     lastStep = String.format(
         "%s[%s -> %s] (Killing pieces = %s, step = %s)",
         pieceBefore, pieceBefore.getSquare(), pieceAfter.getSquare(), eatPiecesCount, stepCount
     );
+  }
+
+  public boolean checkPieceNotEscape(Piece piece) {
+    int vertical = piece.getSquare().getVertical();
+    int horizontal = piece.getSquare().getHorizontal();
+
+    return vertical < 8 && vertical >= 0 && horizontal < 8 && horizontal >= 0;
+  }
+
+  public boolean checkFriendlyPieceInDestination(Piece afterMove) {
+    return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && p.getColor().equals(afterMove.getColor()));
+  }
+
+  public boolean checkEnemyPieceInDestination(Piece afterMove) {
+    return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && !p.getColor().equals(afterMove.getColor()));
   }
 
   /**
