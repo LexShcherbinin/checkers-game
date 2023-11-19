@@ -79,7 +79,7 @@ public final class ChessBoard {
   }
 
   public boolean addPiece(Piece piece) {
-    if (containsPieceInSquare(piece.getSquare())) {
+    if (containsPiece(piece.getSquare())) {
       pieces.add(piece);
       return true;
     }
@@ -110,19 +110,27 @@ public final class ChessBoard {
     return false;
   }
 
-  public boolean containsPieceInSquare(Square square) {
-    return pieces.stream().anyMatch(piece -> piece.getSquare().equals(square));
-  }
-
   public boolean containsPiece(Piece piece) {
     return pieces.contains(piece);
+  }
+
+  public boolean containsPiece(Names name, Colors color) {
+    return pieces.stream().anyMatch(piece -> piece.getColor().equals(color) && piece.getName().equals(name));
+  }
+
+  public boolean containsPiece(Square square) {
+    return pieces.stream().anyMatch(piece -> piece.getSquare().equals(square));
   }
 
   public boolean haveBothKingOnBoard() {
     return pieces.stream().filter(piece -> piece.getName().equals(Names.KING)).count() == 2;
   }
 
-  public Piece getPieceIfPresent(Piece piece) {
+  public void giveUp() {
+    status = GameStatus.CHECKMATE;
+  }
+
+  private Piece getPieceIfPresent(Piece piece) {
     return pieces
         .stream()
         .filter(p -> p.equals(piece))
@@ -130,7 +138,15 @@ public final class ChessBoard {
         .orElse(null);
   }
 
-  public Piece getPieceIfPresent(Square square) {
+  private Piece getPieceIfPresent(Names name, Colors color) {
+    return pieces
+        .stream()
+        .filter(piece -> piece.getColor().equals(color) && piece.getName().equals(name))
+        .findAny()
+        .orElse(null);
+  }
+
+  private Piece getPieceIfPresent(Square square) {
     return pieces
         .stream()
         .filter(piece -> piece.getSquare().equals(square))
@@ -138,28 +154,16 @@ public final class ChessBoard {
         .orElse(null);
   }
 
-  public Piece getPieceIfPresent(Names name, Colors color) {
-    return pieces
-        .stream()
-        .filter(piece -> piece.getColor() == color && piece.getName() == name)
-        .findAny()
-        .orElse(null);
-  }
-
-  public Colors getFriendlyColor() {
+  private Colors getFriendlyColor() {
     return priority;
   }
 
-  public Colors getEnemyColor() {
+  private Colors getEnemyColor() {
     return priority == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
   }
 
-  public void changePriority() {
+  private void changePriority() {
     priority = getEnemyColor();
-  }
-
-  public void giveUp() {
-    status = GameStatus.CHECKMATE;
   }
 
   public boolean makeMove(Piece piece, Moves move) {
@@ -167,28 +171,28 @@ public final class ChessBoard {
     return true;
   }
 
-  public boolean checkMoveIsPossible(Piece piece, Moves move) {
+  private boolean checkMoveIsPossible(Piece piece, Moves move) {
     //Добавить реализацию метода
     return true;
   }
 
-  public boolean checkCastlingIsPossible() {
+  private boolean checkCastlingIsPossible() {
     //Добавить реализацию метода
     return true;
   }
 
-  public boolean checkPieceNotEscape(Piece piece) {
+  private boolean checkPieceNotEscape(Piece piece) {
     int vertical = piece.getSquare().getVertical();
     int horizontal = piece.getSquare().getHorizontal();
 
     return vertical < 8 && vertical >= 0 && horizontal < 8 && horizontal >= 0;
   }
 
-  public boolean checkFriendlyPieceInDestination(Piece afterMove) {
+  private boolean checkFriendlyPieceInDestination(Piece afterMove) {
     return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && p.getColor().equals(afterMove.getColor()));
   }
 
-  public boolean checkEnemyPieceInDestination(Piece afterMove) {
+  private boolean checkEnemyPieceInDestination(Piece afterMove) {
     return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && !p.getColor().equals(afterMove.getColor()));
   }
 
