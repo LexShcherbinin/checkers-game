@@ -3,7 +3,6 @@ package chess;
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
-import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
 import chess.enums.GameStatus;
@@ -11,7 +10,6 @@ import chess.enums.Moves;
 import chess.enums.Names;
 import chess.helpers.TextColor;
 import chess.legacy.pieces.IPieces;
-import chess.legacy.pieces.Rook;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.ArrayList;
@@ -346,8 +344,6 @@ public final class ChessBoard {
       int sideShift = Math.abs(horizontalBefore - horizontalAfter);
       int heightShift = verticalAfter - verticalBefore;
 
-      boolean result = true;
-
       if (heightShift > 0) {
         for (int i = 1; i < heightShift; i++) {
           if (containsPiece(Square.of(verticalBefore + i, horizontalBefore))) {
@@ -357,7 +353,7 @@ public final class ChessBoard {
 
       } else if (heightShift < 0) {
         for (int i = -1; i > heightShift; i--) {
-          if (containsPiece(Square.of(verticalBefore - i, horizontalBefore))) {
+          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore))) {
             return false;
           }
         }
@@ -365,102 +361,64 @@ public final class ChessBoard {
 
       if (sideShift > 0) {
         for (int i = 1; i < sideShift; i++) {
-
-          if (containsPiece(Square.of(verticalBefore, horizontalAfter + 1))) {
+          if (containsPiece(Square.of(verticalBefore, horizontalAfter + i))) {
             return false;
           }
         }
 
       } else if (sideShift < 0) {
         for (int i = -1; i > sideShift; i--) {
-          if (containsPiece(Square.of(verticalBefore, horizontalAfter - 1))) {
+          if (containsPiece(Square.of(verticalBefore, horizontalAfter + i))) {
             return false;
           }
         }
       }
 
-      return result;
+      return true;
     }
 
-    private boolean checkBishop(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
-      IPieces pieceAfter = action.apply(piece);
-      boolean result = true;
+    private boolean checkBishop(Piece piece, Moves move) {
+      Piece after = move.getMove().move(piece);
 
       int verticalBefore = piece.getSquare().getVertical();
-      int verticalAfter = pieceAfter.getSquare().getVertical();
-      int sideShiftVertical = verticalAfter - verticalBefore;
+      int verticalAfter = after.getSquare().getVertical();
 
       int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = pieceAfter.getSquare().getHorizontal();
-      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
+      int horizontalAfter = after.getSquare().getHorizontal();
 
-      if (sideShiftVertical > 0 && sideShiftHorizontal > 0) {
-        for (int i = 1; i < sideShiftVertical; i++) {
+      int sideShift = Math.abs(horizontalBefore - horizontalAfter);
+      int heightShift = verticalAfter - verticalBefore;
 
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() + i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
+      if (heightShift > 0 && sideShift > 0) {
+        for (int i = 1; i < heightShift; i++) {
+          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore + i))) {
+            return false;
           }
         }
 
-      } else if (sideShiftVertical < 0 && sideShiftHorizontal < 0) {
-        for (int i = -1; i > sideShiftVertical; i--) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() + i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
+      } else if (heightShift < 0 && sideShift < 0) {
+        for (int i = -1; i > heightShift; i--) {
+          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore + i))) {
+            return false;
           }
         }
 
-      } else if (sideShiftVertical > 0 && sideShiftHorizontal < 0) {
-        for (int i = 1; i < sideShiftVertical; i++) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() - i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
+      } else if (heightShift > 0 && sideShift < 0) {
+        for (int i = 1; i < heightShift; i++) {
+          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore - i))) {
+            return false;
           }
         }
 
-      } else if (sideShiftVertical < 0 && sideShiftHorizontal > 0) {
-        for (int i = -1; i > sideShiftVertical; i--) {
-
-          IPieces tempPrice = new Rook(piece).setCoordinates(
-              new Square(
-                  piece.getSquare().getVertical() + i,
-                  piece.getSquare().getHorizontal() - i
-              )
-          );
-
-          if (checkPieceInDestination(chessBoard, tempPrice)) {
-            result = false;
-            break;
+      } else if (heightShift < 0 && sideShift > 0) {
+        for (int i = -1; i > heightShift; i--) {
+          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore - i))) {
+            return false;
           }
         }
-
       }
 
-      return result;
+      return true;
     }
 
     private boolean checkQueen(chess.legacy.ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
