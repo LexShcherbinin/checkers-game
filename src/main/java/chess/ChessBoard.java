@@ -111,7 +111,7 @@ public final class ChessBoard {
   }
 
   public boolean addPiece(Piece piece) {
-    if (isEmptySquare(piece.getSquare())) {
+    if (containsPieceInSquare(piece.getSquare())) {
       pieces.add(piece);
       return true;
     }
@@ -142,7 +142,7 @@ public final class ChessBoard {
     return false;
   }
 
-  public boolean isEmptySquare(Square square) {
+  public boolean containsPieceInSquare(Square square) {
     return pieces.stream().anyMatch(piece -> piece.getSquare().equals(square));
   }
 
@@ -150,16 +150,16 @@ public final class ChessBoard {
     return pieces.contains(piece);
   }
 
-  public boolean isBothKingOnBoard() {
+  public boolean haveBothKingOnBoard() {
     return pieces.stream().filter(piece -> piece.getName().equals(Names.KING)).count() == 2;
   }
 
-  public boolean checkMoveIsPossible(Piece piece, Moves move) {
-    return true;
-  }
-
-  public boolean checkCastlingIsPossible() {
-    return true;
+  public Piece getPieceIfPresent(Piece piece) {
+    return pieces
+        .stream()
+        .filter(p -> p.equals(piece))
+        .findAny()
+        .orElse(null);
   }
 
   public Piece getPieceIfPresent(Square square) {
@@ -176,6 +176,10 @@ public final class ChessBoard {
         .filter(piece -> piece.getColor() == color && piece.getName() == name)
         .findAny()
         .orElse(null);
+  }
+
+  public Colors getFriendlyColor() {
+    return priority;
   }
 
   public Colors getEnemyColor() {
@@ -195,6 +199,14 @@ public final class ChessBoard {
         "%s[%s -> %s] (Killing pieces = %s, step = %s)",
         pieceBefore, pieceBefore.getSquare(), pieceAfter.getSquare(), eatPiecesCount, stepCount
     );
+  }
+
+  public boolean checkMoveIsPossible(Piece piece, Moves move) {
+    return true;
+  }
+
+  public boolean checkCastlingIsPossible() {
+    return true;
   }
 
   public boolean checkPieceNotEscape(Piece piece) {
