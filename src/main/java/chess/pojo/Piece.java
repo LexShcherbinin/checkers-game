@@ -106,6 +106,7 @@ public final class Piece {
   private Square square;
   private boolean moveBefore;
   private List<Moves> moveList;
+  private Moves previousMove;
 
   public Piece(Names name, Colors color, Square square) {
     this.name = name;

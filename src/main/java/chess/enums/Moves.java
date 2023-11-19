@@ -116,7 +116,7 @@ public enum Moves {
     return this.move;
   }
 
-  private static Move<Piece, Piece> move(int heightShift, int sideShift) {
+  public static Move<Piece, Piece> move(int heightShift, int sideShift) {
     return piece -> piece
         .setMoveBefore(true)
         .setSquare(piece.getSquare().shift(heightShift, sideShift));
