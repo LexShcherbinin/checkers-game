@@ -1,5 +1,6 @@
 package chess;
 
+import chess.helpers.TextColor;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,15 @@ public class GameInfo {
         .setEatPiecesCount(0)
         .setStepCount(0)
         .setLastStep("");
+  }
+
+  @Override
+  public String toString() {
+    return TextColor.YELLOW +
+        "=".repeat(80) + "\n" +
+        String.format("Ход: %s\t\t\tКоличество съеденных фигур: %s\t\t\tКоличество сделанных ходов: %s\n", lastStep, eatPiecesCount, stepCount) +
+        "=".repeat(80) + "\n" +
+        TextColor.RESET;
   }
 
 }

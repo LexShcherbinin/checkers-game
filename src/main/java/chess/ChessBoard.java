@@ -192,9 +192,22 @@ public final class ChessBoard {
     return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && !p.getColor().equals(afterMove.getColor()));
   }
 
+  /**
+   * Обновить информацию об игре.
+   */
+  private void updateGameInfo(Piece before, Piece after) {
+    String lastStep = String.format("%s : %s -> %s", before, before.getSquare(), after.getSquare());
+    int stepCount = gameInfo.getStepCount();
+    int eatPiecesCount = gameInfo.getEatPiecesCount();
+
+    gameInfo
+        .setLastStep(lastStep)
+        .setStepCount(++stepCount)
+        .setEatPiecesCount(++eatPiecesCount);
+  }
+
   @Override
   public String toString() {
-
     String[][] board = new String[8][8];
 
     for (int i = 0; i < board.length; i++) {
@@ -216,7 +229,8 @@ public final class ChessBoard {
       board[vertical][horizontal] = piece.toString();
     }
 
-    StringBuilder result = new StringBuilder(" \t+---------------------------------+\n");
+    String boardColor = TextColor.WHITE;
+    StringBuilder result = new StringBuilder(boardColor + " \t+---------------------------------+\n" + TextColor.RESET);
 
     for (int i = 7; i >= 0; i--) {
       StringBuilder row = new StringBuilder();
@@ -225,21 +239,24 @@ public final class ChessBoard {
         row.append(board[i][j]).append("\t");
       }
 
-      switch (i) {
-        case 7 -> result.append("8\t| ").append(row).append("|\n");
-        case 6 -> result.append("7\t| ").append(row).append("|\n");
-        case 5 -> result.append("6\t| ").append(row).append("|\n");
-        case 4 -> result.append("5\t| ").append(row).append("|\n");
-        case 3 -> result.append("4\t| ").append(row).append("|\n");
-        case 2 -> result.append("3\t| ").append(row).append("|\n");
-        case 1 -> result.append("2\t| ").append(row).append("|\n");
-        case 0 -> result.append("1\t| ").append(row).append("|\n");
-      }
+      result
+          .append(boardColor)
+          .append(i + 1)
+          .append("\t| ")
+          .append(TextColor.RESET)
+          .append(row)
+          .append(boardColor)
+          .append("|\n")
+          .append(TextColor.RESET);
     }
 
-    return result +
-        " \t+---------------------------------+" + "\n" +
-        " \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH  \n";
+    return result
+        .append(boardColor)
+        .append(" \t+---------------------------------+" + "\n")
+        .append(" \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH  \n")
+        .append(TextColor.RESET)
+        .append(gameInfo)
+        .toString();
   }
 
 }
