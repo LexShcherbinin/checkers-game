@@ -1,12 +1,9 @@
 package chess;
 
-import static chess.helpers.TextColor.BLACK;
-
 import chess.enums.Colors;
 import chess.enums.GameStatus;
 import chess.enums.Moves;
 import chess.enums.Names;
-import chess.helpers.PiecesCreator;
 import chess.helpers.TextColor;
 import chess.pojo.Piece;
 import chess.pojo.Square;
@@ -40,54 +37,33 @@ public final class ChessBoard {
   private GameStatus status;
 
   /**
-   * Количество съеденных фигур.
+   * Информация о партии и состоянии игры.
    */
-  private int eatPiecesCount;
-
-  /**
-   * Количество сделанных шагов.
-   */
-  private int stepCount;
-
-  /**
-   * Последний сделанный ход.
-   */
-  private String lastStep;
+  private GameInfo gameInfo;
 
   private ChessBoard(ChessBoard chessBoard) {
     this.pieces = chessBoard.getPieces();
     this.priority = chessBoard.getPriority();
     this.status = chessBoard.getStatus();
-    this.eatPiecesCount = chessBoard.getEatPiecesCount();
-    this.stepCount = chessBoard.getStepCount();
-    this.lastStep = chessBoard.getLastStep();
+    this.gameInfo = chessBoard.getGameInfo();
   }
 
   private ChessBoard(List<Piece> pieces) {
     this.pieces = pieces;
     this.priority = Colors.WHITE;
     this.status = GameStatus.IN_PROGRESS;
-    this.eatPiecesCount = 0;
-    this.stepCount = 0;
-    this.lastStep = "";
+    this.gameInfo = GameInfo.newGame();
   }
 
   private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
     this.pieces = pieces;
     this.priority = priority;
     this.status = status;
-    this.eatPiecesCount = 0;
-    this.stepCount = 0;
-    this.lastStep = "";
+    this.gameInfo = GameInfo.newGame();
   }
 
-  private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status, int eatPiecesCount, int stepCount, String lastStep) {
-    this.pieces = pieces;
-    this.priority = priority;
-    this.status = status;
-    this.eatPiecesCount = eatPiecesCount;
-    this.stepCount = stepCount;
-    this.lastStep = lastStep;
+  public static ChessBoard createChessBoard() {
+    return new ChessBoard(new ArrayList<>());
   }
 
   public static ChessBoard createChessBoard(List<Piece> pieces) {
@@ -98,16 +74,8 @@ public final class ChessBoard {
     return new ChessBoard(pieces, priority, status);
   }
 
-  public static ChessBoard createDefaultChessBoard() {
-    return new ChessBoard(PiecesCreator.getDefaultPieceList());
-  }
-
-  public static ChessBoard createEmptyChessBoard() {
-    return new ChessBoard(new ArrayList<>());
-  }
-
-  public boolean makeMove(Piece piece, Moves move) {
-    return true;
+  public static ChessBoard copyBoard(ChessBoard chessBoard) {
+    return new ChessBoard(chessBoard);
   }
 
   public boolean addPiece(Piece piece) {
@@ -194,18 +162,18 @@ public final class ChessBoard {
     status = GameStatus.CHECKMATE;
   }
 
-  public void saveLastStep(Piece pieceBefore, Piece pieceAfter) {
-    lastStep = String.format(
-        "%s[%s -> %s] (Killing pieces = %s, step = %s)",
-        pieceBefore, pieceBefore.getSquare(), pieceAfter.getSquare(), eatPiecesCount, stepCount
-    );
+  public boolean makeMove(Piece piece, Moves move) {
+    //Добавить реализацию метода
+    return true;
   }
 
   public boolean checkMoveIsPossible(Piece piece, Moves move) {
+    //Добавить реализацию метода
     return true;
   }
 
   public boolean checkCastlingIsPossible() {
+    //Добавить реализацию метода
     return true;
   }
 
@@ -224,19 +192,6 @@ public final class ChessBoard {
     return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && !p.getColor().equals(afterMove.getColor()));
   }
 
-  /**
-   *   +---------------------------------+
-   * 8	| ♜	♞	♝	♛	♚	♝	♞	♜	|
-   * 7	| ♟	♟	♟	♟	♟	♟	♟	♟	|
-   * 6	| ֎		֎		֎		֎		֎		֎		֎		֎		|
-   * 5	| ֎		֎		֎		֎		֎		֎		֎		֎		|
-   * 4	| ֎		֎		֎		֎		֎		֎		֎		֎		|
-   * 3	| ֎		֎		֎		֎		֎		֎		֎		֎		|
-   * 2	| ♙	♙	♙	♙	♙	♙	♙	♙	|
-   * 1	| ♖	♘	♗	♕	♔	♗	♘	♖	|
-   *  	+---------------------------------+
-   *  		A		B		C		D		E		F		G		H
-   */
   @Override
   public String toString() {
 

@@ -14,7 +14,8 @@ public class Test_1 {
 
   @Test
   public void test1() {
-    ChessBoard chessBoard = ChessBoard.createDefaultChessBoard();
+    List<Piece> pieceList = PiecesCreator.getDefaultPieceList();
+    ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
     System.out.println(chessBoard);
   }
 
