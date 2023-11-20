@@ -2,10 +2,7 @@ package chess;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
-import static chess.enums.Names.BISHOP;
 import static chess.enums.Names.KING;
-import static chess.enums.Names.KNIGHT;
-import static chess.enums.Names.QUEEN;
 import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
@@ -13,11 +10,9 @@ import chess.enums.GameStatus;
 import chess.enums.Moves;
 import chess.enums.Names;
 import chess.helpers.TextColor;
-import chess.legacy.pieces.IPieces;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -303,6 +298,28 @@ public final class ChessBoard {
 
   private class CheckPieceMove {
 
+    private boolean freeRoad(Square from, Square to) {
+      int verticalBefore = from.getVertical();
+      int verticalAfter = to.getVertical();
+
+      int horizontalBefore = from.getHorizontal();
+      int horizontalAfter = to.getHorizontal();
+
+      int sideShift = horizontalBefore - horizontalAfter;
+      int heightShift = verticalAfter - verticalBefore;
+
+      Function<Integer, Integer> functionVertical = heightShift == 0 ? i -> i : (heightShift > 0 ? i -> i++ : i -> i--);
+      Function<Integer, Integer> functionHorizontal = sideShift == 0 ? i -> i : (sideShift > 0 ? i -> i++ : i -> i--);
+
+      for (int i = 1; i < Math.max(Math.abs(heightShift), Math.abs(sideShift)); i++) {
+        if (containsPiece(from.shift(functionVertical.apply(verticalBefore), functionHorizontal.apply(horizontalBefore)))) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     private boolean checkPawn(Piece piece, Moves move) {
       Piece after = move.getMove().move(piece);
 
@@ -315,6 +332,10 @@ public final class ChessBoard {
       int sideShift = Math.abs(horizontalBefore - horizontalAfter);
       int heightShift = verticalAfter - verticalBefore;
 
+      if (!freeRoad(piece.getSquare(), after.getSquare())) {
+        return false;
+      }
+
       if (after.getColor() == WHITE) {
         if (checkEnemyPieceInDestination(after)) {
           return sideShift != 0;
@@ -325,7 +346,7 @@ public final class ChessBoard {
             return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(Moves.PAWN_BLACK_DOWN_2);
 
           } else {
-            return heightShift == 1 || !containsPiece(Square.of(verticalAfter - 1, horizontalAfter));
+            return heightShift == 1 || verticalAfter == 3;
           }
         }
 
@@ -339,103 +360,10 @@ public final class ChessBoard {
             return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(Moves.PAWN_BLACK_DOWN_2);
 
           } else {
-            return heightShift == -1 || !containsPiece(Square.of(verticalAfter + 1, horizontalAfter));
+            return heightShift == -1 || verticalAfter == 4;
           }
         }
       }
-    }
-
-    private boolean checkRook(Piece piece, Moves move) {
-      Piece after = move.getMove().move(piece);
-
-      int verticalBefore = piece.getSquare().getVertical();
-      int verticalAfter = after.getSquare().getVertical();
-
-      int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = after.getSquare().getHorizontal();
-
-      int sideShift = Math.abs(horizontalBefore - horizontalAfter);
-      int heightShift = verticalAfter - verticalBefore;
-
-      if (heightShift > 0) {
-        for (int i = 1; i < heightShift; i++) {
-          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore))) {
-            return false;
-          }
-        }
-
-      } else if (heightShift < 0) {
-        for (int i = -1; i > heightShift; i--) {
-          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore))) {
-            return false;
-          }
-        }
-      }
-
-      if (sideShift > 0) {
-        for (int i = 1; i < sideShift; i++) {
-          if (containsPiece(Square.of(verticalBefore, horizontalAfter + i))) {
-            return false;
-          }
-        }
-
-      } else if (sideShift < 0) {
-        for (int i = -1; i > sideShift; i--) {
-          if (containsPiece(Square.of(verticalBefore, horizontalAfter + i))) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    }
-
-    private boolean checkBishop(Piece piece, Moves move) {
-      Piece after = move.getMove().move(piece);
-
-      int verticalBefore = piece.getSquare().getVertical();
-      int verticalAfter = after.getSquare().getVertical();
-
-      int horizontalBefore = piece.getSquare().getHorizontal();
-      int horizontalAfter = after.getSquare().getHorizontal();
-
-      int sideShift = Math.abs(horizontalBefore - horizontalAfter);
-      int heightShift = verticalAfter - verticalBefore;
-
-      if (heightShift > 0 && sideShift > 0) {
-        for (int i = 1; i < heightShift; i++) {
-          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore + i))) {
-            return false;
-          }
-        }
-
-      } else if (heightShift < 0 && sideShift < 0) {
-        for (int i = -1; i > heightShift; i--) {
-          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore + i))) {
-            return false;
-          }
-        }
-
-      } else if (heightShift > 0 && sideShift < 0) {
-        for (int i = 1; i < heightShift; i++) {
-          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore - i))) {
-            return false;
-          }
-        }
-
-      } else if (heightShift < 0 && sideShift > 0) {
-        for (int i = -1; i > heightShift; i--) {
-          if (containsPiece(Square.of(verticalBefore + i, horizontalBefore - i))) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    }
-
-    private boolean checkQueen(Piece piece, Moves move) {
-      return checkRook(piece, move) && checkBishop(piece, move);
     }
 
     private boolean checkKing(Piece piece, Moves move) {
@@ -457,7 +385,7 @@ public final class ChessBoard {
           boolean leftRook = pieces.stream()
               .anyMatch(p -> p.getName().equals(ROOK) && p.getColor().equals(getFriendlyColor()) && p.getSquare().equals(Square.of(0, 0)));
 
-              List<Square> whiteList = List.of(
+          List<Square> whiteList = List.of(
               Square.of(0, 1),
               Square.of(0, 2),
               Square.of(0, 3),

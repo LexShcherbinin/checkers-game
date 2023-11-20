@@ -116,16 +116,16 @@ public enum Moves {
     return this.move;
   }
 
-  public static Move<Piece, Piece> move(int heightShift, int sideShift) {
-    return piece -> piece
-        .setMoveBefore(true)
-        .setSquare(piece.getSquare().shift(heightShift, sideShift));
-  }
-
-//  private static Move<Piece, Piece> move(int heightShift, int sideShift) {
-//    return piece -> new Piece(piece)
-//        .setSquare(piece.getSquare().shift(heightShift, sideShift))
-//        .setMoveBefore(true);
+//  public static Move<Piece, Piece> move(int heightShift, int sideShift) {
+//    return piece -> piece
+//        .setMoveBefore(true)
+//        .setSquare(piece.getSquare().shift(heightShift, sideShift));
 //  }
+
+  private static Move<Piece, Piece> move(int heightShift, int sideShift) {
+    return piece -> new Piece(piece)
+        .setSquare(piece.getSquare().shift(heightShift, sideShift))
+        .setMoveBefore(true);
+  }
 
 }

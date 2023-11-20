@@ -116,13 +116,13 @@ public final class Piece {
     this.previousMove = null;
   }
 
-//  public Piece(Piece piece) {
-//    this.name = piece.getName();
-//    this.color = piece.getColor();
-//    this.square = piece.getSquare();
-//    this.moveBefore = piece.isMoveBefore();
-//    this.moveList = piece.getMoveList();
-//  }
+  public Piece(Piece piece) {
+    this.name = piece.getName();
+    this.color = piece.getColor();
+    this.square = piece.getSquare();
+    this.moveBefore = piece.isMoveBefore();
+    this.moveList = piece.getMoveList();
+  }
 
   /**
    * Получение списка всех ходов фигуры.
