@@ -50,21 +50,21 @@ public final class ChessBoard {
   private GameInfo gameInfo;
 
   private ChessBoard(ChessBoard chessBoard) {
-    this.pieces = chessBoard.getPieces();
+    this.pieces = new ArrayList<>(chessBoard.getPieces());
     this.priority = chessBoard.getPriority();
     this.status = chessBoard.getStatus();
     this.gameInfo = chessBoard.getGameInfo();
   }
 
   private ChessBoard(List<Piece> pieces) {
-    this.pieces = pieces;
+    this.pieces = new ArrayList<>(pieces);
     this.priority = Colors.WHITE;
     this.status = GameStatus.IN_PROGRESS;
     this.gameInfo = GameInfo.newGame();
   }
 
   private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
-    this.pieces = pieces;
+    this.pieces = new ArrayList<>(pieces);
     this.priority = priority;
     this.status = status;
     this.gameInfo = GameInfo.newGame();
