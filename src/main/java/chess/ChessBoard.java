@@ -373,81 +373,76 @@ public final class ChessBoard {
       int horizontalAfter = after.getSquare().getHorizontal();
       int sideShift = Math.abs(horizontalAfter - horizontalBefore);
 
-      if (!freeRoad(piece.getSquare(), after.getSquare()) || checkFriendlyPieceInDestination(after)) {
+      if (checkFriendlyPieceInDestination(after)) {
         return false;
       }
 
       if (sideShift < 2) {
         return true;
+      }
 
-      } else {
-        if (piece.isMoveBefore()) {
-          return false;
-        }
+      if (piece.isMoveBefore() || !freeRoad(piece.getSquare(), after.getSquare())) {
+        return false;
+      }
 
-        Set<Square> attackedFields = getAttackedFieldList();
+      Set<Square> attackedFields = getAttackedFieldList();
+      Set<Square> shouldNotBeAttackedField;
+      int vertical;
+      int horizontal;
 
-        if (getPriority() == WHITE) {
+      if (getPriority() == WHITE) {
 
-          if (move.equals(KING_CASTLING_RIGHT)) {
-
-            boolean existRightRook = pieces.stream()
-                .anyMatch(p -> p.getName().equals(ROOK) &&
-                    p.getColor().equals(getFriendlyColor()) &&
-                    p.getSquare().equals(Square.of(0, 7)) &&
-                    !p.isMoveBefore()
-                );
-
-            if (existRightRook || attackedFields.contains(Square.of(0, 4)) || attackedFields.contains(Square.of(0, 5)) || attackedFields.contains(Square.of(0, 6))) {
-              return false;
-            }
-
-          } else {
-            boolean existLeftRook = pieces.stream()
-                .anyMatch(p -> p.getName().equals(ROOK) &&
-                    p.getColor().equals(getFriendlyColor()) &&
-                    p.getSquare().equals(Square.of(0, 0)) &&
-                    !p.isMoveBefore()
-                );
-
-            if (existLeftRook || attackedFields.contains(Square.of(0, 4)) || attackedFields.contains(Square.of(0, 3)) || attackedFields.contains(Square.of(0, 2)) || attackedFields.contains(
-                Square.of(0, 1))) {
-              return false;
-            }
-          }
-
-          return true;
+        if (move.equals(KING_CASTLING_RIGHT)) {
+          vertical = 0;
+          horizontal = 7;
+          shouldNotBeAttackedField = Set.of(
+              Square.of(vertical, 4),
+              Square.of(vertical, 5),
+              Square.of(vertical, 6)
+          );
 
         } else {
-          if (move.equals(KING_CASTLING_RIGHT)) {
+          vertical = 0;
+          horizontal = 0;
+          shouldNotBeAttackedField = Set.of(
+              Square.of(vertical, 4),
+              Square.of(vertical, 3),
+              Square.of(vertical, 2),
+              Square.of(vertical, 1)
+          );
+        }
 
-            boolean existRightRook = pieces.stream()
-                .anyMatch(p -> p.getName().equals(ROOK) &&
-                    p.getColor().equals(getFriendlyColor()) &&
-                    p.getSquare().equals(Square.of(7, 7)) &&
-                    !p.isMoveBefore()
-                );
+      } else {
+        if (move.equals(KING_CASTLING_RIGHT)) {
+          vertical = 7;
+          horizontal = 7;
+          shouldNotBeAttackedField = Set.of(
+              Square.of(vertical, 4),
+              Square.of(vertical, 5),
+              Square.of(vertical, 6)
+          );
 
-            if (existRightRook || attackedFields.contains(Square.of(7, 4)) || attackedFields.contains(Square.of(7, 5)) || attackedFields.contains(Square.of(7, 6))) {
-              return false;
-            }
-
-          } else {
-            boolean existLeftRook = pieces.stream()
-                .anyMatch(p -> p.getName().equals(ROOK) &&
-                    p.getColor().equals(getFriendlyColor()) &&
-                    p.getSquare().equals(Square.of(7, 0)) &&
-                    !p.isMoveBefore()
-                );
-
-            if (existLeftRook || attackedFields.contains(Square.of(7, 4)) || attackedFields.contains(Square.of(7, 3)) || attackedFields.contains(Square.of(7, 2)) || attackedFields.contains(Square.of(7, 1))) {
-              return false;
-            }
-          }
-
-          return true;
+        } else {
+          vertical = 7;
+          horizontal = 0;
+          shouldNotBeAttackedField = Set.of(
+              Square.of(vertical, 4),
+              Square.of(vertical, 3),
+              Square.of(vertical, 2),
+              Square.of(vertical, 1)
+          );
         }
       }
+
+      boolean existRook = pieces.stream()
+          .anyMatch(p -> p.getName().equals(ROOK) &&
+              p.getColor().equals(getFriendlyColor()) &&
+              p.getSquare().equals(Square.of(vertical, horizontal)) &&
+              !p.isMoveBefore()
+          );
+
+      return existRook && attackedFields.stream().noneMatch(shouldNotBeAttackedField::contains);
+
     }
 
     private Set<Square> getAttackedFieldList() {
