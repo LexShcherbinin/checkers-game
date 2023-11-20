@@ -1,8 +1,7 @@
 package chess;
 
-import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
-import static chess.enums.Names.KING;
+import static chess.enums.Moves.KING_CASTLING_RIGHT;
 import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
@@ -13,6 +12,7 @@ import chess.helpers.TextColor;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -373,69 +373,97 @@ public final class ChessBoard {
       int horizontalAfter = after.getSquare().getHorizontal();
       int sideShift = Math.abs(horizontalAfter - horizontalBefore);
 
+      if (!freeRoad(piece.getSquare(), after.getSquare()) || checkFriendlyPieceInDestination(after)) {
+        return false;
+      }
+
       if (sideShift < 2) {
         return true;
 
       } else {
+        if (piece.isMoveBefore()) {
+          return false;
+        }
+
+        Set<Square> attackedFields = getAttackedFieldList();
+
         if (getPriority() == WHITE) {
-          Piece king = getPieceIfPresent(KING, WHITE);
-//          Piece leftRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 0)));
-//          Piece rightRook = getPieceIfPresent(new Piece(ROOK, WHITE, Square.of(0, 7)));
 
-          boolean leftRook = pieces.stream()
-              .anyMatch(p -> p.getName().equals(ROOK) && p.getColor().equals(getFriendlyColor()) && p.getSquare().equals(Square.of(0, 0)));
+          if (move.equals(KING_CASTLING_RIGHT)) {
 
-          List<Square> whiteList = List.of(
-              Square.of(0, 1),
-              Square.of(0, 2),
-              Square.of(0, 3),
-              Square.of(0, 4),
-              Square.of(0, 5),
-              Square.of(0, 6)
-          );
+            boolean existRightRook = pieces.stream()
+                .anyMatch(p -> p.getName().equals(ROOK) &&
+                    p.getColor().equals(getFriendlyColor()) &&
+                    p.getSquare().equals(Square.of(0, 7)) &&
+                    !p.isMoveBefore()
+                );
 
-          Set<Square> attackedFields = getAttackedFields()
-              .stream()
-              .filter(whiteList::contains)
-              .collect(Collectors.toSet());
+            if (existRightRook || attackedFields.contains(Square.of(0, 4)) || attackedFields.contains(Square.of(0, 5)) || attackedFields.contains(Square.of(0, 6))) {
+              return false;
+            }
 
-          return attackedFields.size() == 0 && !king.isMoveBefore() && leftRook != null && rightRook != null &&
-              !leftRook.isMoveBefore() && !rightRook.isMoveBefore() &&
-              !containsPiece(Square.of(0, 1)) && !containsPiece(Square.of(0, 2)) && !containsPiece(Square.of(0, 3)) &&
-              !containsPiece(Square.of(0, 5)) && !containsPiece(Square.of(0, 6));
+          } else {
+            boolean existLeftRook = pieces.stream()
+                .anyMatch(p -> p.getName().equals(ROOK) &&
+                    p.getColor().equals(getFriendlyColor()) &&
+                    p.getSquare().equals(Square.of(0, 0)) &&
+                    !p.isMoveBefore()
+                );
+
+            if (existLeftRook || attackedFields.contains(Square.of(0, 4)) || attackedFields.contains(Square.of(0, 3)) || attackedFields.contains(Square.of(0, 2)) || attackedFields.contains(
+                Square.of(0, 1))) {
+              return false;
+            }
+          }
+
+          return true;
 
         } else {
-          Piece king = getPiece(chessBoard, KING, BLACK);
-          Piece leftRook = getPieceInSquare(chessBoard, new Square(7, 0), BLACK);
-          Piece rightRook = getPieceInSquare(chessBoard, new Square(7, 7), BLACK);
+          if (move.equals(KING_CASTLING_RIGHT)) {
 
-          Piece leftKnight = getPieceInSquare(chessBoard, new Square(7, 1), BLACK);
-          Piece rightKnight = getPieceInSquare(chessBoard, new Square(7, 6), BLACK);
+            boolean existRightRook = pieces.stream()
+                .anyMatch(p -> p.getName().equals(ROOK) &&
+                    p.getColor().equals(getFriendlyColor()) &&
+                    p.getSquare().equals(Square.of(7, 7)) &&
+                    !p.isMoveBefore()
+                );
 
-          Piece leftBishop = getPieceInSquare(chessBoard, new Square(7, 2), BLACK);
-          Piece rightBishop = getPieceInSquare(chessBoard, new Square(7, 5), BLACK);
+            if (existRightRook || attackedFields.contains(Square.of(7, 4)) || attackedFields.contains(Square.of(7, 5)) || attackedFields.contains(Square.of(7, 6))) {
+              return false;
+            }
 
-          Piece queen = getPieceInSquare(chessBoard, new Square(7, 3), BLACK);
+          } else {
+            boolean existLeftRook = pieces.stream()
+                .anyMatch(p -> p.getName().equals(ROOK) &&
+                    p.getColor().equals(getFriendlyColor()) &&
+                    p.getSquare().equals(Square.of(7, 0)) &&
+                    !p.isMoveBefore()
+                );
 
-          Set<Square> whiteList = Set.of(
-              new Square(7, 1),
-              new Square(7, 2),
-              new Square(7, 3),
-              new Square(7, 4),
-              new Square(7, 5),
-              new Square(7, 6)
-          );
+            if (existLeftRook || attackedFields.contains(Square.of(7, 4)) || attackedFields.contains(Square.of(7, 3)) || attackedFields.contains(Square.of(7, 2)) || attackedFields.contains(Square.of(7, 1))) {
+              return false;
+            }
+          }
 
-          Set<Square> attackedFields = chessBoard.getAttackedFields()
-              .stream()
-              .filter(whiteList::contains)
-              .collect(Collectors.toSet());
-
-          return attackedFields.size() == 0 && !king.getMoveBefore() && leftRook != null && rightRook != null &&
-              !leftRook.getMoveBefore() && !rightRook.getMoveBefore() &&
-              leftKnight == null && rightKnight == null && leftBishop == null && rightBishop == null && queen == null;
+          return true;
         }
       }
+    }
+
+    private Set<Square> getAttackedFieldList() {
+      return pieces
+          .stream()
+          .filter(piece -> piece.getColor() == getEnemyColor())
+          .map(piece ->
+              piece
+                  .getMoveList()
+                  .stream()
+                  .filter(move -> checkMoveIsPossible(piece, move))
+                  .map(move -> move.getMove().move(piece).getSquare())
+                  .collect(Collectors.toSet())
+          )
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet());
     }
   }
 
