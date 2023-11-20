@@ -228,7 +228,7 @@ public class PieceHelper {
     }
   }
 
-  private static class CheckPieces {
+  public static class CheckPieces {
 
     private boolean checkPawn(ChessBoard chessBoard, IPieces piece, Function<IPieces, IPieces> action) {
       IPieces pieceAfter = action.apply(piece);

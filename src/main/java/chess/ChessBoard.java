@@ -40,11 +40,6 @@ public final class ChessBoard {
   private Colors priority;
 
   /**
-   * Список атакуемых полей
-   */
-  private List<Square> attackedFields;
-
-  /**
    * Статус игры.
    */
   private GameStatus status;
@@ -59,7 +54,6 @@ public final class ChessBoard {
     this.priority = chessBoard.getPriority();
     this.status = chessBoard.getStatus();
     this.gameInfo = chessBoard.getGameInfo();
-    this.attackedFields = chessBoard.getAttackedFields();
   }
 
   private ChessBoard(List<Piece> pieces) {
@@ -67,7 +61,6 @@ public final class ChessBoard {
     this.priority = Colors.WHITE;
     this.status = GameStatus.IN_PROGRESS;
     this.gameInfo = GameInfo.newGame();
-//    this.attackedFields = getAttackedFieldList();
   }
 
   private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
@@ -75,7 +68,6 @@ public final class ChessBoard {
     this.priority = priority;
     this.status = status;
     this.gameInfo = GameInfo.newGame();
-//    this.attackedFields = getAttackedFieldList();
   }
 
   public static ChessBoard createChessBoard() {
@@ -183,8 +175,21 @@ public final class ChessBoard {
   }
 
   public boolean makeMove(Piece piece, Moves move) {
-    //Добавить реализацию метода
-    return true;
+    if (checkMoveIsPossible(piece, move)) {
+      Piece after = move.getMove().move(piece);
+
+      if (checkEnemyPieceInDestination(after)) {
+        clearSquare(after.getSquare());
+      }
+
+      removePiece(piece);
+      addPiece(after);
+
+      updateGameInfo(piece, after);
+      changePriority();
+    }
+
+    return false;
   }
 
   private boolean checkMoveIsPossible(Piece piece, Moves move) {
@@ -198,20 +203,12 @@ public final class ChessBoard {
       return false;
     }
 
-//    return switch (after.getName()) {
-//      case PAWN -> new CheckPieces().checkPawn(chessBoard, piece, action);
-//      case ROOK -> new CheckPieces().checkRook(chessBoard, piece, action);
-//      case BISHOP -> new CheckPieces().checkBishop(chessBoard, piece, action);
-//      case QUEEN -> new CheckPieces().checkQueen(chessBoard, piece, action);
-//      case KING -> new CheckPieces().checkKing(chessBoard, piece, action);
-//      default -> true;
-//    };
-    return true;
-  }
-
-  private boolean checkCastlingIsPossible() {
-    //Добавить реализацию метода
-    return true;
+    return switch (after.getName()) {
+      case KNIGHT -> true;
+      case PAWN -> new CheckPieceMove().checkPawn(piece, move);
+      case KING -> new CheckPieceMove().checkKing(piece, move);
+      case ROOK, QUEEN, BISHOP -> new CheckPieceMove().checkPathIsFree(piece.getSquare(), after.getSquare());
+    };
   }
 
   private boolean checkPieceNotEscape(Piece piece) {
@@ -298,7 +295,7 @@ public final class ChessBoard {
 
   private class CheckPieceMove {
 
-    private boolean freeRoad(Square from, Square to) {
+    private boolean checkPathIsFree(Square from, Square to) {
       int verticalBefore = from.getVertical();
       int verticalAfter = to.getVertical();
 
@@ -332,7 +329,7 @@ public final class ChessBoard {
       int sideShift = Math.abs(horizontalBefore - horizontalAfter);
       int heightShift = verticalAfter - verticalBefore;
 
-      if (!freeRoad(piece.getSquare(), after.getSquare())) {
+      if (!checkPathIsFree(piece.getSquare(), after.getSquare())) {
         return false;
       }
 
@@ -381,7 +378,7 @@ public final class ChessBoard {
         return true;
       }
 
-      if (piece.isMoveBefore() || !freeRoad(piece.getSquare(), after.getSquare())) {
+      if (piece.isMoveBefore() || !checkPathIsFree(piece.getSquare(), after.getSquare())) {
         return false;
       }
 
