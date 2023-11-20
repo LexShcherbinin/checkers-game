@@ -312,22 +312,22 @@ public final class Piece {
   public String toString() {
     if (this.color.equals(Colors.WHITE)) {
       return switch (this.name) {
-        case KING -> TextColor.WHITE_BRIGHT + "♔" + TextColor.RESET;
-        case QUEEN -> TextColor.WHITE_BRIGHT + "♕" + TextColor.RESET;
-        case ROOK -> TextColor.WHITE_BRIGHT + "♖" + TextColor.RESET;
-        case BISHOP -> TextColor.WHITE_BRIGHT + "♗" + TextColor.RESET;
-        case KNIGHT -> TextColor.WHITE_BRIGHT + "♘" + TextColor.RESET;
-        case PAWN -> TextColor.WHITE_BRIGHT + "♙" + TextColor.RESET;
+        case KING -> "♔";
+        case QUEEN -> "♕";
+        case ROOK -> "♖";
+        case BISHOP -> "♗";
+        case KNIGHT -> "♘";
+        case PAWN -> "♙";
       };
 
     } else {
       return switch (this.name) {
-        case KING -> TextColor.BLACK + "♚" + TextColor.RESET;
-        case QUEEN -> TextColor.BLACK + "♛" + TextColor.RESET;
-        case ROOK -> TextColor.BLACK + "♜" + TextColor.RESET;
-        case BISHOP -> TextColor.BLACK + "♝" + TextColor.RESET;
-        case KNIGHT -> TextColor.BLACK + "♞" + TextColor.RESET;
-        case PAWN -> TextColor.BLACK + "♟" + TextColor.RESET;
+        case KING ->"♚";
+        case QUEEN ->"♛";
+        case ROOK ->"♜";
+        case BISHOP ->"♝";
+        case KNIGHT ->"♞";
+        case PAWN ->"♟";
       };
     }
   }

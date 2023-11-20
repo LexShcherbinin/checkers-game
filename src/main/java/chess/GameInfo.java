@@ -38,9 +38,9 @@ public class GameInfo {
   @Override
   public String toString() {
     return TextColor.YELLOW +
-        "=".repeat(80) + "\n" +
-        String.format("Ход: %s\t\t\tКоличество съеденных фигур: %s\t\t\tКоличество сделанных ходов: %s\n", lastStep, eatPiecesCount, stepCount) +
-        "=".repeat(80) + "\n" +
+        "=".repeat(100) + "\n" +
+        String.format("Ход: %s\t///\tКоличество съеденных фигур: %s\t///\tКоличество сделанных ходов: %s\n", lastStep, eatPiecesCount, stepCount) +
+        "=".repeat(100) + "\n" +
         TextColor.RESET;
   }
 

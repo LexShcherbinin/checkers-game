@@ -87,7 +87,7 @@ public final class ChessBoard {
   }
 
   public boolean addPiece(Piece piece) {
-    if (containsPiece(piece.getSquare())) {
+    if (!containsPiece(piece.getSquare())) {
       pieces.add(piece);
       return true;
     }
@@ -262,7 +262,14 @@ public final class ChessBoard {
       int vertical = piece.getSquare().getVertical();
       int horizontal = piece.getSquare().getHorizontal();
 
-      board[vertical][horizontal] = piece.toString();
+      if (piece.getColor().equals(WHITE)) {
+        board[vertical][horizontal] = TextColor.WHITE_BRIGHT + piece + TextColor.RESET;
+
+      } else {
+        board[vertical][horizontal] = TextColor.BLACK + piece + TextColor.RESET;
+      }
+
+//      board[vertical][horizontal] = piece.toString();
     }
 
     String boardColor = TextColor.WHITE;
