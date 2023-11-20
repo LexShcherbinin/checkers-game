@@ -119,9 +119,10 @@ public final class Piece {
   public Piece(Piece piece) {
     this.name = piece.getName();
     this.color = piece.getColor();
-    this.square = piece.getSquare();
+    this.square = Square.of(piece.getSquare().getVertical(), piece.getSquare().getHorizontal());
     this.moveBefore = piece.isMoveBefore();
     this.moveList = piece.getMoveList();
+    this.previousMove = piece.getPreviousMove();
   }
 
   /**

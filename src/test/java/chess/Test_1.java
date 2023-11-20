@@ -1,8 +1,7 @@
 package chess;
 
-import static org.testng.Assert.assertTrue;
-
 import chess.enums.Colors;
+import chess.enums.Moves;
 import chess.enums.Names;
 import chess.helpers.PiecesCreator;
 import chess.pojo.Piece;
@@ -36,6 +35,33 @@ public class Test_1 {
 
     pieceList.remove(piece);
     System.out.println(pieceList);
+  }
+
+  @Test
+  public void test4() {
+    List<Piece> pieceList = PiecesCreator.getDefaultPieceList();
+    ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
+    System.out.println(chessBoard);
+
+    chessBoard.makeMove(pieceList.get(0), Moves.PAWN_WHITE_UP_1);
+    System.out.println(chessBoard);
+  }
+
+  @Test
+  public void test5() {
+    Piece piece1 = new Piece(Names.KING, Colors.WHITE, Square.of(5, 5));
+    Piece piece2 = new Piece(piece1);
+
+    System.out.println(piece1 == piece2);
+
+    Moves.KING_DOWN_LEFT.getMove().move(piece2);
+    System.out.println(piece1.getSquare() == piece2.getSquare());
+
+    ChessBoard chessBoard = ChessBoard.createChessBoard(List.of(
+        piece1,
+        piece2
+    ));
+    System.out.println(chessBoard);
   }
 
 }

@@ -176,7 +176,8 @@ public final class ChessBoard {
 
   public boolean makeMove(Piece piece, Moves move) {
     if (checkMoveIsPossible(piece, move)) {
-      Piece after = move.getMove().move(piece);
+      Piece after = new Piece(piece);
+      move.getMove().move(after);
 
       if (checkEnemyPieceInDestination(after)) {
         clearSquare(after.getSquare());
@@ -193,7 +194,8 @@ public final class ChessBoard {
   }
 
   private boolean checkMoveIsPossible(Piece piece, Moves move) {
-    Piece after = move.getMove().move(piece);
+    Piece after = new Piece(piece);
+    move.getMove().move(after);
 
     if (!checkPieceNotEscape(after)) {
       return false;
@@ -318,7 +320,8 @@ public final class ChessBoard {
     }
 
     private boolean checkPawn(Piece piece, Moves move) {
-      Piece after = move.getMove().move(piece);
+      Piece after = new Piece(piece);
+      move.getMove().move(after);
 
       int verticalBefore = piece.getSquare().getVertical();
       int verticalAfter = after.getSquare().getVertical();
@@ -364,7 +367,8 @@ public final class ChessBoard {
     }
 
     private boolean checkKing(Piece piece, Moves move) {
-      Piece after = move.getMove().move(piece);
+      Piece after = new Piece(piece);
+      move.getMove().move(after);
 
       int horizontalBefore = piece.getSquare().getHorizontal();
       int horizontalAfter = after.getSquare().getHorizontal();
