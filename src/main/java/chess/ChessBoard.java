@@ -2,6 +2,14 @@ package chess;
 
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Moves.KING_CASTLING_RIGHT;
+import static chess.enums.Moves.PAWN_BLACK_DOWN_1;
+import static chess.enums.Moves.PAWN_BLACK_DOWN_2;
+import static chess.enums.Moves.PAWN_BLACK_DOWN_LEFT;
+import static chess.enums.Moves.PAWN_BLACK_DOWN_RIGHT;
+import static chess.enums.Moves.PAWN_WHITE_UP_1;
+import static chess.enums.Moves.PAWN_WHITE_UP_2;
+import static chess.enums.Moves.PAWN_WHITE_UP_LEFT;
+import static chess.enums.Moves.PAWN_WHITE_UP_RIGHT;
 import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
@@ -190,6 +198,8 @@ public final class ChessBoard {
       changePriority();
     }
 
+    System.out.println("Нельзя пойти ходом " + piece + " /// " + move);
+
     return false;
   }
 
@@ -314,11 +324,16 @@ public final class ChessBoard {
       int sideShift = horizontalBefore - horizontalAfter;
       int heightShift = verticalAfter - verticalBefore;
 
-      Function<Integer, Integer> functionVertical = heightShift == 0 ? i -> i : (heightShift > 0 ? i -> i++ : i -> i--);
-      Function<Integer, Integer> functionHorizontal = sideShift == 0 ? i -> i : (sideShift > 0 ? i -> i++ : i -> i--);
+      Function<Integer, Integer> functionVertical = heightShift == 0 ? i -> i : (heightShift > 0 ? i -> ++i : i -> --i);
+      Function<Integer, Integer> functionHorizontal = sideShift == 0 ? i -> i : (sideShift > 0 ? i -> ++i : i -> --i);
 
-      for (int i = 1; i < Math.max(Math.abs(heightShift), Math.abs(sideShift)); i++) {
-        if (containsPiece(from.shift(functionVertical.apply(verticalBefore), functionHorizontal.apply(horizontalBefore)))) {
+      for (int i = 0; i < Math.max(Math.abs(heightShift), Math.abs(sideShift)); i++) {
+        int a = verticalBefore + functionVertical.apply(i);
+        int b = horizontalBefore + functionHorizontal.apply(i);
+
+        Square square = Square.of(a, b);
+
+        if (containsPiece(square)) {
           return false;
         }
       }
@@ -344,13 +359,17 @@ public final class ChessBoard {
       }
 
       if (after.getColor() == WHITE) {
+        if (move.equals(PAWN_BLACK_DOWN_1) || move.equals(PAWN_BLACK_DOWN_2) || move.equals(PAWN_BLACK_DOWN_LEFT) || move.equals(PAWN_BLACK_DOWN_RIGHT)) {
+          return false;
+        }
+
         if (checkEnemyPieceInDestination(after)) {
           return sideShift != 0;
 
         } else {
           if (sideShift == 1) {
             Piece enemy = getPieceIfPresent(Square.of(verticalAfter - 1, horizontalAfter));
-            return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(Moves.PAWN_BLACK_DOWN_2);
+            return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
 
           } else {
             return heightShift == 1 || verticalAfter == 3;
@@ -358,13 +377,17 @@ public final class ChessBoard {
         }
 
       } else {
+        if (move.equals(PAWN_WHITE_UP_1) || move.equals(PAWN_WHITE_UP_2) || move.equals(PAWN_WHITE_UP_LEFT) || move.equals(PAWN_WHITE_UP_RIGHT)) {
+          return false;
+        }
+
         if (checkEnemyPieceInDestination(after)) {
           return sideShift != 0;
 
         } else {
           if (sideShift == 1) {
             Piece enemy = getPieceIfPresent(Square.of(verticalAfter + 1, horizontalAfter));
-            return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(Moves.PAWN_BLACK_DOWN_2);
+            return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
 
           } else {
             return heightShift == -1 || verticalAfter == 4;
