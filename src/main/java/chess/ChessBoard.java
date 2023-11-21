@@ -1,7 +1,6 @@
 package chess;
 
 import static chess.enums.Colors.WHITE;
-import static chess.enums.Moves.KING_CASTLING_RIGHT;
 import static chess.enums.Moves.PAWN_BLACK_DOWN_1;
 import static chess.enums.Moves.PAWN_BLACK_DOWN_2;
 import static chess.enums.Moves.PAWN_BLACK_DOWN_LEFT;
@@ -436,64 +435,34 @@ public final class ChessBoard {
         return false;
       }
 
-      Set<Square> attackedFields = getAttackedFieldList();
-      Set<Square> shouldNotBeAttackedField;
-      int vertical;
-      int horizontal;
+      int vertical = piece.getColor() == WHITE ? 0 : 7;
+      int horizontal = move.equals(Moves.KING_CASTLING_RIGHT) ? 7 : 0;
 
-      if (getPriority() == WHITE) {
+      Piece rook = getPieceIfPresent(new Piece(ROOK, getFriendlyColor(), Square.of(vertical, horizontal)));
 
-        if (move.equals(KING_CASTLING_RIGHT)) {
-          vertical = 0;
-          horizontal = 7;
-          shouldNotBeAttackedField = Set.of(
-              Square.of(vertical, 4),
-              Square.of(vertical, 5),
-              Square.of(vertical, 6)
-          );
-
-        } else {
-          vertical = 0;
-          horizontal = 0;
-          shouldNotBeAttackedField = Set.of(
-              Square.of(vertical, 4),
-              Square.of(vertical, 3),
-              Square.of(vertical, 2),
-              Square.of(vertical, 1)
-          );
-        }
-
-      } else {
-        if (move.equals(KING_CASTLING_RIGHT)) {
-          vertical = 7;
-          horizontal = 7;
-          shouldNotBeAttackedField = Set.of(
-              Square.of(vertical, 4),
-              Square.of(vertical, 5),
-              Square.of(vertical, 6)
-          );
-
-        } else {
-          vertical = 7;
-          horizontal = 0;
-          shouldNotBeAttackedField = Set.of(
-              Square.of(vertical, 4),
-              Square.of(vertical, 3),
-              Square.of(vertical, 2),
-              Square.of(vertical, 1)
-          );
-        }
+      if (rook == null || rook.isMoveBefore()) {
+        return false;
       }
 
-      boolean existRook = pieces.stream()
-          .anyMatch(p -> p.getName().equals(ROOK) &&
-              p.getColor().equals(getFriendlyColor()) &&
-              p.getSquare().equals(Square.of(vertical, horizontal)) &&
-              !p.isMoveBefore()
-          );
+      Set<Square> shouldNotBeAttackedField;
 
-      return existRook && attackedFields.stream().noneMatch(shouldNotBeAttackedField::contains);
+      if (move.equals(Moves.KING_CASTLING_RIGHT)) {
+        shouldNotBeAttackedField = Set.of(
+            Square.of(vertical, 4),
+            Square.of(vertical, 5),
+            Square.of(vertical, 6)
+        );
 
+      } else {
+        shouldNotBeAttackedField = Set.of(
+            Square.of(vertical, 4),
+            Square.of(vertical, 3),
+            Square.of(vertical, 2),
+            Square.of(vertical, 1)
+        );
+      }
+
+      return getAttackedFieldList().stream().noneMatch(shouldNotBeAttackedField::contains);
     }
 
     private Set<Square> getAttackedFieldList() {
