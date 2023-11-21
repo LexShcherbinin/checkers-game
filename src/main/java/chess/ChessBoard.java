@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -215,11 +214,13 @@ public final class ChessBoard {
       return false;
     }
 
+    CheckPieceMove checkPieceMove = new CheckPieceMove();
+
     return switch (after.getName()) {
       case KNIGHT -> true;
-      case PAWN -> new CheckPieceMove().checkPawn(piece, move);
-      case KING -> new CheckPieceMove().checkKing(piece, move);
-      case ROOK, QUEEN, BISHOP -> new CheckPieceMove().checkPathIsFree(piece.getSquare(), after.getSquare());
+      case PAWN -> checkPieceMove.checkPawn(piece, move);
+      case KING -> checkPieceMove.checkKing(piece, move);
+      case ROOK, QUEEN, BISHOP -> checkPieceMove.checkPathClear(piece.getSquare(), after.getSquare());
     };
   }
 
@@ -314,26 +315,45 @@ public final class ChessBoard {
 
   private class CheckPieceMove {
 
-    private boolean checkPathIsFree(Square from, Square to) {
-      int verticalBefore = from.getVertical();
-      int verticalAfter = to.getVertical();
+//    private boolean checkPathIsFree(Square from, Square to) {
+//      int verticalBefore = from.getVertical();
+//      int verticalAfter = to.getVertical();
+//
+//      int horizontalBefore = from.getHorizontal();
+//      int horizontalAfter = to.getHorizontal();
+//
+//      int sideShift = horizontalBefore - horizontalAfter;
+//      int heightShift = verticalAfter - verticalBefore;
+//
+//      Function<Integer, Integer> functionVertical = heightShift == 0 ? i -> i : (heightShift > 0 ? i -> ++i : i -> --i);
+//      Function<Integer, Integer> functionHorizontal = sideShift == 0 ? i -> i : (sideShift > 0 ? i -> ++i : i -> --i);
+//
+//      for (int i = 0; i < Math.max(Math.abs(heightShift), Math.abs(sideShift)); i++) {
+//        int a = verticalBefore + functionVertical.apply(i);
+//        int b = horizontalBefore + functionHorizontal.apply(i);
+//
+//        Square square = Square.of(a, b);
+//
+//        if (containsPiece(square)) {
+//          return false;
+//        }
+//      }
+//
+//      return true;
+//    }
 
-      int horizontalBefore = from.getHorizontal();
-      int horizontalAfter = to.getHorizontal();
+    private boolean checkPathClear(Square from, Square to) {
+      int yFrom = from.getVertical();
+      int yTo = to.getVertical();
 
-      int sideShift = horizontalBefore - horizontalAfter;
-      int heightShift = verticalAfter - verticalBefore;
+      int xFrom = from.getHorizontal();
+      int xTo = to.getHorizontal();
 
-      Function<Integer, Integer> functionVertical = heightShift == 0 ? i -> i : (heightShift > 0 ? i -> ++i : i -> --i);
-      Function<Integer, Integer> functionHorizontal = sideShift == 0 ? i -> i : (sideShift > 0 ? i -> ++i : i -> --i);
+      int dx = Integer.compare(xTo, xFrom);
+      int dy = Integer.compare(yTo, yFrom);
 
-      for (int i = 0; i < Math.max(Math.abs(heightShift), Math.abs(sideShift)); i++) {
-        int a = verticalBefore + functionVertical.apply(i);
-        int b = horizontalBefore + functionHorizontal.apply(i);
-
-        Square square = Square.of(a, b);
-
-        if (containsPiece(square)) {
+      for (int x = xFrom + dx, y = yFrom + dy; x != xTo || y != yTo; x += dx, y += dy) {
+        if (containsPiece(Square.of(x, y))) {
           return false;
         }
       }
@@ -354,7 +374,7 @@ public final class ChessBoard {
       int sideShift = Math.abs(horizontalBefore - horizontalAfter);
       int heightShift = verticalAfter - verticalBefore;
 
-      if (!checkPathIsFree(piece.getSquare(), after.getSquare())) {
+      if (!checkPathClear(piece.getSquare(), after.getSquare())) {
         return false;
       }
 
@@ -412,7 +432,7 @@ public final class ChessBoard {
         return true;
       }
 
-      if (piece.isMoveBefore() || !checkPathIsFree(piece.getSquare(), after.getSquare())) {
+      if (piece.isMoveBefore() || !checkPathClear(piece.getSquare(), after.getSquare())) {
         return false;
       }
 
