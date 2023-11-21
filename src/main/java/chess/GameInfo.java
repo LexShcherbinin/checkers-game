@@ -35,6 +35,10 @@ public class GameInfo {
         .setLastStep("");
   }
 
+  public void incrementEatPiecesCount() {
+    this.eatPiecesCount++;
+  }
+
   @Override
   public String toString() {
     return TextColor.YELLOW +

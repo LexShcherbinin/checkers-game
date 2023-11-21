@@ -187,7 +187,10 @@ public final class ChessBoard {
 
       if (checkEnemyPieceInDestination(after)) {
         clearSquare(after.getSquare());
+        gameInfo.incrementEatPiecesCount();
       }
+
+      new CheckPieceMove().checkEnPassant(piece, move);
 
       removePiece(piece);
       addPiece(after);
@@ -244,12 +247,10 @@ public final class ChessBoard {
   private void updateGameInfo(Piece before, Piece after) {
     String lastStep = String.format("%s : %s -> %s", before, before.getSquare(), after.getSquare());
     int stepCount = gameInfo.getStepCount();
-    int eatPiecesCount = gameInfo.getEatPiecesCount();
 
     gameInfo
         .setLastStep(lastStep)
-        .setStepCount(++stepCount)
-        .setEatPiecesCount(++eatPiecesCount);
+        .setStepCount(++stepCount);
   }
 
   @Override
@@ -314,33 +315,6 @@ public final class ChessBoard {
 
   private class CheckPieceMove {
 
-//    private boolean checkPathIsFree(Square from, Square to) {
-//      int verticalBefore = from.getVertical();
-//      int verticalAfter = to.getVertical();
-//
-//      int horizontalBefore = from.getHorizontal();
-//      int horizontalAfter = to.getHorizontal();
-//
-//      int sideShift = horizontalBefore - horizontalAfter;
-//      int heightShift = verticalAfter - verticalBefore;
-//
-//      Function<Integer, Integer> functionVertical = heightShift == 0 ? i -> i : (heightShift > 0 ? i -> ++i : i -> --i);
-//      Function<Integer, Integer> functionHorizontal = sideShift == 0 ? i -> i : (sideShift > 0 ? i -> ++i : i -> --i);
-//
-//      for (int i = 0; i < Math.max(Math.abs(heightShift), Math.abs(sideShift)); i++) {
-//        int a = verticalBefore + functionVertical.apply(i);
-//        int b = horizontalBefore + functionHorizontal.apply(i);
-//
-//        Square square = Square.of(a, b);
-//
-//        if (containsPiece(square)) {
-//          return false;
-//        }
-//      }
-//
-//      return true;
-//    }
-
     private boolean checkPathClear(Square from, Square to) {
       int yFrom = from.getVertical();
       int yTo = to.getVertical();
@@ -358,6 +332,30 @@ public final class ChessBoard {
       }
 
       return true;
+    }
+
+    private void checkEnPassant(Piece piece, Moves move) {
+      Piece after = new Piece(piece);
+      move.getMove().move(after);
+
+      int verticalBefore = piece.getSquare().getVertical();
+      int verticalAfter = after.getSquare().getVertical();
+
+      int horizontalBefore = piece.getSquare().getHorizontal();
+      int horizontalAfter = after.getSquare().getHorizontal();
+
+      int sideShift = Math.abs(horizontalBefore - horizontalAfter);
+
+      if (sideShift != 0) {
+        int x = Integer.compare(verticalBefore, verticalAfter);
+        Piece enemy = getPieceIfPresent(Square.of(verticalAfter + x, horizontalAfter));
+        Moves previousMove = after.getColor() == WHITE ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
+
+        if (enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(previousMove)) {
+          removePiece(enemy);
+          gameInfo.incrementEatPiecesCount();
+        }
+      }
     }
 
     private boolean checkPawn(Piece piece, Moves move) {
