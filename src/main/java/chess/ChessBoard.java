@@ -183,12 +183,15 @@ public final class ChessBoard {
       Piece after = new Piece(piece);
       move.getMove().move(after);
 
+      gameInfo.setPreviousMove(move);
+
       if (checkPieceMove.checkEnemyPieceInDestination()) {
         clearSquare(after.getSquare());
         gameInfo.upEatPiecesCount();
       }
 
       checkPieceMove.checkEnPassant();
+      checkPieceMove.checkCastling();
 
       removePiece(piece);
       addPiece(after);
@@ -349,6 +352,15 @@ public final class ChessBoard {
           gameInfo.upEatPiecesCount();
         }
       }
+    }
+
+    private void checkCastling() {
+      int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
+      int x = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
+      Moves move = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
+
+      Piece rook = getPieceIfPresent(Square.of(y, x));
+      move.getMove().move(rook);
     }
 
     private boolean checkPawn() {
