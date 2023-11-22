@@ -130,15 +130,15 @@ public final class ChessBoard {
   }
 
   public boolean containsPiece(Names name, Colors color) {
-    return pieces.stream().anyMatch(piece -> piece.getColor().equals(color) && piece.getName().equals(name));
+    return pieces.stream().anyMatch(p -> p.getColor().equals(color) && p.getName().equals(name));
   }
 
   public boolean containsPiece(Square square) {
-    return pieces.stream().anyMatch(piece -> piece.getSquare().equals(square));
+    return pieces.stream().anyMatch(p -> p.getSquare().equals(square));
   }
 
   public boolean haveBothKingOnBoard() {
-    return pieces.stream().filter(piece -> piece.getName().equals(Names.KING)).count() == 2;
+    return pieces.stream().filter(p -> p.getName().equals(Names.KING)).count() == 2;
   }
 
   public void giveUp() {
@@ -156,7 +156,7 @@ public final class ChessBoard {
   private Piece getPieceIfPresent(Names name, Colors color) {
     return pieces
         .stream()
-        .filter(piece -> piece.getColor().equals(color) && piece.getName().equals(name))
+        .filter(p -> p.getColor().equals(color) && p.getName().equals(name))
         .findAny()
         .orElse(null);
   }
@@ -164,7 +164,7 @@ public final class ChessBoard {
   private Piece getPieceIfPresent(Square square) {
     return pieces
         .stream()
-        .filter(piece -> piece.getSquare().equals(square))
+        .filter(p -> p.getSquare().equals(square))
         .findAny()
         .orElse(null);
   }
@@ -191,7 +191,7 @@ public final class ChessBoard {
 
       if (checkPieceMove.checkEnemyPieceInDestination()) {
         clearSquare(after.getSquare());
-        gameInfo.incrementEatPiecesCount();
+        gameInfo.upEatPiecesCount();
       }
 
       checkPieceMove.checkEnPassant();
@@ -203,58 +203,16 @@ public final class ChessBoard {
       changePriority();
     }
 
-    System.out.println("Нельзя пойти ходом " + piece + " /// " + move);
-
     return false;
   }
-
-//  private boolean checkMoveIsPossible(Piece piece, Moves move) {
-//    Piece after = new Piece(piece);
-//    move.getMove().move(after);
-//
-//    if (!checkPieceNotEscape(after)) {
-//      return false;
-//    }
-//
-//    if (checkFriendlyPieceInDestination(after)) {
-//      return false;
-//    }
-//
-//    CheckPieceMove checkPieceMove = new CheckPieceMove();
-//
-//    return switch (after.getName()) {
-//      case KNIGHT -> true;
-//      case PAWN -> checkPieceMove.checkPawn(piece, move);
-//      case KING -> checkPieceMove.checkKing(piece, move);
-//      case ROOK, QUEEN, BISHOP -> checkPieceMove.checkPathClear(piece.getSquare(), after.getSquare());
-//    };
-//  }
-//
-//  private boolean checkPieceNotEscape(Piece piece) {
-//    int vertical = piece.getSquare().getVertical();
-//    int horizontal = piece.getSquare().getHorizontal();
-//
-//    return vertical < 8 && vertical >= 0 && horizontal < 8 && horizontal >= 0;
-//  }
-//
-//  private boolean checkFriendlyPieceInDestination(Piece afterMove) {
-//    return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && p.getColor().equals(afterMove.getColor()));
-//  }
-//
-//  private boolean checkEnemyPieceInDestination(Piece afterMove) {
-//    return pieces.stream().anyMatch(p -> p.getSquare().equals(afterMove.getSquare()) && !p.getColor().equals(afterMove.getColor()));
-//  }
 
   /**
    * Обновить информацию об игре.
    */
-  private void updateGameInfo(Piece before, Piece after) {
-    String lastStep = String.format("%s : %s -> %s", before, before.getSquare(), after.getSquare());
-    int stepCount = gameInfo.getStepCount();
-
-    gameInfo
-        .setLastStep(lastStep)
-        .setStepCount(++stepCount);
+  private void updateGameInfo(Piece from, Piece to) {
+    String lastStep = String.format("%s(%s -> %s)", from, from.getSquare(), to.getSquare());
+    gameInfo.upStepCount();
+    gameInfo.setLastStep(lastStep);
   }
 
   @Override
@@ -274,14 +232,14 @@ public final class ChessBoard {
     }
 
     for (Piece piece : pieces) {
-      int vertical = piece.getSquare().getVertical();
-      int horizontal = piece.getSquare().getHorizontal();
+      int y = piece.getSquare().getVertical();
+      int x = piece.getSquare().getHorizontal();
 
       if (piece.getColor().equals(WHITE)) {
-        board[vertical][horizontal] = TextColor.WHITE_BRIGHT + piece + TextColor.RESET;
+        board[y][x] = TextColor.WHITE_BRIGHT + piece + TextColor.RESET;
 
       } else {
-        board[vertical][horizontal] = TextColor.BLACK + piece + TextColor.RESET;
+        board[y][x] = TextColor.BLACK + piece + TextColor.RESET;
       }
     }
 
@@ -330,7 +288,7 @@ public final class ChessBoard {
 
     public CheckPieceMove(Piece piece, Moves move) {
       this.before = piece;
-      this.after = new Piece(move.getMove().move(piece));
+      this.after = move.getMove().move(new Piece(piece));
       this.move = move;
 
       this.yFrom = piece.getSquare().getVertical();
@@ -387,13 +345,14 @@ public final class ChessBoard {
 
     private void checkEnPassant() {
       if (Math.abs(xFrom - xTo) != 0) {
-        int x = Integer.compare(yFrom, yTo);
-        Piece enemy = getPieceIfPresent(Square.of(yTo + x, xTo));
+        int dy = Integer.compare(yFrom, yTo);
+
+        Piece enemy = getPieceIfPresent(Square.of(yTo + dy, xTo));
         Moves previousMove = after.getColor() == WHITE ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
 
         if (enemy != null && enemy.getColor().equals(getEnemyColor()) && gameInfo.getPreviousMove().equals(previousMove)) {
           removePiece(enemy);
-          gameInfo.incrementEatPiecesCount();
+          gameInfo.upEatPiecesCount();
         }
       }
     }
@@ -454,10 +413,10 @@ public final class ChessBoard {
         return false;
       }
 
-      int vertical = before.getColor() == WHITE ? 0 : 7;
-      int horizontal = move.equals(Moves.KING_CASTLING_RIGHT) ? 7 : 0;
+      int y = before.getColor() == WHITE ? 0 : 7;
+      int x = move.equals(Moves.KING_CASTLING_RIGHT) ? 7 : 0;
 
-      Piece rook = getPieceIfPresent(new Piece(ROOK, getFriendlyColor(), Square.of(vertical, horizontal)));
+      Piece rook = getPieceIfPresent(new Piece(ROOK, getFriendlyColor(), Square.of(y, x)));
 
       if (rook == null || rook.isMoveBefore()) {
         return false;
@@ -467,17 +426,17 @@ public final class ChessBoard {
 
       if (move.equals(Moves.KING_CASTLING_RIGHT)) {
         shouldNotBeAttackedField = Set.of(
-            Square.of(vertical, 4),
-            Square.of(vertical, 5),
-            Square.of(vertical, 6)
+            Square.of(y, 4),
+            Square.of(y, 5),
+            Square.of(y, 6)
         );
 
       } else {
         shouldNotBeAttackedField = Set.of(
-            Square.of(vertical, 4),
-            Square.of(vertical, 3),
-            Square.of(vertical, 2),
-            Square.of(vertical, 1)
+            Square.of(y, 4),
+            Square.of(y, 3),
+            Square.of(y, 2),
+            Square.of(y, 1)
         );
       }
 
@@ -487,9 +446,9 @@ public final class ChessBoard {
     private Set<Square> getAttackedFieldList() {
       return pieces
           .stream()
-          .filter(piece -> piece.getColor() == getEnemyColor())
-          .map(piece ->
-              piece
+          .filter(p -> p.getColor() == getEnemyColor())
+          .map(p ->
+              p
                   .getMoveList()
                   .stream()
                   .filter(move -> checkMoveIsPossible())

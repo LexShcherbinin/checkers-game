@@ -42,8 +42,12 @@ public class GameInfo {
         .setPreviousMove(null);
   }
 
-  public void incrementEatPiecesCount() {
+  public void upEatPiecesCount() {
     this.eatPiecesCount++;
+  }
+
+  public void upStepCount() {
+    this.stepCount++;
   }
 
   @Override
