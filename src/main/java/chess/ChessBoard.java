@@ -1,14 +1,8 @@
 package chess;
 
 import static chess.enums.Colors.WHITE;
-import static chess.enums.Moves.PAWN_BLACK_DOWN_1;
 import static chess.enums.Moves.PAWN_BLACK_DOWN_2;
-import static chess.enums.Moves.PAWN_BLACK_DOWN_LEFT;
-import static chess.enums.Moves.PAWN_BLACK_DOWN_RIGHT;
-import static chess.enums.Moves.PAWN_WHITE_UP_1;
 import static chess.enums.Moves.PAWN_WHITE_UP_2;
-import static chess.enums.Moves.PAWN_WHITE_UP_LEFT;
-import static chess.enums.Moves.PAWN_WHITE_UP_RIGHT;
 import static chess.enums.Names.PAWN;
 import static chess.enums.Names.ROOK;
 
@@ -363,10 +357,6 @@ public final class ChessBoard {
       }
 
       if (after.getColor() == WHITE) {
-//        if (move.equals(PAWN_BLACK_DOWN_1) || move.equals(PAWN_BLACK_DOWN_2) || move.equals(PAWN_BLACK_DOWN_LEFT) || move.equals(PAWN_BLACK_DOWN_RIGHT)) {
-//          return false;
-//        }
-
         if (checkEnemyPieceInDestination()) {
           return Math.abs(xShift) != 0;
 
@@ -381,10 +371,6 @@ public final class ChessBoard {
         }
 
       } else {
-//        if (move.equals(PAWN_WHITE_UP_1) || move.equals(PAWN_WHITE_UP_2) || move.equals(PAWN_WHITE_UP_LEFT) || move.equals(PAWN_WHITE_UP_RIGHT)) {
-//          return false;
-//        }
-
         if (checkEnemyPieceInDestination()) {
           return Math.abs(xShift) != 0;
 
@@ -454,20 +440,12 @@ public final class ChessBoard {
               piece
                   .getMoveList()
                   .stream()
-                  .filter(move -> {
-                    CheckPieceMove checkPieceMove = new CheckPieceMove(piece, move);
-                    return checkPieceMove.checkMoveIsPossible();
-                  })
-                  .map(move -> {
-                    Piece www = new Piece(piece);
-                    return move.getMove().move(www).getSquare();
-                  })
+                  .filter(move -> new CheckPieceMove(piece, move).checkMoveIsPossible())
+                  .map(move -> move.getMove().move(new Piece(piece)).getSquare())
                   .collect(Collectors.toSet())
           )
           .flatMap(Collection::stream)
           .collect(Collectors.toSet());
-
-
     }
   }
 

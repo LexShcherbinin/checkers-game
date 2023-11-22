@@ -74,7 +74,7 @@ public class Test_1 {
     ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
     System.out.println(chessBoard);
 
-    chessBoard.makeMove(pieceList.get(0), Moves.PAWN_WHITE_UP_1);
+    chessBoard.makeMove(pieceList.get(2), Moves.PAWN_WHITE_UP_1);
     System.out.println(chessBoard);
   }
 

@@ -292,10 +292,6 @@ public final class Piece {
     }
 
     return moveList;
-
-//    return moveList.stream()
-//        .map(Moves::getMove)
-//        .collect(Collectors.toList());
   }
 
   @Override
