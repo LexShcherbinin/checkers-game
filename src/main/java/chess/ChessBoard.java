@@ -1,9 +1,12 @@
 package chess;
 
+import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Moves.PAWN_BLACK_DOWN_2;
 import static chess.enums.Moves.PAWN_WHITE_UP_2;
+import static chess.enums.Names.KING;
 import static chess.enums.Names.PAWN;
+import static chess.enums.Names.QUEEN;
 import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
@@ -190,8 +193,14 @@ public final class ChessBoard {
         gameInfo.upEatPiecesCount();
       }
 
-      checkPieceMove.checkEnPassant();
-      checkPieceMove.checkCastling();
+      if (piece.getName().equals(PAWN)) {
+        checkPieceMove.checkEnPassant();
+        checkPieceMove.checkPawnPromotion();
+      }
+
+      if (piece.getName().equals(KING)) {
+        checkPieceMove.checkCastling();
+      }
 
       removePiece(piece);
       addPiece(after);
@@ -361,6 +370,13 @@ public final class ChessBoard {
 
       Piece rook = getPieceIfPresent(Square.of(y, x));
       move.getMove().move(rook);
+    }
+
+    private void checkPawnPromotion() {
+      if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
+        clearSquare(Square.of(yTo, xTo));
+        addPiece(new Piece(QUEEN, getFriendlyColor(), Square.of(yTo, xTo)));
+      }
     }
 
     private boolean checkPawn() {

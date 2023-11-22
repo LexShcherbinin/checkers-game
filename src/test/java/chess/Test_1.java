@@ -132,4 +132,20 @@ public class Test_1 {
     System.out.println(chessBoard);
   }
 
+  @Test
+  public void test10() {
+    List<Piece> pieceList = List.of(
+        new Piece(Names.PAWN, Colors.WHITE, Square.of(6, 5)),
+        new Piece(Names.PAWN, Colors.BLACK, Square.of(1, 4))
+    );
+    ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
+    System.out.println(chessBoard);
+
+    chessBoard.makeMove(pieceList.get(0), Moves.PAWN_WHITE_UP_1);
+    System.out.println(chessBoard);
+
+    chessBoard.makeMove(pieceList.get(1), Moves.PAWN_BLACK_DOWN_1);
+    System.out.println(chessBoard);
+  }
+
 }
