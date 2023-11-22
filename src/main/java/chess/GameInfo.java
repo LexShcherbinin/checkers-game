@@ -1,5 +1,6 @@
 package chess;
 
+import chess.enums.Moves;
 import chess.helpers.TextColor;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,11 +29,17 @@ public class GameInfo {
    */
   private String lastStep;
 
+  /**
+   * Предыдущий ход.
+   */
+  private Moves previousMove;
+
   public static GameInfo newGame() {
     return new GameInfo()
         .setEatPiecesCount(0)
         .setStepCount(0)
-        .setLastStep("");
+        .setLastStep("")
+        .setPreviousMove(null);
   }
 
   public void incrementEatPiecesCount() {

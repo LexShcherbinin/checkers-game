@@ -352,7 +352,7 @@ public final class ChessBoard {
         Piece enemy = getPieceIfPresent(Square.of(verticalAfter + x, horizontalAfter));
         Moves previousMove = after.getColor() == WHITE ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
 
-        if (enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(previousMove)) {
+        if (enemy != null && enemy.getColor().equals(getEnemyColor()) && gameInfo.getPreviousMove().equals(previousMove)) {
           removePiece(enemy);
           gameInfo.incrementEatPiecesCount();
         }
@@ -387,7 +387,7 @@ public final class ChessBoard {
         } else {
           if (sideShift == 1) {
             Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(verticalAfter - 1, horizontalAfter)));
-            return enemy != null && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
+            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
 
           } else {
             return heightShift == 1 || verticalAfter == 3;
@@ -405,7 +405,7 @@ public final class ChessBoard {
         } else {
           if (sideShift == 1) {
             Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(verticalAfter - 1, horizontalAfter)));
-            return enemy != null && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
+            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
 
           } else {
             return heightShift == -1 || verticalAfter == 4;

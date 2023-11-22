@@ -106,14 +106,12 @@ public final class Piece {
   private Square square;
   private boolean moveBefore;
   private List<Moves> moveList;
-  private Moves previousMove;
 
   public Piece(Names name, Colors color, Square square) {
     this.name = name;
     this.color = color;
     this.square = square;
     this.moveBefore = false;
-    this.previousMove = null;
   }
 
   public Piece(Piece piece) {
@@ -122,7 +120,6 @@ public final class Piece {
     this.square = Square.of(piece.getSquare().getVertical(), piece.getSquare().getHorizontal());
     this.moveBefore = piece.isMoveBefore();
     this.moveList = piece.getMoveList();
-    this.previousMove = piece.getPreviousMove();
   }
 
   /**
