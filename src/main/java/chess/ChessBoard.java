@@ -9,6 +9,7 @@ import static chess.enums.Moves.PAWN_WHITE_UP_1;
 import static chess.enums.Moves.PAWN_WHITE_UP_2;
 import static chess.enums.Moves.PAWN_WHITE_UP_LEFT;
 import static chess.enums.Moves.PAWN_WHITE_UP_RIGHT;
+import static chess.enums.Names.PAWN;
 import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
@@ -385,8 +386,8 @@ public final class ChessBoard {
 
         } else {
           if (sideShift == 1) {
-            Piece enemy = getPieceIfPresent(Square.of(verticalAfter - 1, horizontalAfter));
-            return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
+            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(verticalAfter - 1, horizontalAfter)));
+            return enemy != null && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
 
           } else {
             return heightShift == 1 || verticalAfter == 3;
@@ -403,8 +404,8 @@ public final class ChessBoard {
 
         } else {
           if (sideShift == 1) {
-            Piece enemy = getPieceIfPresent(Square.of(verticalAfter + 1, horizontalAfter));
-            return enemy != null && enemy.getColor().equals(getEnemyColor()) && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
+            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(verticalAfter - 1, horizontalAfter)));
+            return enemy != null && enemy.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
 
           } else {
             return heightShift == -1 || verticalAfter == 4;
