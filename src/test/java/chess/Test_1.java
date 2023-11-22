@@ -108,7 +108,8 @@ public class Test_1 {
     chessBoard.setPriority(Colors.BLACK);
     System.out.println(chessBoard);
 
-    chessBoard.makeMove(pieceList.get(5), Moves.KING_CASTLING_LEFT);
+//    chessBoard.makeMove(pieceList.get(5), Moves.KING_CASTLING_LEFT);
+    chessBoard.makeMove(pieceList.get(5), Moves.KING_CASTLING_RIGHT);
     System.out.println(chessBoard);
   }
 
@@ -126,6 +127,7 @@ public class Test_1 {
     ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
     System.out.println(chessBoard);
 
+//    chessBoard.makeMove(pieceList.get(4), Moves.KING_CASTLING_LEFT);
     chessBoard.makeMove(pieceList.get(4), Moves.KING_CASTLING_RIGHT);
     System.out.println(chessBoard);
   }
