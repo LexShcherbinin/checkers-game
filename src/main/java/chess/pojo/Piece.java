@@ -84,12 +84,9 @@ import static chess.enums.Moves.ROOK_UP_6;
 import static chess.enums.Moves.ROOK_UP_7;
 
 import chess.enums.Colors;
-import chess.enums.Move;
 import chess.enums.Moves;
 import chess.enums.Names;
-import chess.helpers.TextColor;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -112,6 +109,7 @@ public final class Piece {
     this.color = color;
     this.square = square;
     this.moveBefore = false;
+    this.moveList = getMovesForPiece(name, color);
   }
 
   public Piece(Piece piece) {
@@ -119,21 +117,14 @@ public final class Piece {
     this.color = piece.getColor();
     this.square = Square.of(piece.getSquare().getVertical(), piece.getSquare().getHorizontal());
     this.moveBefore = piece.isMoveBefore();
-    this.moveList = piece.getMoveList();
-  }
-
-  /**
-   * Получение списка всех ходов фигуры.
-   */
-  public List<Move<Piece, Piece>> getMovesForPiece() {
-    return getMovesForPiece(this);
+    this.moveList = getMovesForPiece(name, color);
   }
 
   /**
    * Получение списка всех ходов фигуры piece.
    */
-  public List<Move<Piece, Piece>> getMovesForPiece(Piece piece) {
-    switch (piece.getName()) {
+  public List<Moves> getMovesForPiece(Names name, Colors color) {
+    switch (name) {
       case PAWN -> {
         if (color.equals(Colors.WHITE)) {
           moveList = List.of(
@@ -300,9 +291,11 @@ public final class Piece {
 
     }
 
-    return moveList.stream()
-        .map(Moves::getMove)
-        .collect(Collectors.toList());
+    return moveList;
+
+//    return moveList.stream()
+//        .map(Moves::getMove)
+//        .collect(Collectors.toList());
   }
 
   @Override
@@ -319,12 +312,12 @@ public final class Piece {
 
     } else {
       return switch (this.name) {
-        case KING ->"♚";
-        case QUEEN ->"♛";
-        case ROOK ->"♜";
-        case BISHOP ->"♝";
-        case KNIGHT ->"♞";
-        case PAWN ->"♟";
+        case KING -> "♚";
+        case QUEEN -> "♛";
+        case ROOK -> "♜";
+        case BISHOP -> "♝";
+        case KNIGHT -> "♞";
+        case PAWN -> "♟";
       };
     }
   }

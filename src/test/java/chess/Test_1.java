@@ -78,4 +78,56 @@ public class Test_1 {
     System.out.println(chessBoard);
   }
 
+  @Test
+  public void test7() {
+    List<Piece> pieceList = List.of(
+        new Piece(Names.PAWN, Colors.WHITE, Square.of(4, 5)),
+        new Piece(Names.PAWN, Colors.BLACK, Square.of(4, 4))
+    );
+    ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
+    System.out.println(chessBoard);
+
+    chessBoard.getGameInfo().setPreviousMove(Moves.PAWN_BLACK_DOWN_2);
+
+    chessBoard.makeMove(pieceList.get(0), Moves.PAWN_WHITE_UP_LEFT);
+    System.out.println(chessBoard);
+  }
+
+  @Test
+  public void test8() {
+    List<Piece> pieceList = List.of(
+        new Piece(Names.ROOK, Colors.WHITE, Square.of(0, 0)),
+        new Piece(Names.ROOK, Colors.WHITE, Square.of(0, 7)),
+        new Piece(Names.ROOK, Colors.BLACK, Square.of(7, 0)),
+        new Piece(Names.ROOK, Colors.BLACK, Square.of(7, 7)),
+
+        new Piece(Names.KING, Colors.WHITE, Square.of(0, 4)),
+        new Piece(Names.KING, Colors.BLACK, Square.of(7, 4))
+    );
+    ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
+    chessBoard.setPriority(Colors.BLACK);
+    System.out.println(chessBoard);
+
+    chessBoard.makeMove(pieceList.get(5), Moves.KING_CASTLING_LEFT);
+    System.out.println(chessBoard);
+  }
+
+  @Test
+  public void test9() {
+    List<Piece> pieceList = List.of(
+        new Piece(Names.ROOK, Colors.WHITE, Square.of(0, 0)),
+        new Piece(Names.ROOK, Colors.WHITE, Square.of(0, 7)),
+        new Piece(Names.ROOK, Colors.BLACK, Square.of(7, 0)),
+        new Piece(Names.ROOK, Colors.BLACK, Square.of(7, 7)),
+
+        new Piece(Names.KING, Colors.WHITE, Square.of(0, 4)),
+        new Piece(Names.KING, Colors.BLACK, Square.of(7, 4))
+    );
+    ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
+    System.out.println(chessBoard);
+
+    chessBoard.makeMove(pieceList.get(4), Moves.KING_CASTLING_RIGHT);
+    System.out.println(chessBoard);
+  }
+
 }

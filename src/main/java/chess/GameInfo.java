@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @Setter()
 @Accessors(chain = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameInfo {
+public final class GameInfo {
 
   /**
    * Количество съеденных фигур.
@@ -53,9 +53,9 @@ public class GameInfo {
   @Override
   public String toString() {
     return TextColor.YELLOW +
-        "=".repeat(100) + "\n" +
-        String.format("Ход: %s\t///\tКоличество съеденных фигур: %s\t///\tКоличество сделанных ходов: %s\n", lastStep, eatPiecesCount, stepCount) +
-        "=".repeat(100) + "\n" +
+        "=".repeat(80) + "\n" +
+        String.format("Ход #%s \t/// %s ///\tКоличество съеденных фигур: %s\t\n", stepCount, lastStep, eatPiecesCount) +
+        "=".repeat(80) + "\n" +
         TextColor.RESET;
   }
 

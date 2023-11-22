@@ -363,9 +363,9 @@ public final class ChessBoard {
       }
 
       if (after.getColor() == WHITE) {
-        if (move.equals(PAWN_BLACK_DOWN_1) || move.equals(PAWN_BLACK_DOWN_2) || move.equals(PAWN_BLACK_DOWN_LEFT) || move.equals(PAWN_BLACK_DOWN_RIGHT)) {
-          return false;
-        }
+//        if (move.equals(PAWN_BLACK_DOWN_1) || move.equals(PAWN_BLACK_DOWN_2) || move.equals(PAWN_BLACK_DOWN_LEFT) || move.equals(PAWN_BLACK_DOWN_RIGHT)) {
+//          return false;
+//        }
 
         if (checkEnemyPieceInDestination()) {
           return Math.abs(xShift) != 0;
@@ -381,9 +381,9 @@ public final class ChessBoard {
         }
 
       } else {
-        if (move.equals(PAWN_WHITE_UP_1) || move.equals(PAWN_WHITE_UP_2) || move.equals(PAWN_WHITE_UP_LEFT) || move.equals(PAWN_WHITE_UP_RIGHT)) {
-          return false;
-        }
+//        if (move.equals(PAWN_WHITE_UP_1) || move.equals(PAWN_WHITE_UP_2) || move.equals(PAWN_WHITE_UP_LEFT) || move.equals(PAWN_WHITE_UP_RIGHT)) {
+//          return false;
+//        }
 
         if (checkEnemyPieceInDestination()) {
           return Math.abs(xShift) != 0;
@@ -444,19 +444,30 @@ public final class ChessBoard {
     }
 
     private Set<Square> getAttackedFieldList() {
-      return pieces
+      ChessBoard chessBoard = createChessBoard(pieces);
+      chessBoard.setPriority(getEnemyColor());
+
+      return chessBoard.getPieces()
           .stream()
-          .filter(p -> p.getColor() == getEnemyColor())
-          .map(p ->
-              p
+          .filter(piece -> piece.getColor() == getEnemyColor())
+          .map(piece ->
+              piece
                   .getMoveList()
                   .stream()
-                  .filter(move -> checkMoveIsPossible())
-                  .map(move -> move.getMove().move(before).getSquare())
+                  .filter(move -> {
+                    CheckPieceMove checkPieceMove = new CheckPieceMove(piece, move);
+                    return checkPieceMove.checkMoveIsPossible();
+                  })
+                  .map(move -> {
+                    Piece www = new Piece(piece);
+                    return move.getMove().move(www).getSquare();
+                  })
                   .collect(Collectors.toSet())
           )
           .flatMap(Collection::stream)
           .collect(Collectors.toSet());
+
+
     }
   }
 

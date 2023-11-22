@@ -38,7 +38,7 @@ public enum Moves {
   KING_DOWN_RIGHT(move(-1, +1)),
   KING_DOWN_LEFT(move(-1, -1)),
   KING_CASTLING_RIGHT(move(+0, +2)),
-  KING_CASTLING_LEFT(move(+0, -2)),
+  KING_CASTLING_LEFT(move(+0, -3)),
 
   //Ладья
   ROOK_UP_1(move(+1, +0)),
@@ -121,11 +121,5 @@ public enum Moves {
         .setMoveBefore(true)
         .setSquare(piece.getSquare().shift(heightShift, sideShift));
   }
-
-//  private static Move<Piece, Piece> move(int heightShift, int sideShift) {
-//    return piece -> new Piece(piece)
-//        .setSquare(piece.getSquare().shift(heightShift, sideShift))
-//        .setMoveBefore(true);
-//  }
 
 }
