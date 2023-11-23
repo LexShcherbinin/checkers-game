@@ -186,8 +186,6 @@ public final class ChessBoard {
       Piece after = new Piece(piece);
       move.getMove().move(after);
 
-      gameInfo.setPreviousMove(move);
-
       if (checkPieceMove.checkEnemyPieceInDestination()) {
         clearSquare(after.getSquare());
         gameInfo.upEatPiecesCount();
@@ -201,6 +199,8 @@ public final class ChessBoard {
       if (piece.getName().equals(KING)) {
         checkPieceMove.checkCastling();
       }
+
+      gameInfo.setPreviousMove(move);
 
       removePiece(piece);
       addPiece(after);
@@ -384,34 +384,51 @@ public final class ChessBoard {
         return false;
       }
 
-      if (after.getColor() == WHITE) {
-        if (checkEnemyPieceInDestination()) {
-          return Math.abs(xShift) != 0;
+      if (checkEnemyPieceInDestination()) {
+        return Math.abs(xShift) != 0;
+      }
 
-        } else {
-          if (Math.abs(xShift) == 1) {
-            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo - 1, xTo)));
-            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
+      boolean isWhite = after.getColor() == WHITE;
 
-          } else {
-            return yShift == 1 || yTo == 3;
-          }
-        }
+      if (Math.abs(xShift) == 1) {
+        int direction = isWhite ? -1 : 1;
+        Moves move = isWhite ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
+
+        Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo + direction, xTo)));
+        return enemy != null && gameInfo.getPreviousMove().equals(move);
 
       } else {
-        if (checkEnemyPieceInDestination()) {
-          return Math.abs(xShift) != 0;
-
-        } else {
-          if (Math.abs(xShift) == 1) {
-            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo - 1, xTo)));
-            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
-
-          } else {
-            return yShift == -1 || yTo == 4;
-          }
-        }
+        return Math.abs(yShift) == 1 || yTo == (isWhite ? 3 : 4);
       }
+
+//      if (after.getColor() == WHITE) {
+//        if (checkEnemyPieceInDestination()) {
+//          return Math.abs(xShift) != 0;
+//
+//        } else {
+//          if (Math.abs(xShift) == 1) {
+//            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo - 1, xTo)));
+//            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
+//
+//          } else {
+//            return yShift == 1 || yTo == 3;
+//          }
+//        }
+//
+//      } else {
+//        if (checkEnemyPieceInDestination()) {
+//          return Math.abs(xShift) != 0;
+//
+//        } else {
+//          if (Math.abs(xShift) == 1) {
+//            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo + 1, xTo)));
+//            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_WHITE_UP_2);
+//
+//          } else {
+//            return yShift == -1 || yTo == 4;
+//          }
+//        }
+//      }
     }
 
     private boolean checkKing() {
