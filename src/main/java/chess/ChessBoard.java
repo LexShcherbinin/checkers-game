@@ -138,6 +138,17 @@ public final class ChessBoard {
     return pieces.stream().filter(p -> p.getName().equals(Names.KING)).count() == 2;
   }
 
+  public boolean pawnPromotion(Piece piece, Names name) {
+    if (piece.getName().equals(PAWN) && !name.equals(KING) && containsPiece(piece)) {
+      removePiece(piece);
+      piece = new Piece(name, piece.getColor(), piece.getSquare());
+      addPiece(piece);
+      return true;
+    }
+
+    return false;
+  }
+
   public void giveUp() {
     status = GameStatus.CHECKMATE;
   }
