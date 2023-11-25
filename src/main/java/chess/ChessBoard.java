@@ -235,7 +235,7 @@ public final class ChessBoard {
     }
 
     String boardColor = TextColor.WHITE;
-    StringBuilder result = new StringBuilder(boardColor + " \t+---------------------------------+\n" + TextColor.RESET);
+    StringBuilder result = new StringBuilder(colorize(" \t+---------------------------------+\n", boardColor));
 
     for (int i = 7; i >= 0; i--) {
       StringBuilder row = new StringBuilder();
@@ -244,23 +244,33 @@ public final class ChessBoard {
         row.append(board[i][j]).append("\t");
       }
 
+//      result
+//          .append(boardColor)
+//          .append(i + 1)
+//          .append("\t| ")
+//          .append(TextColor.RESET)
+//          .append(row)
+//          .append(boardColor)
+//          .append("|\n")
+//          .append(TextColor.RESET);
+
       result
-          .append(boardColor)
-          .append(i + 1)
-          .append("\t| ")
-          .append(TextColor.RESET)
+          .append(colorize(i + 1 + "\t| ", boardColor))
           .append(row)
-          .append(boardColor)
-          .append("|\n")
-          .append(TextColor.RESET);
+          .append(colorize("|\n", boardColor));
     }
 
+//    return result
+//        .append(boardColor)
+//        .append(" \t+---------------------------------+" + "\n")
+//        .append(" \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH  \n")
+//        .append(TextColor.RESET)
+//        .append(gameInfo)
+//        .toString();
+
     return result
-        .append(boardColor)
-        .append(" \t+---------------------------------+" + "\n")
-        .append(" \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH  \n")
-        .append(TextColor.RESET)
-        .append(gameInfo)
+        .append(colorize(" \t+---------------------------------+\n \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH\n", boardColor))
+        .append(colorize(gameInfo, TextColor.YELLOW))
         .toString();
   }
 

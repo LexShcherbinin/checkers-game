@@ -1,7 +1,6 @@
 package chess;
 
 import chess.enums.Moves;
-import chess.helpers.TextColor;
 import chess.pojo.Piece;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -57,13 +56,20 @@ public final class GameInfo {
     this.stepCount++;
   }
 
+//  @Override
+//  public String toString() {
+//    return TextColor.YELLOW +
+//        "=".repeat(80) + "\n" +
+//        String.format("Ход #%s \t/// %s ///\tКоличество съеденных фигур: %s\t\n", stepCount, lastStep, eatPiecesCount) +
+//        "=".repeat(80) + "\n" +
+//        TextColor.RESET;
+//  }
+
   @Override
   public String toString() {
-    return TextColor.YELLOW +
-        "=".repeat(80) + "\n" +
+    return "=".repeat(80) + "\n" +
         String.format("Ход #%s \t/// %s ///\tКоличество съеденных фигур: %s\t\n", stepCount, lastStep, eatPiecesCount) +
-        "=".repeat(80) + "\n" +
-        TextColor.RESET;
+        "=".repeat(80) + "\n";
   }
 
 }
