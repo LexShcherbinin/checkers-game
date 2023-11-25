@@ -122,6 +122,20 @@ public final class ChessBoard {
     return false;
   }
 
+  public boolean changePiece(Piece piece, Names name) {
+    Piece newPiece = getPieceIfPresent(piece);
+
+    if (newPiece != null) {
+      removePiece(newPiece);
+      newPiece = new Piece(name, piece.getColor(), piece.getSquare());
+      addPiece(newPiece);
+
+      return true;
+    }
+
+    return false;
+  }
+
   public boolean containsPiece(Piece piece) {
     return pieces.contains(piece);
   }
@@ -136,17 +150,6 @@ public final class ChessBoard {
 
   public boolean haveBothKingOnBoard() {
     return pieces.stream().filter(p -> p.getName().equals(Names.KING)).count() == 2;
-  }
-
-  public boolean pawnPromotion(Piece piece, Names name) {
-    if (piece.getName().equals(PAWN) && !name.equals(KING) && containsPiece(piece)) {
-      removePiece(piece);
-      piece = new Piece(name, piece.getColor(), piece.getSquare());
-      addPiece(piece);
-      return true;
-    }
-
-    return false;
   }
 
   public void giveUp() {
@@ -203,12 +206,12 @@ public final class ChessBoard {
       }
 
       if (piece.getName().equals(PAWN)) {
-        checkPieceMove.checkEnPassant();
-        checkPieceMove.checkPawnPromotion();
+        checkPieceMove.makeEnPassantIfNeeded();
+        checkPieceMove.makePawnPromotionIfNeeded();
       }
 
       if (piece.getName().equals(KING)) {
-        checkPieceMove.checkCastling();
+        checkPieceMove.makeCastlingIfNeeded();
       }
 
       gameInfo.setPreviousMove(move);
@@ -360,7 +363,7 @@ public final class ChessBoard {
       return true;
     }
 
-    private void checkEnPassant() {
+    private void makeEnPassantIfNeeded() {
       if (Math.abs(xFrom - xTo) != 0) {
         int dy = Integer.compare(yFrom, yTo);
 
@@ -374,7 +377,7 @@ public final class ChessBoard {
       }
     }
 
-    private void checkCastling() {
+    private void makeCastlingIfNeeded() {
       int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
       int x = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
       Moves move = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
@@ -383,10 +386,14 @@ public final class ChessBoard {
       move.getMove().move(rook);
     }
 
-    private void checkPawnPromotion() {
+    /**
+     * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
+     */
+    private void makePawnPromotionIfNeeded() {
       if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
-        clearSquare(Square.of(yTo, xTo));
-        addPiece(new Piece(QUEEN, getFriendlyColor(), Square.of(yTo, xTo)));
+        removePiece(after);
+        Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
+        addPiece(queen);
       }
     }
 
@@ -411,35 +418,6 @@ public final class ChessBoard {
       } else {
         return Math.abs(yShift) == 1 || yTo == (isWhite ? 3 : 4);
       }
-
-//      if (after.getColor() == WHITE) {
-//        if (checkEnemyPieceInDestination()) {
-//          return Math.abs(xShift) != 0;
-//
-//        } else {
-//          if (Math.abs(xShift) == 1) {
-//            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo - 1, xTo)));
-//            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_BLACK_DOWN_2);
-//
-//          } else {
-//            return yShift == 1 || yTo == 3;
-//          }
-//        }
-//
-//      } else {
-//        if (checkEnemyPieceInDestination()) {
-//          return Math.abs(xShift) != 0;
-//
-//        } else {
-//          if (Math.abs(xShift) == 1) {
-//            Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo + 1, xTo)));
-//            return enemy != null && gameInfo.getPreviousMove().equals(PAWN_WHITE_UP_2);
-//
-//          } else {
-//            return yShift == -1 || yTo == 4;
-//          }
-//        }
-//      }
     }
 
     private boolean checkKing() {
