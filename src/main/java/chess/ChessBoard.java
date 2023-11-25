@@ -180,15 +180,15 @@ public final class ChessBoard {
       }
 
       if (piece.getName().equals(PAWN)) {
-        makeEnPassantIfNeeded(piece, after);
-        makePawnPromotionIfNeeded();
+        checkPieceMove.makeEnPassantIfNeeded();
+        checkPieceMove.makePawnPromotionIfNeeded();
       }
 
       gameInfo.setPreviousPiece(after);
       gameInfo.setPreviousMove(move);
 
       if (piece.getName().equals(KING)) {
-        makeCastlingIfNeeded();
+        checkPieceMove.makeCastlingIfNeeded();
       }
 
       removePiece(piece);
@@ -199,53 +199,6 @@ public final class ChessBoard {
     }
 
     return false;
-  }
-
-  //TODO: Перенести эти три метода в основной класс
-
-  private void makeEnPassantIfNeeded(Piece before, Piece after) {
-    int yFrom = before.getSquare().getVertical();
-    int xFrom = before.getSquare().getHorizontal();
-    int yTo = after.getSquare().getVertical();
-    int xTo = after.getSquare().getHorizontal();
-
-    if (Math.abs(xFrom - xTo) != 0) {
-      int dy = Integer.compare(yFrom, yTo);
-
-      Piece enemyPiece = new Piece(PAWN, getEnemyColor(), Square.of(yTo + dy, xTo), true);
-
-      Piece enemy = getPieceIfPresent(new Piece(PAWN, getEnemyColor(), Square.of(yTo + dy, xTo), true));
-      Moves enemyPreviousMove = before.getColor() == WHITE ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
-
-      if (containsPiece(enemyPiece) && gameInfo.getPreviousMove().equals(enemyPreviousMove)) {
-        removePiece(enemy);
-        gameInfo.upEatPiecesCount();
-      }
-    }
-  }
-
-  private void makeCastlingIfNeeded() {
-    Moves previousMove = gameInfo.getPreviousMove();
-
-    if (previousMove.equals(Moves.KING_CASTLING_LEFT) || previousMove.equals(Moves.KING_CASTLING_RIGHT)) {
-      int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
-      int x = previousMove.equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
-      Moves move = previousMove.equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
-
-      Piece rook = getPieceIfPresent(Square.of(y, x));
-      move.getMove().move(rook);
-    }
-  }
-
-  /**
-   * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
-   */
-  private void makePawnPromotionIfNeeded() {
-    if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
-      removePiece(after);
-      Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
-      addPiece(queen);
-    }
   }
 
   private Piece getPieceIfPresent(Piece piece) {
@@ -412,22 +365,29 @@ public final class ChessBoard {
 
     private boolean checkPawnMove() {
       if (checkEnemyPieceInDestination()) {
-        return Math.abs(xShift) != 0;
+        return xShift != 0;
       }
 
-      boolean isWhite = after.getColor() == WHITE;
-
-      if (Math.abs(xShift) == 1) {
-        int dy = isWhite ? -1 : 1;
-
-        Moves previousMove = isWhite ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
-        Piece enemyPiece = new Piece(PAWN, getEnemyColor(), Square.of(yTo + dy, xTo), true);
-
-        return containsPiece(enemyPiece) && gameInfo.getPreviousPiece().equals(enemyPiece) && gameInfo.getPreviousMove().equals(previousMove);
+      if (xShift != 0) {
+        return isEnPassant();
 
       } else {
-        return Math.abs(yShift) == 1 || yTo == (isWhite ? 3 : 4);
+        return Math.abs(yShift) == 1 || yTo == (before.getColor() == WHITE ? 3 : 4);
       }
+    }
+
+    /**
+     * Проверяет, было ли взятие на проходе.
+     */
+    private boolean isEnPassant() {
+      boolean isWhite = after.getColor() == WHITE;
+      int dy = isWhite ? -1 : 1;
+      Moves previousMove = isWhite ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
+
+      Piece enemyPiece = new Piece(PAWN, getEnemyColor(), Square.of(yTo + dy, xTo))
+          .setMoveBefore(true);
+
+      return containsPiece(enemyPiece) && gameInfo.getPreviousPiece().equals(enemyPiece) && gameInfo.getPreviousMove().equals(previousMove);
     }
 
     private boolean checkKingMove() {
@@ -469,46 +429,42 @@ public final class ChessBoard {
       return getAttackedFieldList().stream().noneMatch(shouldNotBeAttackedField::contains);
     }
 
-//    //TODO: Перенести эти три метода в основной класс
-//
-//    //TODO: Переделать данный метод: так можно съесть не только пешку
-//    private void makeEnPassantIfNeeded() {
-//      if (Math.abs(xFrom - xTo) != 0) {
-//        int dy = Integer.compare(yFrom, yTo);
-//
-//        Piece enemy = getPieceIfPresent(Square.of(yTo + dy, xTo));
-//        Moves previousMove = after.getColor() == WHITE ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
-//
-//        if (enemy != null && enemy.getColor().equals(getEnemyColor()) && gameInfo.getPreviousMove().equals(previousMove)) {
-//          removePiece(enemy);
-//          gameInfo.upEatPiecesCount();
-//        }
-//      }
-//    }
-//
-//    private void makeCastlingIfNeeded() {
-//      Moves previousMove = gameInfo.getPreviousMove();
-//
-//      if (previousMove.equals(Moves.KING_CASTLING_LEFT) || previousMove.equals(Moves.KING_CASTLING_RIGHT)) {
-//        int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
-//        int x = previousMove.equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
-//        Moves move = previousMove.equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
-//
-//        Piece rook = getPieceIfPresent(Square.of(y, x));
-//        move.getMove().move(rook);
-//      }
-//    }
-//
-//    /**
-//     * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
-//     */
-//    private void makePawnPromotionIfNeeded() {
-//      if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
-//        removePiece(after);
-//        Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
-//        addPiece(queen);
-//      }
-//    }
+    //TODO: Перенести эти три метода в основной класс
+
+    private void makeEnPassantIfNeeded() {
+      if (xShift != 0) {
+        if (isEnPassant()) {
+          int dy = after.getColor() == WHITE ? -1 : 1;
+
+          clearSquare(Square.of(yTo + dy, xTo));
+          gameInfo.upEatPiecesCount();
+        }
+      }
+    }
+
+    private void makeCastlingIfNeeded() {
+      Moves previousMove = gameInfo.getPreviousMove();
+
+      if (previousMove.equals(Moves.KING_CASTLING_LEFT) || previousMove.equals(Moves.KING_CASTLING_RIGHT)) {
+        int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
+        int x = previousMove.equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
+        Moves move = previousMove.equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
+
+        Piece rook = getPieceIfPresent(Square.of(y, x));
+        move.getMove().move(rook);
+      }
+    }
+
+    /**
+     * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
+     */
+    private void makePawnPromotionIfNeeded() {
+      if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
+        removePiece(after);
+        Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
+        addPiece(queen);
+      }
+    }
 
     //TODO: Не происходит смена приоритета. Некорректно работают методы getFriendlyColor() и getEnemyColor()
     private Set<Square> getAttackedFieldList() {
