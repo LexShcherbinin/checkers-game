@@ -87,7 +87,9 @@ public class Test_1 {
     ChessBoard chessBoard = ChessBoard.createChessBoard(pieceList);
     System.out.println(chessBoard);
 
+    pieceList.get(1).setMoveBefore(true);
     chessBoard.getGameInfo().setPreviousMove(Moves.PAWN_BLACK_DOWN_2);
+    chessBoard.getGameInfo().setPreviousPiece(pieceList.get(1));
 
     chessBoard.makeMove(pieceList.get(0), Moves.PAWN_WHITE_UP_LEFT);
     System.out.println(chessBoard);
