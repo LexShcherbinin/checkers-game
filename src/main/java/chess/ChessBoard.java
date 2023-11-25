@@ -432,6 +432,9 @@ public final class ChessBoard {
       return getAttackedFieldList().stream().noneMatch(shouldNotBeAttackedField::contains);
     }
 
+    //TODO: Перенести эти три метода в основной класс
+
+    //TODO: Переделать данный метод: так можно съесть не только пешку
     private void makeEnPassantIfNeeded() {
       if (Math.abs(xFrom - xTo) != 0) {
         int dy = Integer.compare(yFrom, yTo);
@@ -447,12 +450,16 @@ public final class ChessBoard {
     }
 
     private void makeCastlingIfNeeded() {
-      int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
-      int x = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
-      Moves move = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
+      Moves previousMove = gameInfo.getPreviousMove();
 
-      Piece rook = getPieceIfPresent(Square.of(y, x));
-      move.getMove().move(rook);
+      if (previousMove.equals(Moves.KING_CASTLING_LEFT) || previousMove.equals(Moves.KING_CASTLING_RIGHT)) {
+        int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
+        int x = previousMove.equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
+        Moves move = previousMove.equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
+
+        Piece rook = getPieceIfPresent(Square.of(y, x));
+        move.getMove().move(rook);
+      }
     }
 
     /**
@@ -466,6 +473,7 @@ public final class ChessBoard {
       }
     }
 
+    //TODO: Не происходит смена приоритета. Некорректно работают методы getFriendlyColor() и getEnemyColor()
     private Set<Square> getAttackedFieldList() {
       ChessBoard chessBoard = createChessBoard(pieces);
       chessBoard.setPriority(getEnemyColor());
@@ -477,6 +485,7 @@ public final class ChessBoard {
               piece
                   .getMoveList()
                   .stream()
+                  .filter(move -> !move.equals(Moves.KING_CASTLING_LEFT) && !move.equals(Moves.KING_CASTLING_RIGHT))
                   .filter(move -> new CheckPieceMove(piece, move).checkMoveIsPossible())
                   .map(move -> move.getMove().move(new Piece(piece)).getSquare())
                   .collect(Collectors.toSet())
