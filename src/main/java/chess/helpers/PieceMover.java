@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 public final class PieceMover {
 
+  //TODO: Переделать данный метод: надо возвращать полный список ходов, а с королями что-то отдельное придумывать
   public static Map<Piece, List<Moves>> getMoveList(ChessBoard chessBoard) {
     Piece enemyKing = chessBoard.getPieces()
         .stream()

@@ -192,7 +192,7 @@ public final class CheckPieceMove {
       );
     }
 
-    return getAttackedFieldList().stream().noneMatch(shouldNotBeAttackedField::contains);
+    return getCapturedSquareSet().stream().noneMatch(shouldNotBeAttackedField::contains);
   }
 
   public void makeEnPassantIfNeeded() {
@@ -229,24 +229,25 @@ public final class CheckPieceMove {
     }
   }
 
-  //TODO: Не происходит смена приоритета. Некорректно работают методы getFriendlyColor() и getEnemyColor()
-  private Set<Square> getAttackedFieldList() {
+  private Set<Square> getCapturedSquareSet() {
     ChessBoard chessBoard = createChessBoard(pieces);
     chessBoard.setPriority(getEnemyColor());
 
     return chessBoard.getPieces()
         .stream()
         .filter(piece -> piece.getColor() == getEnemyColor())
-        .map(piece ->
-            piece
-                .getMoveList()
-                .stream()
-                .filter(move -> !move.equals(Moves.KING_CASTLING_LEFT) && !move.equals(Moves.KING_CASTLING_RIGHT))
-                .filter(move -> new CheckPieceMove(chessBoard, piece, move).checkMoveIsPossible())
-                .map(move -> move.getMove().move(new Piece(piece)).getSquare())
-                .collect(Collectors.toSet())
-        )
+        .map(piece -> getSquareAfterMoveSetForPrice(chessBoard, piece))
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
   }
+
+  private Set<Square> getSquareAfterMoveSetForPrice(ChessBoard chessBoard, Piece piece) {
+    return piece.getMoveList()
+        .stream()
+        .filter(move -> !move.equals(Moves.KING_CASTLING_LEFT) && !move.equals(Moves.KING_CASTLING_RIGHT))
+        .filter(move -> new CheckPieceMove(chessBoard, piece, move).checkMoveIsPossible())
+        .map(move -> move.getMove().move(new Piece(piece)).getSquare())
+        .collect(Collectors.toSet());
+  }
+
 }
