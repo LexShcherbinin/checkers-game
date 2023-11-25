@@ -200,19 +200,8 @@ public final class ChessBoard {
 
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board.length; j++) {
-        String color;
-
-        if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
-//          board[i][j] = TextColor.BLACK + "֎\t" + TextColor.RESET;
-          color = TextColor.BLACK;
-
-        } else {
-//          board[i][j] = TextColor.WHITE_BRIGHT + "֎\t" + TextColor.RESET;
-          color = TextColor.WHITE_BRIGHT;
-        }
-
+        String color = ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) ? TextColor.BLACK : TextColor.WHITE_BRIGHT;
         board[i][j] = colorize("֎\t", color);
-
       }
     }
 
@@ -220,17 +209,7 @@ public final class ChessBoard {
       int y = piece.getSquare().getVertical();
       int x = piece.getSquare().getHorizontal();
 
-      String color;
-
-      if (piece.getColor().equals(WHITE)) {
-//        board[y][x] = TextColor.WHITE_BRIGHT + piece + TextColor.RESET;
-        color = TextColor.WHITE_BRIGHT;
-
-      } else {
-//        board[y][x] = TextColor.BLACK + piece + TextColor.RESET;
-        color = TextColor.BLACK;
-      }
-
+      String color = piece.getColor().equals(WHITE) ? TextColor.WHITE_BRIGHT : TextColor.BLACK;
       board[y][x] = colorize(piece, color);
     }
 
@@ -244,29 +223,11 @@ public final class ChessBoard {
         row.append(board[i][j]).append("\t");
       }
 
-//      result
-//          .append(boardColor)
-//          .append(i + 1)
-//          .append("\t| ")
-//          .append(TextColor.RESET)
-//          .append(row)
-//          .append(boardColor)
-//          .append("|\n")
-//          .append(TextColor.RESET);
-
       result
           .append(colorize(i + 1 + "\t| ", boardColor))
           .append(row)
           .append(colorize("|\n", boardColor));
     }
-
-//    return result
-//        .append(boardColor)
-//        .append(" \t+---------------------------------+" + "\n")
-//        .append(" \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH  \n")
-//        .append(TextColor.RESET)
-//        .append(gameInfo)
-//        .toString();
 
     return result
         .append(colorize(" \t+---------------------------------+\n \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH\n", boardColor))

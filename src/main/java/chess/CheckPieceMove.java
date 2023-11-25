@@ -161,7 +161,7 @@ public final class CheckPieceMove {
       return true;
     }
 
-    if (before.isMoveBefore() || !checkPathIsClear()) {
+    if (before.isMoveBefore()) {
       return false;
     }
 
@@ -196,13 +196,11 @@ public final class CheckPieceMove {
   }
 
   public void makeEnPassantIfNeeded() {
-    if (xShift != 0) {
-      if (isEnPassant()) {
-        int dy = after.getColor() == WHITE ? -1 : 1;
+    if (xShift != 0 && isEnPassant()) {
+      int dy = after.getColor() == WHITE ? -1 : 1;
 
-        chessBoard.clearSquare(Square.of(yTo + dy, xTo));
-        chessBoard.getGameInfo().upEatPiecesCount();
-      }
+      chessBoard.clearSquare(Square.of(yTo + dy, xTo));
+      chessBoard.getGameInfo().upEatPiecesCount();
     }
   }
 
@@ -224,8 +222,9 @@ public final class CheckPieceMove {
    */
   public void makePawnPromotionIfNeeded() {
     if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
-      chessBoard.removePiece(after);
       Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
+
+      chessBoard.removePiece(after);
       chessBoard.addPiece(queen);
     }
   }

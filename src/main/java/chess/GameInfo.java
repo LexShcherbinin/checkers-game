@@ -56,15 +56,6 @@ public final class GameInfo {
     this.stepCount++;
   }
 
-//  @Override
-//  public String toString() {
-//    return TextColor.YELLOW +
-//        "=".repeat(80) + "\n" +
-//        String.format("Ход #%s \t/// %s ///\tКоличество съеденных фигур: %s\t\n", stepCount, lastStep, eatPiecesCount) +
-//        "=".repeat(80) + "\n" +
-//        TextColor.RESET;
-//  }
-
   @Override
   public String toString() {
     return "=".repeat(80) + "\n" +
