@@ -184,11 +184,11 @@ public final class ChessBoard {
         checkPieceMove.makePawnPromotionIfNeeded();
       }
 
+      gameInfo.setPreviousMove(move);
+
       if (piece.getName().equals(KING)) {
         checkPieceMove.makeCastlingIfNeeded();
       }
-
-      gameInfo.setPreviousMove(move);
 
       removePiece(piece);
       addPiece(after);
