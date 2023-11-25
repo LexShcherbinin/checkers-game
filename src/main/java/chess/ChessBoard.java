@@ -391,8 +391,8 @@ public final class ChessBoard {
 
       return switch (before.getName()) {
         case KNIGHT -> true;
-        case PAWN -> checkPawn();
-        case KING -> checkKing();
+        case PAWN -> checkPawnMove();
+        case KING -> checkKingMove();
         case ROOK, QUEEN, BISHOP -> checkPathIsClear();
       };
     }
@@ -410,7 +410,7 @@ public final class ChessBoard {
       return true;
     }
 
-    private boolean checkPawn() {
+    private boolean checkPawnMove() {
       if (checkEnemyPieceInDestination()) {
         return Math.abs(xShift) != 0;
       }
@@ -418,18 +418,19 @@ public final class ChessBoard {
       boolean isWhite = after.getColor() == WHITE;
 
       if (Math.abs(xShift) == 1) {
-        int direction = isWhite ? -1 : 1;
-        Moves previousMove = isWhite ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
-        Piece previousPiece = new Piece(PAWN, getEnemyColor(), Square.of(yTo + direction, xTo), true);
+        int dy = isWhite ? -1 : 1;
 
-        return containsPiece(previousPiece) && gameInfo.getPreviousPiece().equals(previousPiece) && gameInfo.getPreviousMove().equals(previousMove);
+        Moves previousMove = isWhite ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
+        Piece enemyPiece = new Piece(PAWN, getEnemyColor(), Square.of(yTo + dy, xTo), true);
+
+        return containsPiece(enemyPiece) && gameInfo.getPreviousPiece().equals(enemyPiece) && gameInfo.getPreviousMove().equals(previousMove);
 
       } else {
         return Math.abs(yShift) == 1 || yTo == (isWhite ? 3 : 4);
       }
     }
 
-    private boolean checkKing() {
+    private boolean checkKingMove() {
       if (Math.abs(xShift) < 2) {
         return true;
       }
