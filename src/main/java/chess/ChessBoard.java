@@ -123,11 +123,9 @@ public final class ChessBoard {
   }
 
   public boolean changePiece(Piece piece, Names name) {
-    Piece newPiece = getPieceIfPresent(piece);
-
-    if (newPiece != null) {
-      removePiece(newPiece);
-      newPiece = new Piece(name, piece.getColor(), piece.getSquare());
+    if (containsPiece(piece)) {
+      removePiece(piece);
+      Piece newPiece = new Piece(name, piece.getColor(), piece.getSquare());
       addPiece(newPiece);
 
       return true;
@@ -154,30 +152,6 @@ public final class ChessBoard {
 
   public void giveUp() {
     status = GameStatus.CHECKMATE;
-  }
-
-  private Piece getPieceIfPresent(Piece piece) {
-    return pieces
-        .stream()
-        .filter(p -> p.equals(piece))
-        .findAny()
-        .orElse(null);
-  }
-
-  private Piece getPieceIfPresent(Names name, Colors color) {
-    return pieces
-        .stream()
-        .filter(p -> p.getColor().equals(color) && p.getName().equals(name))
-        .findAny()
-        .orElse(null);
-  }
-
-  private Piece getPieceIfPresent(Square square) {
-    return pieces
-        .stream()
-        .filter(p -> p.getSquare().equals(square))
-        .findAny()
-        .orElse(null);
   }
 
   private Colors getFriendlyColor() {
@@ -293,6 +267,9 @@ public final class ChessBoard {
         .toString();
   }
 
+  /**
+   * Вспомогательный класс для проверки возможности сделать ход.
+   */
   private class CheckPieceMove {
 
     private final Piece before;
@@ -325,11 +302,13 @@ public final class ChessBoard {
     }
 
     private boolean checkFriendlyPieceInDestination() {
-      return pieces.stream().anyMatch(p -> p.getSquare().equals(after.getSquare()) && p.getColor().equals(after.getColor()));
+      return pieces.stream()
+          .anyMatch(p -> p.getSquare().equals(after.getSquare()) && p.getColor().equals(after.getColor()));
     }
 
     private boolean checkEnemyPieceInDestination() {
-      return pieces.stream().anyMatch(p -> p.getSquare().equals(after.getSquare()) && !p.getColor().equals(after.getColor()));
+      return pieces.stream()
+          .anyMatch(p -> p.getSquare().equals(after.getSquare()) && !p.getColor().equals(after.getColor()));
     }
 
 
@@ -350,6 +329,30 @@ public final class ChessBoard {
       };
     }
 
+    private Piece getPieceIfPresent(Piece piece) {
+      return pieces
+          .stream()
+          .filter(p -> p.equals(piece))
+          .findAny()
+          .orElse(null);
+    }
+
+    private Piece getPieceIfPresent(Names name, Colors color) {
+      return pieces
+          .stream()
+          .filter(p -> p.getColor().equals(color) && p.getName().equals(name))
+          .findAny()
+          .orElse(null);
+    }
+
+    private Piece getPieceIfPresent(Square square) {
+      return pieces
+          .stream()
+          .filter(p -> p.getSquare().equals(square))
+          .findAny()
+          .orElse(null);
+    }
+
     private boolean checkPathClear() {
       int dx = Integer.compare(xTo, xFrom);
       int dy = Integer.compare(yTo, yFrom);
@@ -361,40 +364,6 @@ public final class ChessBoard {
       }
 
       return true;
-    }
-
-    private void makeEnPassantIfNeeded() {
-      if (Math.abs(xFrom - xTo) != 0) {
-        int dy = Integer.compare(yFrom, yTo);
-
-        Piece enemy = getPieceIfPresent(Square.of(yTo + dy, xTo));
-        Moves previousMove = after.getColor() == WHITE ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
-
-        if (enemy != null && enemy.getColor().equals(getEnemyColor()) && gameInfo.getPreviousMove().equals(previousMove)) {
-          removePiece(enemy);
-          gameInfo.upEatPiecesCount();
-        }
-      }
-    }
-
-    private void makeCastlingIfNeeded() {
-      int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
-      int x = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
-      Moves move = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
-
-      Piece rook = getPieceIfPresent(Square.of(y, x));
-      move.getMove().move(rook);
-    }
-
-    /**
-     * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
-     */
-    private void makePawnPromotionIfNeeded() {
-      if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
-        removePiece(after);
-        Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
-        addPiece(queen);
-      }
     }
 
     private boolean checkPawn() {
@@ -461,6 +430,40 @@ public final class ChessBoard {
       }
 
       return getAttackedFieldList().stream().noneMatch(shouldNotBeAttackedField::contains);
+    }
+
+    private void makeEnPassantIfNeeded() {
+      if (Math.abs(xFrom - xTo) != 0) {
+        int dy = Integer.compare(yFrom, yTo);
+
+        Piece enemy = getPieceIfPresent(Square.of(yTo + dy, xTo));
+        Moves previousMove = after.getColor() == WHITE ? PAWN_BLACK_DOWN_2 : PAWN_WHITE_UP_2;
+
+        if (enemy != null && enemy.getColor().equals(getEnemyColor()) && gameInfo.getPreviousMove().equals(previousMove)) {
+          removePiece(enemy);
+          gameInfo.upEatPiecesCount();
+        }
+      }
+    }
+
+    private void makeCastlingIfNeeded() {
+      int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
+      int x = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
+      Moves move = gameInfo.getPreviousMove().equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
+
+      Piece rook = getPieceIfPresent(Square.of(y, x));
+      move.getMove().move(rook);
+    }
+
+    /**
+     * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
+     */
+    private void makePawnPromotionIfNeeded() {
+      if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
+        removePiece(after);
+        Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
+        addPiece(queen);
+      }
     }
 
     private Set<Square> getAttackedFieldList() {
