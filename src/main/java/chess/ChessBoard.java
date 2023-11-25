@@ -1,454 +1,250 @@
 package chess;
 
-import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
 import static chess.enums.Names.PAWN;
-import static chess.PieceHelper.checkEnemyKingOnBoard;
-import static chess.PieceHelper.getAttackedFieldList;
-import static chess.PieceHelper.getMoveList;
-import static chess.PieceHelper.getPieceInSquare;
-import static chess.PieceHelper.getRivalColor;
-import static chess.PiecesCreator.getDefaultBoard;
 
 import chess.enums.Colors;
-import chess.pieces.IPieces;
-import chess.pieces.Queen;
-import chess.pieces.Rook;
+import chess.enums.GameStatus;
+import chess.enums.Moves;
+import chess.enums.Names;
+import chess.common.TextColor;
+import chess.pojo.GameInfo;
+import chess.pojo.Piece;
+import chess.pojo.Square;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Function;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-public class ChessBoard {
-
-  ChessBoard chessBoard;
-
-  /**
-   * Список фигур на доске
-   */
-  private final List<IPieces> pieces;
+@Getter()
+@Setter()
+@Accessors(chain = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ChessBoard {
 
   /**
-   * Приоритет хода
+   * Список фигур на доске.
    */
-  private Colors priority = WHITE;
+  private List<Piece> pieces;
 
   /**
-   * Последний сделанный ход
+   * Чья очередь ходить.
    */
-  private String lastStep = "";
+  private Colors priority;
 
   /**
-   * Количество съеденных фигур
+   * Статус игры.
    */
-  private int eatPiecesCount = 0;
+  private GameStatus status;
 
   /**
-   * Количество сделанных шагов
+   * Информация о партии и состоянии игры.
    */
-  private int stepCount = 1;
+  private GameInfo gameInfo;
 
-  /**
-   * Список атакуемых полей
-   */
-  private Set<Coordinates> attackedFields = new HashSet<>();
-
-  public ChessBoard() {
-    this.pieces = new ArrayList<>(getDefaultBoard());
+  private ChessBoard(ChessBoard chessBoard) {
+    this.pieces = new ArrayList<>(chessBoard.getPieces());
+    this.priority = chessBoard.getPriority();
+    this.status = chessBoard.getStatus();
+    this.gameInfo = chessBoard.getGameInfo();
   }
 
-  public ChessBoard(List<IPieces> pieceList) {
-    this.pieces = new ArrayList<>(pieceList);
+  private ChessBoard(List<Piece> pieces) {
+    this.pieces = new ArrayList<>(pieces);
+    this.priority = Colors.WHITE;
+    this.status = GameStatus.IN_PROGRESS;
+    this.gameInfo = GameInfo.newGame();
   }
 
-  public ChessBoard(ChessBoard chessBoard) {
-    this.chessBoard = chessBoard;
-    this.pieces = chessBoard.getPieces();
+  private ChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
+    this.pieces = new ArrayList<>(pieces);
+    this.priority = priority;
+    this.status = status;
+    this.gameInfo = GameInfo.newGame();
   }
 
-  public List<IPieces> getPieces() {
-    return pieces;
+  public static ChessBoard createChessBoard() {
+    return new ChessBoard(new ArrayList<>());
   }
 
-  public Colors getPriority() {
-    return priority;
+  public static ChessBoard createChessBoard(List<Piece> pieces) {
+    return new ChessBoard(pieces);
   }
 
-  public Set<Coordinates> getAttackedFields() {
-    return attackedFields;
+  public static ChessBoard createChessBoard(List<Piece> pieces, Colors priority, GameStatus status) {
+    return new ChessBoard(pieces, priority, status);
   }
 
-  public String getLastStep() {
-    return lastStep;
+  public static ChessBoard copyBoard(ChessBoard chessBoard) {
+    return new ChessBoard(chessBoard);
   }
 
-  public Map<IPieces, List<Function<IPieces, IPieces>>> getMoveMap() {
-    return getMoveList(this);
-  }
-
-  /**
-   * Сделать какой-нибудь ход какой-нибудь фигурой
-   */
-  public void makeMove() {
-    //Получить полный список всех возможных ходов. Убийцы королей в приоритете
-    Map<IPieces, List<Function<IPieces, IPieces>>> moveList = getMoveMap();
-
-    IPieces pieceBefore = getPrices(moveList);
-    Function<IPieces, IPieces> action = getAction(moveList, pieceBefore);
-
-    IPieces pieceAfter = action.apply(pieceBefore);
-
-    // Проверить, есть ли в месте назначения фигура противоположного цвета
-    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getCoordinates(), getRivalColor(this));
-
-    // Если есть, удалить её с доски
-    if (enemyPrice != null) {
-      pieces.remove(enemyPrice);
-      eatPiecesCount++;
-
-    } else if (pieceAfter.getName() == PAWN) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
-      int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
-
-      if (sideShiftHorizontal == 1 && pieceAfter.getColor() == WHITE) {
-
-        Coordinates coordinates = new Coordinates(
-            pieceAfter.getCoordinates().getVertical() - 1,
-            pieceAfter.getCoordinates().getHorizontal()
-        );
-
-        IPieces enemyPiece = getPieceInSquare(this, coordinates, BLACK);
-
-        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
-          pieces.remove(enemyPiece);
-          eatPiecesCount++;
-        }
-
-      } else if (sideShiftHorizontal == 1 && pieceAfter.getColor() == BLACK) {
-        Coordinates coordinates = new Coordinates(
-            pieceAfter.getCoordinates().getVertical() + 1,
-            pieceAfter.getCoordinates().getHorizontal()
-        );
-
-        IPieces enemyPiece = getPieceInSquare(this, coordinates, WHITE);
-
-        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
-          pieces.remove(enemyPiece);
-          eatPiecesCount++;
-        }
-      }
+  public boolean addPiece(Piece piece) {
+    if (!containsPiece(piece.getSquare())) {
+      pieces.add(piece);
+      return true;
     }
 
-    pieces.remove(pieceBefore);
-
-    // Если пешка добралась до противоположной стороны, превратить её в ферзя
-    if (pieceAfter.getName() == PAWN) {
-      if (pieceAfter.getColor() == WHITE && pieceAfter.getCoordinates().getVertical() == 7) {
-        pieceAfter = new Queen(WHITE, pieceAfter.getCoordinates());
-
-      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getCoordinates().getVertical() == 0) {
-        pieceAfter = new Queen(BLACK, pieceAfter.getCoordinates());
-      }
-    }
-
-    pieces.add(pieceAfter);
-
-    //Проверка на рокировку
-    if (pieceAfter.getName() == KING) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
-      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
-
-      if (sideShiftHorizontal == 2) {
-        if (pieceBefore.getColor() == WHITE) {
-          IPieces rightRook = getPieceInSquare(this, new Coordinates(0, 7), WHITE);
-
-          pieces.remove(rightRook);
-          pieces.add(new Rook(WHITE, new Coordinates(0, 5)));
-
-        } else {
-          IPieces rightRook = getPieceInSquare(this, new Coordinates(7, 7), BLACK);
-
-          pieces.remove(rightRook);
-          pieces.add(new Rook(BLACK, new Coordinates(7, 5)));
-        }
-
-      } else if (sideShiftHorizontal == -2) {
-        if (pieceBefore.getColor() == WHITE) {
-          IPieces leftRook = getPieceInSquare(this, new Coordinates(0, 0), WHITE);
-
-          pieces.remove(leftRook);
-          pieces.add(new Rook(WHITE, new Coordinates(0, 3)));
-
-        } else {
-          IPieces leftRook = getPieceInSquare(this, new Coordinates(7, 0), BLACK);
-
-          pieces.remove(leftRook);
-          pieces.add(new Rook(BLACK, new Coordinates(7, 3)));
-        }
-      }
-    }
-
-    saveLastStep(pieceBefore, pieceAfter);
-
-    // Проверить, не короля ли убили
-    if (enemyPrice != null) {
-      checkKing();
-    }
-
-    //Запомнить поля, которые находятся под ударом
-    attackedFields = getAttackedFieldList(this, priority);
-
-    // Передать ход другой стороне
-    changePriority();
+    return false;
   }
 
-  public void makeMove(IPieces piece, Function<IPieces, IPieces> action) {
-    IPieces pieceBefore = piece;
-    IPieces pieceAfter = action.apply(pieceBefore);
-
-    // Проверить, есть ли в месте назначения фигура противоположного цвета
-    IPieces enemyPrice = getPieceInSquare(this, pieceAfter.getCoordinates(), getRivalColor(this));
-
-    // Если есть, удалить её с доски
-    if (enemyPrice != null) {
-      pieces.remove(enemyPrice);
-      eatPiecesCount++;
-
-    } else if (pieceAfter.getName() == PAWN) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
-      int sideShiftHorizontal = Math.abs(horizontalBefore - horizontalAfter);
-
-      if (sideShiftHorizontal == 1 && pieceAfter.getColor() == WHITE) {
-
-        Coordinates coordinates = new Coordinates(
-            pieceAfter.getCoordinates().getVertical() - 1,
-            pieceAfter.getCoordinates().getHorizontal()
-        );
-
-        IPieces enemyPiece = getPieceInSquare(this, coordinates, BLACK);
-
-        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
-          pieces.remove(enemyPiece);
-          eatPiecesCount++;
-        }
-
-      } else if (sideShiftHorizontal == 1 && pieceAfter.getColor() == BLACK) {
-        Coordinates coordinates = new Coordinates(
-            pieceAfter.getCoordinates().getVertical() + 1,
-            pieceAfter.getCoordinates().getHorizontal()
-        );
-
-        IPieces enemyPiece = getPieceInSquare(this, coordinates, WHITE);
-
-        if (enemyPiece != null && !enemyPiece.getMoveBefore()) {
-          pieces.remove(enemyPiece);
-          eatPiecesCount++;
-        }
-      }
+  public boolean removePiece(Piece piece) {
+    if (pieces.contains(piece)) {
+      pieces.remove(piece);
+      return true;
     }
 
-//    pieces.remove(pieceBefore);
-    pieces.remove(PieceHelper.getPieceInSquare(this, pieceBefore.getCoordinates(), pieceBefore.getColor()));
+    return false;
+  }
 
-    // Если пешка добралась до противоположной стороны, превратить её в ферзя
-    if (pieceAfter.getName() == PAWN) {
-      if (pieceAfter.getColor() == WHITE && pieceAfter.getCoordinates().getVertical() == 7) {
-        pieceAfter = new Queen(WHITE, pieceAfter.getCoordinates());
+  public boolean clearSquare(Square square) {
+    Piece piece = pieces.stream()
+        .filter(p -> p.getSquare().equals(square))
+        .findAny()
+        .orElse(null);
 
-      } else if (pieceAfter.getColor() == BLACK && pieceAfter.getCoordinates().getVertical() == 0) {
-        pieceAfter = new Queen(BLACK, pieceAfter.getCoordinates());
-      }
+    if (piece != null) {
+      pieces.remove(piece);
+      return true;
     }
 
-    pieces.add(pieceAfter);
+    return false;
+  }
 
-    //Проверка на рокировку
-    if (pieceAfter.getName() == KING) {
-      int horizontalBefore = pieceBefore.getCoordinates().getHorizontal();
-      int horizontalAfter = pieceAfter.getCoordinates().getHorizontal();
-      int sideShiftHorizontal = horizontalAfter - horizontalBefore;
+  public boolean changePiece(Piece piece, Names name) {
+    if (containsPiece(piece)) {
+      removePiece(piece);
+      Piece newPiece = new Piece(name, piece.getColor(), piece.getSquare());
+      addPiece(newPiece);
 
-      if (sideShiftHorizontal == 2) {
-        if (pieceBefore.getColor() == WHITE) {
-          IPieces rightRook = getPieceInSquare(this, new Coordinates(0, 7), WHITE);
-
-          pieces.remove(rightRook);
-          pieces.add(new Rook(WHITE, new Coordinates(0, 5)));
-
-        } else {
-          IPieces rightRook = getPieceInSquare(this, new Coordinates(7, 7), BLACK);
-
-          pieces.remove(rightRook);
-          pieces.add(new Rook(BLACK, new Coordinates(7, 5)));
-        }
-
-      } else if (sideShiftHorizontal == -2) {
-        if (pieceBefore.getColor() == WHITE) {
-          IPieces leftRook = getPieceInSquare(this, new Coordinates(0, 0), WHITE);
-
-          pieces.remove(leftRook);
-          pieces.add(new Rook(WHITE, new Coordinates(0, 3)));
-
-        } else {
-          IPieces leftRook = getPieceInSquare(this, new Coordinates(7, 0), BLACK);
-
-          pieces.remove(leftRook);
-          pieces.add(new Rook(BLACK, new Coordinates(7, 3)));
-        }
-      }
+      return true;
     }
 
-    saveLastStep(pieceBefore, pieceAfter);
-
-    // Проверить, не короля ли убили
-    if (enemyPrice != null) {
-      checkKing();
-    }
-
-    //Запомнить поля, которые находятся под ударом
-    attackedFields = getAttackedFieldList(this, priority);
-
-    // Передать ход другой стороне
-    changePriority();
+    return false;
   }
 
-  /**
-   * Выбрать фигуру, которой можно пойти
-   */
-  public IPieces getPrices(Map<IPieces, List<Function<IPieces, IPieces>>> moveList) {
-    List<IPieces> pieceList = new ArrayList<>(moveList.keySet());
-
-//    if (pieceList.size() == 0) {
-//      System.out.println("Move list is null");
-//
-//      if (this.getPriority() == WHITE) {
-//        System.out.println("BLACK win");
-//
-//      } else {
-//        System.out.println("WHITE win");
-//      }
-//
-//      System.exit(0);
-//    }
-
-    return pieceList.get(new Random().nextInt(pieceList.size()));
+  public boolean containsPiece(Piece piece) {
+    return pieces.contains(piece);
   }
 
-  /**
-   * Выбрать ход, которым можно пойти фигурой
-   */
-  public Function<IPieces, IPieces> getAction(Map<IPieces, List<Function<IPieces, IPieces>>> moveList, IPieces piece) {
-    List<Function<IPieces, IPieces>> actionList = moveList.get(piece);
-    return actionList.get(new Random().nextInt(actionList.size()));
+  public boolean containsPiece(Names name, Colors color) {
+    return pieces.stream().anyMatch(p -> p.getColor().equals(color) && p.getName().equals(name));
   }
 
-  /**
-   * Запомнить последний ход
-   */
-  private void saveLastStep(IPieces pieceBefore, IPieces pieceAfter) {
-    lastStep = String.format(
-        "%s[%s -> %s] (Killing pieces = %s, step = %s)",
-        pieceBefore, pieceBefore.getCoordinates(), pieceAfter.getCoordinates(), eatPiecesCount, stepCount
-    );
+  public boolean containsPiece(Square square) {
+    return pieces.stream().anyMatch(p -> p.getSquare().equals(square));
   }
 
-  /**
-   * Проверить, не убили ли одного из королей
-   */
-  private void checkKing() {
-    if (!checkEnemyKingOnBoard(this)) {
-      if (this.getPriority() == WHITE) {
-        System.out.println("WHITE win");
+  public boolean haveBothKingOnBoard() {
+    return pieces.stream().filter(p -> p.getName().equals(Names.KING)).count() == 2;
+  }
 
-      } else {
-        System.out.println("BLACK win");
+  public void giveUp() {
+    status = GameStatus.CHECKMATE;
+  }
+
+  public void changePriority() {
+    priority = priority == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+  }
+
+  //TODO: Доработать данный метод
+  public boolean makeMove(Piece piece, Moves move) {
+    CheckPieceMove checkPieceMove = new CheckPieceMove(this, piece, move);
+
+    if (checkPieceMove.checkMoveIsPossible()) {
+      Piece after = new Piece(piece);
+      move.getMove().move(after);
+
+      if (checkPieceMove.checkEnemyPieceInDestination()) {
+        clearSquare(after.getSquare());
+        gameInfo.upEatPiecesCount();
       }
 
-      System.out.println(this);
-      System.exit(0);
+      if (piece.getName().equals(PAWN)) {
+        checkPieceMove.makeEnPassantIfNeeded();
+        checkPieceMove.makePawnPromotionIfNeeded();
+      }
+
+      gameInfo.setPreviousPiece(after);
+      gameInfo.setPreviousMove(move);
+
+      if (piece.getName().equals(KING)) {
+        checkPieceMove.makeCastlingIfNeeded();
+      }
+
+      removePiece(piece);
+      addPiece(after);
+
+      updateGameInfo(piece, after);
+      changePriority();
     }
+
+    return false;
   }
 
   /**
-   * Передать ход другой стороне
+   * Обновить информацию об игре.
    */
-  private void changePriority() {
-    stepCount++;
-
-    if (priority == WHITE) {
-      priority = BLACK;
-
-    } else {
-      priority = WHITE;
-    }
+  private void updateGameInfo(Piece from, Piece to) {
+    String lastStep = String.format("%s(%s -> %s)", from, from.getSquare(), to.getSquare());
+    gameInfo.upStepCount();
+    gameInfo.setLastStep(lastStep);
   }
 
-  /**
-   * @return
-   * +-------------------------+
-   * | BR BH BB BQ BK BB BH BR |
-   * | BP BP BP BP BP BP BP BP |
-   * |  *  *  *  *  *  *  *  * |
-   * |  *  *  *  *  *  *  *  * |
-   * |  *  *  *  *  *  *  *  * |
-   * |  *  *  *  *  *  *  *  * |
-   * | WP WP WP WP WP WP WP WP |
-   * | WR WH WB WQ WK WB WH WR |
-   * +-------------------------+
-   */
   @Override
   public String toString() {
+    String[][] board = new String[8][8];
 
-    String[][] board = new String[][] {
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"},
-        {" *", " *", " *", " *", " *", " *", " *", " *"}
-    };
-
-    for (IPieces piece : pieces) {
-      int vertical = piece.getCoordinates().getVertical();
-      int horizontal = piece.getCoordinates().getHorizontal();
-
-      board[vertical][horizontal] = piece.toString();
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board.length; j++) {
+        String color = ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) ? TextColor.BLACK : TextColor.WHITE_BRIGHT;
+        board[i][j] = colorize("֎\t", color);
+      }
     }
 
-    StringBuilder result = new StringBuilder(" \t+-------------------------+\n");
+    for (Piece piece : pieces) {
+      int y = piece.getSquare().getVertical();
+      int x = piece.getSquare().getHorizontal();
+
+      String color = piece.getColor().equals(WHITE) ? TextColor.WHITE_BRIGHT : TextColor.BLACK;
+      board[y][x] = colorize(piece, color);
+    }
+
+    String boardColor = TextColor.WHITE;
+    StringBuilder result = new StringBuilder(colorize(" \t+---------------------------------+\n", boardColor));
 
     for (int i = 7; i >= 0; i--) {
       StringBuilder row = new StringBuilder();
 
       for (int j = 0; j < 8; j++) {
-        row.append(board[i][j]).append(" ");
+        row.append(board[i][j]).append("\t");
       }
 
-      switch (i) {
-//        case 7 -> result += "8\t| " + row + "|\n";
-        case 7 -> result.append("8\t| ").append(row).append("| ").append(lastStep).append("\n");
-        case 6 -> result.append("7\t| ").append(row).append("|\n");
-        case 5 -> result.append("6\t| ").append(row).append("|\n");
-        case 4 -> result.append("5\t| ").append(row).append("|\n");
-        case 3 -> result.append("4\t| ").append(row).append("|\n");
-        case 2 -> result.append("3\t| ").append(row).append("|\n");
-        case 1 -> result.append("2\t| ").append(row).append("|\n");
-        case 0 -> result.append("1\t| ").append(row).append("|\n");
-      }
+      result
+          .append(colorize(i + 1 + "\t| ", boardColor))
+          .append(row)
+          .append(colorize("|\n", boardColor));
     }
 
-    return result +
-        " \t+-------------------------+" + "\n" +
-        " \t   A  B  C  D  E  F  G  H  \n";
+    return result
+        .append(colorize(" \t+---------------------------------+\n \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH\n", boardColor))
+        .append(colorize(gameInfo, TextColor.YELLOW))
+        .toString();
+  }
+
+  /**
+   * Раскрашивает строку со значением в определённый цвет.
+   *
+   * @param value     значение.
+   * @param textColor цвет.
+   * @return возвращает строковое представление значения value в цвете textColor.
+   */
+  private String colorize(Object value, String textColor) {
+    return textColor + value.toString() + TextColor.RESET;
   }
 
 }

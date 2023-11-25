@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.freefair.lombok' version '8.4'
 }
 
 group 'com.github.lexshcherbinin'
@@ -18,8 +19,16 @@ dependencies {
 
     //Project Lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
+    implementation 'io.freefair.lombok:io.freefair.lombok.gradle.plugin:8.4'
+
+    //TestNG
+    testImplementation 'org.testng:testng:7.8.0'
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+test {
+    useTestNG()
 }

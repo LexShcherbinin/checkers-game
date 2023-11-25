@@ -1,4 +1,4 @@
-package chess.newversion;
+package chess.pojo;
 
 import static chess.enums.Moves.BISHOP_DOWN_LEFT_1;
 import static chess.enums.Moves.BISHOP_DOWN_LEFT_2;
@@ -83,81 +83,48 @@ import static chess.enums.Moves.ROOK_UP_5;
 import static chess.enums.Moves.ROOK_UP_6;
 import static chess.enums.Moves.ROOK_UP_7;
 
-import chess.Coordinates;
 import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-public class Piece {
+@Getter()
+@Setter()
+@Accessors(chain = true)
+@EqualsAndHashCode
+public final class Piece {
 
   private Names name;
   private Colors color;
-  private Coordinates coordinates;
-  private boolean moveBefore = false;
+  private Square square;
+  private boolean moveBefore;
   private List<Moves> moveList;
 
-  public Piece(Names name, Colors color, Coordinates coordinates) {
+  public Piece(Names name, Colors color, Square square) {
     this.name = name;
     this.color = color;
-    this.coordinates = coordinates;
+    this.square = square;
+    this.moveBefore = false;
+    this.moveList = getMovesForPiece(name, color);
   }
 
-  public Piece(Names name, Colors color, int vertical, int horizontal) {
-    this.name = name;
-    this.color = color;
-    this.coordinates = new Coordinates(vertical, horizontal);
+  public Piece(Piece piece) {
+    this.name = piece.getName();
+    this.color = piece.getColor();
+    this.square = Square.of(piece.getSquare().getVertical(), piece.getSquare().getHorizontal());
+    this.moveBefore = piece.isMoveBefore();
+    this.moveList = getMovesForPiece(name, color);
   }
 
-  public Names getName() {
-    return name;
-  }
-
-  public Piece setName(Names name) {
-    this.name = name;
-    return this;
-  }
-
-  public Colors getColor() {
-    return color;
-  }
-
-  public Piece setColor(Colors color) {
-    this.color = color;
-    return this;
-  }
-
-  public Coordinates getCoordinates() {
-    return coordinates;
-  }
-
-  public Piece setCoordinates(Coordinates coordinates) {
-    this.coordinates = coordinates;
-    return this;
-  }
-
-  public boolean isMoveBefore() {
-    return moveBefore;
-  }
-
-  public Piece setMoveBefore(boolean moveBefore) {
-    this.moveBefore = moveBefore;
-    return this;
-  }
-
-  public List<Moves> getMoveList() {
-    return moveList;
-  }
-
-  public Piece setMoveList(List<Moves> moveList) {
-    this.moveList = moveList;
-    return this;
-  }
-
-  public List<Function<Piece, Piece>> getActions() {
-    switch (this.getName()) {
+  /**
+   * Получение списка всех ходов фигуры piece.
+   */
+  public List<Moves> getMovesForPiece(Names name, Colors color) {
+    switch (name) {
       case PAWN -> {
         if (color.equals(Colors.WHITE)) {
           moveList = List.of(
@@ -324,11 +291,30 @@ public class Piece {
 
     }
 
-    return moveList.stream().map(Moves::getMove).collect(Collectors.toList());
+    return moveList;
   }
 
   @Override
   public String toString() {
-    return this.color.toString() + this.name.toString();
+    if (this.color.equals(Colors.WHITE)) {
+      return switch (this.name) {
+        case KING -> "♔";
+        case QUEEN -> "♕";
+        case ROOK -> "♖";
+        case BISHOP -> "♗";
+        case KNIGHT -> "♘";
+        case PAWN -> "♙";
+      };
+
+    } else {
+      return switch (this.name) {
+        case KING -> "♚";
+        case QUEEN -> "♛";
+        case ROOK -> "♜";
+        case BISHOP -> "♝";
+        case KNIGHT -> "♞";
+        case PAWN -> "♟";
+      };
+    }
   }
 }
