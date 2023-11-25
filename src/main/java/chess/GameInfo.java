@@ -2,6 +2,7 @@ package chess;
 
 import chess.enums.Moves;
 import chess.helpers.TextColor;
+import chess.pojo.Piece;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,12 +35,18 @@ public final class GameInfo {
    */
   private Moves previousMove;
 
+  /**
+   * Предыдущая фигура, сделавшая ход.
+   */
+  private Piece previousPiece;
+
   public static GameInfo newGame() {
     return new GameInfo()
         .setEatPiecesCount(0)
         .setStepCount(0)
         .setLastStep("")
-        .setPreviousMove(null);
+        .setPreviousMove(null)
+        .setPreviousPiece(null);
   }
 
   public void upEatPiecesCount() {
