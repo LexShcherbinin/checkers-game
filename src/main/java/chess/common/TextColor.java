@@ -1,4 +1,4 @@
-package chess.helpers;
+package chess.common;
 
 public final class TextColor {
 

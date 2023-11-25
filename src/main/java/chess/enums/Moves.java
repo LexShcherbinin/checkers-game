@@ -1,5 +1,6 @@
 package chess.enums;
 
+import chess.common.Move;
 import chess.pojo.Piece;
 
 /**

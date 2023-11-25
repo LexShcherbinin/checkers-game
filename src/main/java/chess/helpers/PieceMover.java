@@ -1,7 +1,9 @@
-package chess;
+package chess.helpers;
 
 import static chess.enums.Names.KING;
 
+import chess.CheckPieceMove;
+import chess.ChessBoard;
 import chess.enums.Moves;
 import chess.pojo.Piece;
 import java.util.HashMap;
