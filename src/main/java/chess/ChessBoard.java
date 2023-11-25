@@ -9,6 +9,7 @@ import chess.enums.GameStatus;
 import chess.enums.Moves;
 import chess.enums.Names;
 import chess.helpers.TextColor;
+import chess.pojo.GameInfo;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.ArrayList;

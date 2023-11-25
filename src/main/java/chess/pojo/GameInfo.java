@@ -1,7 +1,6 @@
-package chess;
+package chess.pojo;
 
 import chess.enums.Moves;
-import chess.pojo.Piece;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
