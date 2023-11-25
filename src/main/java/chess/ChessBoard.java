@@ -1,13 +1,8 @@
 package chess;
 
-import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
-import static chess.enums.Moves.PAWN_BLACK_DOWN_2;
-import static chess.enums.Moves.PAWN_WHITE_UP_2;
 import static chess.enums.Names.KING;
 import static chess.enums.Names.PAWN;
-import static chess.enums.Names.QUEEN;
-import static chess.enums.Names.ROOK;
 
 import chess.enums.Colors;
 import chess.enums.GameStatus;
@@ -17,10 +12,7 @@ import chess.helpers.TextColor;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -208,12 +200,18 @@ public final class ChessBoard {
 
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board.length; j++) {
+        String color;
+
         if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
-          board[i][j] = TextColor.BLACK + "֎\t" + TextColor.RESET;
+//          board[i][j] = TextColor.BLACK + "֎\t" + TextColor.RESET;
+          color = TextColor.BLACK;
 
         } else {
-          board[i][j] = TextColor.WHITE_BRIGHT + "֎\t" + TextColor.RESET;
+//          board[i][j] = TextColor.WHITE_BRIGHT + "֎\t" + TextColor.RESET;
+          color = TextColor.WHITE_BRIGHT;
         }
+
+        board[i][j] = colorize("֎\t", color);
 
       }
     }
@@ -222,12 +220,18 @@ public final class ChessBoard {
       int y = piece.getSquare().getVertical();
       int x = piece.getSquare().getHorizontal();
 
+      String color;
+
       if (piece.getColor().equals(WHITE)) {
-        board[y][x] = TextColor.WHITE_BRIGHT + piece + TextColor.RESET;
+//        board[y][x] = TextColor.WHITE_BRIGHT + piece + TextColor.RESET;
+        color = TextColor.WHITE_BRIGHT;
 
       } else {
-        board[y][x] = TextColor.BLACK + piece + TextColor.RESET;
+//        board[y][x] = TextColor.BLACK + piece + TextColor.RESET;
+        color = TextColor.BLACK;
       }
+
+      board[y][x] = colorize(piece, color);
     }
 
     String boardColor = TextColor.WHITE;
@@ -258,6 +262,10 @@ public final class ChessBoard {
         .append(TextColor.RESET)
         .append(gameInfo)
         .toString();
+  }
+
+  private String colorize(Object value, String textColor) {
+    return textColor + value.toString() + TextColor.RESET;
   }
 
 //  /**
