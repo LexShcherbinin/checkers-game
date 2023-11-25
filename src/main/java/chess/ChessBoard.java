@@ -201,30 +201,6 @@ public final class ChessBoard {
     return false;
   }
 
-  private Piece getPieceIfPresent(Piece piece) {
-    return pieces
-        .stream()
-        .filter(p -> p.equals(piece))
-        .findAny()
-        .orElse(null);
-  }
-
-  private Piece getPieceIfPresent(Names name, Colors color) {
-    return pieces
-        .stream()
-        .filter(p -> p.getColor().equals(color) && p.getName().equals(name))
-        .findAny()
-        .orElse(null);
-  }
-
-  private Piece getPieceIfPresent(Square square) {
-    return pieces
-        .stream()
-        .filter(p -> p.getSquare().equals(square))
-        .findAny()
-        .orElse(null);
-  }
-
   /**
    * Обновить информацию об игре.
    */
@@ -320,6 +296,30 @@ public final class ChessBoard {
 
       this.yShift = this.yTo - this.yFrom;
       this.xShift = this.xTo - this.xFrom;
+    }
+
+    private Piece getPieceIfPresent(Piece piece) {
+      return pieces
+          .stream()
+          .filter(p -> p.equals(piece))
+          .findAny()
+          .orElse(null);
+    }
+
+    private Piece getPieceIfPresent(Names name, Colors color) {
+      return pieces
+          .stream()
+          .filter(p -> p.getColor().equals(color) && p.getName().equals(name))
+          .findAny()
+          .orElse(null);
+    }
+
+    private Piece getPieceIfPresent(Square square) {
+      return pieces
+          .stream()
+          .filter(p -> p.getSquare().equals(square))
+          .findAny()
+          .orElse(null);
     }
 
     private boolean checkPieceNotEscape() {

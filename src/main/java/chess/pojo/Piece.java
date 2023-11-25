@@ -112,13 +112,13 @@ public final class Piece {
     this.moveList = getMovesForPiece(name, color);
   }
 
-  public Piece(Names name, Colors color, Square square, boolean moveBefore) {
-    this.name = name;
-    this.color = color;
-    this.square = square;
-    this.moveBefore = moveBefore;
-    this.moveList = getMovesForPiece(name, color);
-  }
+//  public Piece(Names name, Colors color, Square square, boolean moveBefore) {
+//    this.name = name;
+//    this.color = color;
+//    this.square = square;
+//    this.moveBefore = moveBefore;
+//    this.moveList = getMovesForPiece(name, color);
+//  }
 
   public Piece(Piece piece) {
     this.name = piece.getName();
