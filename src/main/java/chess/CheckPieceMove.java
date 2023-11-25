@@ -1,6 +1,6 @@
 package chess;
 
-import static chess.ChessBoard.createChessBoard;
+import static chess.ChessBoard.copyBoard;
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Moves.PAWN_BLACK_DOWN_2;
@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
  * Вспомогательный класс для проверки возможности сделать ход.
  */
 public final class CheckPieceMove {
+
+  public static final int MIN_ROW_INDEX = 0;
+  public static final int MAX_ROW_INDEX = 7;
 
   private final ChessBoard chessBoard;
   private final List<Piece> pieces;
@@ -80,7 +83,7 @@ public final class CheckPieceMove {
   }
 
   private boolean checkPieceNotEscape() {
-    return yTo < 8 && yTo >= 0 && xTo < 8 && xTo >= 0;
+    return yTo < 8 && yTo >= MIN_ROW_INDEX && xTo < 8 && xTo >= MIN_ROW_INDEX;
   }
 
   private boolean checkFriendlyPieceInDestination() {
@@ -165,8 +168,8 @@ public final class CheckPieceMove {
       return false;
     }
 
-    int y = before.getColor() == WHITE ? 0 : 7;
-    int x = move.equals(Moves.KING_CASTLING_RIGHT) ? 7 : 0;
+    int y = before.getColor() == WHITE ? MIN_ROW_INDEX : MAX_ROW_INDEX;
+    int x = move.equals(Moves.KING_CASTLING_RIGHT) ? MAX_ROW_INDEX : MIN_ROW_INDEX;
 
     Piece rook = getPieceIfPresent(new Piece(ROOK, getFriendlyColor(), Square.of(y, x)));
 
@@ -208,8 +211,8 @@ public final class CheckPieceMove {
     Moves previousMove = chessBoard.getGameInfo().getPreviousMove();
 
     if (previousMove.equals(Moves.KING_CASTLING_LEFT) || previousMove.equals(Moves.KING_CASTLING_RIGHT)) {
-      int y = getFriendlyColor().equals(WHITE) ? 0 : 7;
-      int x = previousMove.equals(Moves.KING_CASTLING_LEFT) ? 0 : 7;
+      int y = getFriendlyColor().equals(WHITE) ? MIN_ROW_INDEX : MAX_ROW_INDEX;
+      int x = previousMove.equals(Moves.KING_CASTLING_LEFT) ? MIN_ROW_INDEX : MAX_ROW_INDEX;
       Moves move = previousMove.equals(Moves.KING_CASTLING_LEFT) ? Moves.ROOK_RIGHT_2 : Moves.ROOK_LEFT_2;
 
       Piece rook = getPieceIfPresent(Square.of(y, x));
@@ -221,7 +224,7 @@ public final class CheckPieceMove {
    * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
    */
   public void makePawnPromotionIfNeeded() {
-    if ((after.getColor().equals(WHITE) && yTo == 7) || (after.getColor().equals(BLACK) && yTo == 0)) {
+    if ((after.getColor().equals(WHITE) && yTo == MAX_ROW_INDEX) || (after.getColor().equals(BLACK) && yTo == MIN_ROW_INDEX)) {
       Piece queen = new Piece(QUEEN, after.getColor(), after.getSquare());
 
       chessBoard.removePiece(after);
@@ -230,7 +233,7 @@ public final class CheckPieceMove {
   }
 
   private Set<Square> getCapturedSquareSet() {
-    ChessBoard chessBoard = createChessBoard(pieces);
+    ChessBoard chessBoard = copyBoard(this.chessBoard);
     chessBoard.setPriority(getEnemyColor());
 
     return chessBoard.getPieces()
