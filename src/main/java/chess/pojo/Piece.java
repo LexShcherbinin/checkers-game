@@ -86,7 +86,10 @@ import static chess.enums.Moves.ROOK_UP_7;
 import chess.enums.Colors;
 import chess.enums.Moves;
 import chess.enums.Names;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -97,6 +100,106 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode
 public final class Piece {
+
+  private static final List<Moves> PAWN_WHITE_LIST = List.of(
+      PAWN_WHITE_UP_1,
+      PAWN_WHITE_UP_2,
+      PAWN_WHITE_UP_RIGHT,
+      PAWN_WHITE_UP_LEFT
+  );
+
+  private static final List<Moves> PAWN_BLACK_LIST = List.of(
+      PAWN_BLACK_DOWN_1,
+      PAWN_BLACK_DOWN_2,
+      PAWN_BLACK_DOWN_RIGHT,
+      PAWN_BLACK_DOWN_LEFT
+  );
+
+  private static final List<Moves> KNIGHT_LIST = List.of(
+      KNIGHT_1,
+      KNIGHT_2,
+      KNIGHT_3,
+      KNIGHT_4,
+      KNIGHT_5,
+      KNIGHT_6,
+      KNIGHT_7,
+      KNIGHT_8
+  );
+
+  private static final List<Moves> KING_LIST = List.of(
+      KING_UP,
+      KING_DOWN,
+      KING_RIGHT,
+      KING_LEFT,
+      KING_UP_RIGHT,
+      KING_UP_LEFT,
+      KING_DOWN_RIGHT,
+      KING_DOWN_LEFT,
+      KING_CASTLING_RIGHT,
+      KING_CASTLING_LEFT
+  );
+
+  private static final List<Moves> ROOK_LIST = List.of(
+      ROOK_UP_1,
+      ROOK_UP_2,
+      ROOK_UP_3,
+      ROOK_UP_4,
+      ROOK_UP_5,
+      ROOK_UP_6,
+      ROOK_UP_7,
+      ROOK_DOWN_1,
+      ROOK_DOWN_2,
+      ROOK_DOWN_3,
+      ROOK_DOWN_4,
+      ROOK_DOWN_5,
+      ROOK_DOWN_6,
+      ROOK_DOWN_7,
+      ROOK_RIGHT_1,
+      ROOK_RIGHT_2,
+      ROOK_RIGHT_3,
+      ROOK_RIGHT_4,
+      ROOK_RIGHT_5,
+      ROOK_RIGHT_6,
+      ROOK_RIGHT_7,
+      ROOK_LEFT_1,
+      ROOK_LEFT_2,
+      ROOK_LEFT_3,
+      ROOK_LEFT_4,
+      ROOK_LEFT_5,
+      ROOK_LEFT_6,
+      ROOK_LEFT_7
+  );
+
+  private static final List<Moves> BISHOP_LIST = List.of(
+      BISHOP_UP_RIGHT_1,
+      BISHOP_UP_RIGHT_2,
+      BISHOP_UP_RIGHT_3,
+      BISHOP_UP_RIGHT_4,
+      BISHOP_UP_RIGHT_5,
+      BISHOP_UP_RIGHT_6,
+      BISHOP_UP_RIGHT_7,
+      BISHOP_UP_LEFT_1,
+      BISHOP_UP_LEFT_2,
+      BISHOP_UP_LEFT_3,
+      BISHOP_UP_LEFT_4,
+      BISHOP_UP_LEFT_5,
+      BISHOP_UP_LEFT_6,
+      BISHOP_UP_LEFT_7,
+      BISHOP_DOWN_RIGHT_1,
+      BISHOP_DOWN_RIGHT_2,
+      BISHOP_DOWN_RIGHT_3,
+      BISHOP_DOWN_RIGHT_4,
+      BISHOP_DOWN_RIGHT_5,
+      BISHOP_DOWN_RIGHT_6,
+      BISHOP_DOWN_RIGHT_7,
+      BISHOP_DOWN_LEFT_1,
+      BISHOP_DOWN_LEFT_2,
+      BISHOP_DOWN_LEFT_3,
+      BISHOP_DOWN_LEFT_4,
+      BISHOP_DOWN_LEFT_5,
+      BISHOP_DOWN_LEFT_6,
+      BISHOP_DOWN_LEFT_7
+  );
 
   private Names name;
   private Colors color;
@@ -127,168 +230,17 @@ public final class Piece {
     switch (name) {
       case PAWN -> {
         if (color.equals(Colors.WHITE)) {
-          moveList = List.of(
-              PAWN_WHITE_UP_1,
-              PAWN_WHITE_UP_2,
-              PAWN_WHITE_UP_RIGHT,
-              PAWN_WHITE_UP_LEFT
-          );
+          moveList = PAWN_WHITE_LIST;
 
         } else {
-          moveList = List.of(
-              PAWN_BLACK_DOWN_1,
-              PAWN_BLACK_DOWN_2,
-              PAWN_BLACK_DOWN_RIGHT,
-              PAWN_BLACK_DOWN_LEFT
-          );
+          moveList = PAWN_BLACK_LIST;
         }
       }
-
-      case KNIGHT -> moveList = List.of(
-          KNIGHT_1,
-          KNIGHT_2,
-          KNIGHT_3,
-          KNIGHT_4,
-          KNIGHT_5,
-          KNIGHT_6,
-          KNIGHT_7,
-          KNIGHT_8
-      );
-
-      case KING -> moveList = List.of(
-          KING_UP,
-          KING_DOWN,
-          KING_RIGHT,
-          KING_LEFT,
-          KING_UP_RIGHT,
-          KING_UP_LEFT,
-          KING_DOWN_RIGHT,
-          KING_DOWN_LEFT,
-          KING_CASTLING_RIGHT,
-          KING_CASTLING_LEFT
-      );
-
-      case ROOK -> moveList = List.of(
-          ROOK_UP_1,
-          ROOK_UP_2,
-          ROOK_UP_3,
-          ROOK_UP_4,
-          ROOK_UP_5,
-          ROOK_UP_6,
-          ROOK_UP_7,
-          ROOK_DOWN_1,
-          ROOK_DOWN_2,
-          ROOK_DOWN_3,
-          ROOK_DOWN_4,
-          ROOK_DOWN_5,
-          ROOK_DOWN_6,
-          ROOK_DOWN_7,
-          ROOK_RIGHT_1,
-          ROOK_RIGHT_2,
-          ROOK_RIGHT_3,
-          ROOK_RIGHT_4,
-          ROOK_RIGHT_5,
-          ROOK_RIGHT_6,
-          ROOK_RIGHT_7,
-          ROOK_LEFT_1,
-          ROOK_LEFT_2,
-          ROOK_LEFT_3,
-          ROOK_LEFT_4,
-          ROOK_LEFT_5,
-          ROOK_LEFT_6,
-          ROOK_LEFT_7
-      );
-
-      case BISHOP -> moveList = List.of(
-          BISHOP_UP_RIGHT_1,
-          BISHOP_UP_RIGHT_2,
-          BISHOP_UP_RIGHT_3,
-          BISHOP_UP_RIGHT_4,
-          BISHOP_UP_RIGHT_5,
-          BISHOP_UP_RIGHT_6,
-          BISHOP_UP_RIGHT_7,
-          BISHOP_UP_LEFT_1,
-          BISHOP_UP_LEFT_2,
-          BISHOP_UP_LEFT_3,
-          BISHOP_UP_LEFT_4,
-          BISHOP_UP_LEFT_5,
-          BISHOP_UP_LEFT_6,
-          BISHOP_UP_LEFT_7,
-          BISHOP_DOWN_RIGHT_1,
-          BISHOP_DOWN_RIGHT_2,
-          BISHOP_DOWN_RIGHT_3,
-          BISHOP_DOWN_RIGHT_4,
-          BISHOP_DOWN_RIGHT_5,
-          BISHOP_DOWN_RIGHT_6,
-          BISHOP_DOWN_RIGHT_7,
-          BISHOP_DOWN_LEFT_1,
-          BISHOP_DOWN_LEFT_2,
-          BISHOP_DOWN_LEFT_3,
-          BISHOP_DOWN_LEFT_4,
-          BISHOP_DOWN_LEFT_5,
-          BISHOP_DOWN_LEFT_6,
-          BISHOP_DOWN_LEFT_7
-      );
-
-      case QUEEN -> moveList = List.of(
-          ROOK_UP_1,
-          ROOK_UP_2,
-          ROOK_UP_3,
-          ROOK_UP_4,
-          ROOK_UP_5,
-          ROOK_UP_6,
-          ROOK_UP_7,
-          ROOK_DOWN_1,
-          ROOK_DOWN_2,
-          ROOK_DOWN_3,
-          ROOK_DOWN_4,
-          ROOK_DOWN_5,
-          ROOK_DOWN_6,
-          ROOK_DOWN_7,
-          ROOK_RIGHT_1,
-          ROOK_RIGHT_2,
-          ROOK_RIGHT_3,
-          ROOK_RIGHT_4,
-          ROOK_RIGHT_5,
-          ROOK_RIGHT_6,
-          ROOK_RIGHT_7,
-          ROOK_LEFT_1,
-          ROOK_LEFT_2,
-          ROOK_LEFT_3,
-          ROOK_LEFT_4,
-          ROOK_LEFT_5,
-          ROOK_LEFT_6,
-          ROOK_LEFT_7,
-          BISHOP_UP_RIGHT_1,
-          BISHOP_UP_RIGHT_2,
-          BISHOP_UP_RIGHT_3,
-          BISHOP_UP_RIGHT_4,
-          BISHOP_UP_RIGHT_5,
-          BISHOP_UP_RIGHT_6,
-          BISHOP_UP_RIGHT_7,
-          BISHOP_UP_LEFT_1,
-          BISHOP_UP_LEFT_2,
-          BISHOP_UP_LEFT_3,
-          BISHOP_UP_LEFT_4,
-          BISHOP_UP_LEFT_5,
-          BISHOP_UP_LEFT_6,
-          BISHOP_UP_LEFT_7,
-          BISHOP_DOWN_RIGHT_1,
-          BISHOP_DOWN_RIGHT_2,
-          BISHOP_DOWN_RIGHT_3,
-          BISHOP_DOWN_RIGHT_4,
-          BISHOP_DOWN_RIGHT_5,
-          BISHOP_DOWN_RIGHT_6,
-          BISHOP_DOWN_RIGHT_7,
-          BISHOP_DOWN_LEFT_1,
-          BISHOP_DOWN_LEFT_2,
-          BISHOP_DOWN_LEFT_3,
-          BISHOP_DOWN_LEFT_4,
-          BISHOP_DOWN_LEFT_5,
-          BISHOP_DOWN_LEFT_6,
-          BISHOP_DOWN_LEFT_7
-      );
-
+      case KNIGHT -> moveList = KNIGHT_LIST;
+      case KING -> moveList = KING_LIST;
+      case ROOK -> moveList = ROOK_LIST;
+      case BISHOP -> moveList = BISHOP_LIST;
+      case QUEEN -> moveList = Stream.of(ROOK_LIST, BISHOP_LIST).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     return moveList;

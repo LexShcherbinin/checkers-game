@@ -1,5 +1,6 @@
 package chess;
 
+import static chess.common.TextColor.colorize;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
 import static chess.enums.Names.PAWN;
@@ -234,17 +235,6 @@ public final class ChessBoard {
         .append(colorize(" \t+---------------------------------+\n \t\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH\n", boardColor))
         .append(colorize(gameInfo, TextColor.YELLOW))
         .toString();
-  }
-
-  /**
-   * Раскрашивает строку со значением в определённый цвет.
-   *
-   * @param value     значение.
-   * @param textColor цвет.
-   * @return возвращает строковое представление значения value в цвете textColor.
-   */
-  private String colorize(Object value, String textColor) {
-    return textColor + value.toString() + TextColor.RESET;
   }
 
 }

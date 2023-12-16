@@ -74,4 +74,15 @@ public final class TextColor {
   public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m"; // PURPLE
   public static final String CYAN_BACKGROUND_BRIGHT = "\033[0;106m";  // CYAN
   public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
+
+  /**
+   * Раскрашивает строку со значением в определённый цвет.
+   *
+   * @param value     значение.
+   * @param textColor цвет.
+   * @return возвращает строковое представление значения value в цвете textColor.
+   */
+  public static String colorize(Object value, String textColor) {
+    return textColor + value.toString() + TextColor.RESET;
+  }
 }
