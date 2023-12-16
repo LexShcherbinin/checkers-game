@@ -110,4 +110,60 @@ public class PawnTest {
     assertFalse(isPossible);
   }
 
+  @Test(description = "Белая пешка ходит на одну клетку вперёд и вправо", dataProvider = "square")
+  public void pawnTest11(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, WHITE, Square.of(1, square)), Moves.PAWN_WHITE_UP_RIGHT);
+
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белая пешка ходит на одну клетку вперёд и влево", dataProvider = "square")
+  public void pawnTest12(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, WHITE, Square.of(1, square)), Moves.PAWN_WHITE_UP_LEFT);
+
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белая пешка ходит на одну клетку назад и вправо", dataProvider = "square")
+  public void pawnTest13(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, WHITE, Square.of(1, square)), Moves.PAWN_BLACK_DOWN_RIGHT);
+
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белая пешка ходит на одну клетку назад и влево", dataProvider = "square")
+  public void pawnTest14(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, WHITE, Square.of(1, square)), Moves.PAWN_BLACK_DOWN_LEFT);
+
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрная пешка ходит на одну клетку вперёд и вправо", dataProvider = "square")
+  public void pawnTest15(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, BLACK, Square.of(1, square)), Moves.PAWN_BLACK_DOWN_RIGHT);
+
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрная пешка ходит на одну клетку вперёд и влево", dataProvider = "square")
+  public void pawnTest16(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, BLACK, Square.of(1, square)), Moves.PAWN_BLACK_DOWN_LEFT);
+
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрная пешка ходит на одну клетку назад и вправо", dataProvider = "square")
+  public void pawnTest17(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, BLACK, Square.of(1, square)), Moves.PAWN_WHITE_UP_RIGHT);
+
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрная пешка ходит на одну клетку назад и влево", dataProvider = "square")
+  public void pawnTest18(int square) {
+    boolean isPossible = chessBoard.makeMove(new Piece(PAWN, BLACK, Square.of(1, square)), Moves.PAWN_WHITE_UP_LEFT);
+
+    assertFalse(isPossible);
+  }
+
 }
