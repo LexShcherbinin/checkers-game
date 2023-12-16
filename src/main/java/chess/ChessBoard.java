@@ -182,6 +182,8 @@ public final class ChessBoard {
 
       updateGameInfo(piece, after);
       changePriority();
+
+      return true;
     }
 
     return false;
