@@ -101,21 +101,21 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 public final class Piece {
 
-  private static final List<Moves> PAWN_WHITE_LIST = List.of(
+  public static final List<Moves> PAWN_WHITE_LIST = List.of(
       PAWN_WHITE_UP_1,
       PAWN_WHITE_UP_2,
       PAWN_WHITE_UP_RIGHT,
       PAWN_WHITE_UP_LEFT
   );
 
-  private static final List<Moves> PAWN_BLACK_LIST = List.of(
+  public static final List<Moves> PAWN_BLACK_LIST = List.of(
       PAWN_BLACK_DOWN_1,
       PAWN_BLACK_DOWN_2,
       PAWN_BLACK_DOWN_RIGHT,
       PAWN_BLACK_DOWN_LEFT
   );
 
-  private static final List<Moves> KNIGHT_LIST = List.of(
+  public static final List<Moves> KNIGHT_LIST = List.of(
       KNIGHT_1,
       KNIGHT_2,
       KNIGHT_3,
@@ -126,7 +126,7 @@ public final class Piece {
       KNIGHT_8
   );
 
-  private static final List<Moves> KING_LIST = List.of(
+  public static final List<Moves> KING_LIST = List.of(
       KING_UP,
       KING_DOWN,
       KING_RIGHT,
@@ -139,7 +139,7 @@ public final class Piece {
       KING_CASTLING_LEFT
   );
 
-  private static final List<Moves> ROOK_LIST = List.of(
+  public static final List<Moves> ROOK_LIST = List.of(
       ROOK_UP_1,
       ROOK_UP_2,
       ROOK_UP_3,
@@ -170,7 +170,7 @@ public final class Piece {
       ROOK_LEFT_7
   );
 
-  private static final List<Moves> BISHOP_LIST = List.of(
+  public static final List<Moves> BISHOP_LIST = List.of(
       BISHOP_UP_RIGHT_1,
       BISHOP_UP_RIGHT_2,
       BISHOP_UP_RIGHT_3,

@@ -154,7 +154,7 @@ public final class ChessBoard {
 
   //TODO: Доработать данный метод
   public boolean makeMove(Piece piece, Moves move) {
-    if (!containsPiece(piece)) {
+    if (!containsPiece(piece) || !piece.getMoveList().contains(move)) {
       return false;
     }
 
