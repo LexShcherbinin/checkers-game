@@ -5,6 +5,7 @@ import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Moves.PAWN_BLACK_DOWN_2;
 import static chess.enums.Moves.PAWN_WHITE_UP_2;
+import static chess.enums.Names.KNIGHT;
 import static chess.enums.Names.PAWN;
 import static chess.enums.Names.QUEEN;
 import static chess.enums.Names.ROOK;
@@ -105,7 +106,7 @@ public final class CheckPieceMove {
   }
 
   public boolean checkMoveIsPossible() {
-    if (!checkPieceNotEscape() || checkFriendlyPieceInDestination() || !checkPathIsClear()) {
+    if (!checkPieceNotEscape() || checkFriendlyPieceInDestination() || (!before.getName().equals(KNIGHT) && !checkPathIsClear())) {
       return false;
     }
 
