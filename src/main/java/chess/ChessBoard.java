@@ -200,16 +200,19 @@ public final class ChessBoard {
     String lastStep = String.format("%s(%s -> %s)", from, from.getSquare(), to.getSquare());
     gameInfo.upStepCount();
     gameInfo.setLastStep(lastStep);
+    gameInfo.setFrom(from.getSquare());
+    gameInfo.setTo(to.getSquare());
   }
 
   @Override
   public String toString() {
     String[][] board = new String[8][8];
+    String squareChar = "֎\t";
 
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board.length; j++) {
         String color = ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) ? TextColor.BLACK : TextColor.WHITE_BRIGHT;
-        board[i][j] = colorize("֎\t", color);
+        board[i][j] = colorize(squareChar, color);
       }
     }
 
@@ -219,6 +222,11 @@ public final class ChessBoard {
 
       String color = piece.getColor().equals(WHITE) ? TextColor.WHITE_BRIGHT : TextColor.BLACK;
       board[y][x] = colorize(piece, color);
+    }
+
+    if (gameInfo.getLastStep() != null) {
+      board[gameInfo.getFrom().getVertical()][gameInfo.getFrom().getHorizontal()] = colorize(squareChar, TextColor.YELLOW_BRIGHT);
+      board[gameInfo.getTo().getVertical()][gameInfo.getTo().getHorizontal()] = colorize(gameInfo.getPreviousPiece(), TextColor.YELLOW_BRIGHT);
     }
 
     String boardColor = TextColor.WHITE;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+// TODO: 19.12.2023 Доработать данный класс добавив больше информации
 @Getter()
 @Setter()
 @Accessors(chain = true)
@@ -38,11 +39,14 @@ public final class GameInfo {
    */
   private Piece previousPiece;
 
+  private Square from;
+  private Square to;
+
   public static GameInfo newGame() {
     return new GameInfo()
         .setEatPiecesCount(0)
         .setStepCount(0)
-        .setLastStep("")
+        .setLastStep(null)
         .setPreviousMove(null)
         .setPreviousPiece(null);
   }
@@ -58,7 +62,7 @@ public final class GameInfo {
   @Override
   public String toString() {
     return "=".repeat(80) + "\n" +
-        String.format("Ход #%s \t/// %s ///\tКоличество съеденных фигур: %s\t\n", stepCount, lastStep, eatPiecesCount) +
+        "Ход #%s \t/// %s ///\tКоличество съеденных фигур: %s\t\n".formatted(stepCount, lastStep, eatPiecesCount) +
         "=".repeat(80) + "\n";
   }
 
