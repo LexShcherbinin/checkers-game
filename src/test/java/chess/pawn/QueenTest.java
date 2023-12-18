@@ -2,7 +2,8 @@ package chess.pawn;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
-import static chess.enums.Names.ROOK;
+import static chess.enums.Names.BISHOP;
+import static chess.enums.Names.QUEEN;
 import static chess.pojo.Piece.BISHOP_LIST;
 import static chess.pojo.Piece.KING_LIST;
 import static chess.pojo.Piece.KNIGHT_LIST;
@@ -25,7 +26,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class RookTest {
+public class QueenTest {
 
   List<Piece> pieceList;
   ChessBoard chessBoard;
@@ -44,36 +45,18 @@ public class RookTest {
     chessBoard = ChessBoard.createChessBoard(pieceList);
   }
 
-  @Test(description = "Белая левая ладья не может сделать ход", dataProvider = "square")
-  public void rookTest1(Moves move) {
-    Piece piece = new Piece(ROOK, WHITE, Square.of(0, 0));
+  @Test(description = "Белый ферзь не может сделать ход", dataProvider = "square")
+  public void queenTest1(Moves move) {
+    Piece piece = new Piece(QUEEN, WHITE, Square.of(0, 3));
     assertTrue(chessBoard.containsPiece(piece));
 
     boolean isPossible = chessBoard.makeMove(piece, move);
     assertFalse(isPossible);
   }
 
-  @Test(description = "Белая правая ладья не может сделать ход", dataProvider = "square")
-  public void rookTest2(Moves move) {
-    Piece piece = new Piece(ROOK, WHITE, Square.of(0, 7));
-    assertTrue(chessBoard.containsPiece(piece));
-
-    boolean isPossible = chessBoard.makeMove(piece, move);
-    assertFalse(isPossible);
-  }
-
-  @Test(description = "Чёрная левая ладья не может сделать ход", dataProvider = "square")
-  public void rookTest3(Moves move) {
-    Piece piece = new Piece(ROOK, BLACK, Square.of(7, 0));
-    assertTrue(chessBoard.containsPiece(piece));
-
-    boolean isPossible = chessBoard.makeMove(piece, move);
-    assertFalse(isPossible);
-  }
-
-  @Test(description = "Чёрная правая ладья не может сделать ход", dataProvider = "square")
-  public void rookTest4(Moves move) {
-    Piece piece = new Piece(ROOK, BLACK, Square.of(7, 7));
+  @Test(description = "Чёрный ферзь не может сделать ход", dataProvider = "square")
+  public void queenTest3(Moves move) {
+    Piece piece = new Piece(QUEEN, BLACK, Square.of(7, 3));
     assertTrue(chessBoard.containsPiece(piece));
 
     boolean isPossible = chessBoard.makeMove(piece, move);

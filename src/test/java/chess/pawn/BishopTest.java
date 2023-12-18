@@ -32,7 +32,7 @@ public class BishopTest {
 
   @DataProvider(name = "square")
   public static Object[][] square() {
-    return Stream.of(PAWN_WHITE_LIST, ROOK_LIST, PAWN_BLACK_LIST, KNIGHT_LIST, KING_LIST, BISHOP_LIST)
+    return Stream.of(PAWN_WHITE_LIST, PAWN_BLACK_LIST, ROOK_LIST, KNIGHT_LIST, KING_LIST, BISHOP_LIST)
         .flatMap(Collection::stream)
         .map(value -> Arrays.stream(new Object[] {value}).toArray())
         .toArray(Object[][]::new);
