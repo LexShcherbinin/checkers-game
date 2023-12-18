@@ -1,32 +1,20 @@
-package chess.pawn;
+package chess.defaultboard;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KNIGHT;
 import static org.testng.Assert.assertTrue;
 
-import chess.ChessBoard;
 import chess.enums.Moves;
-import chess.helpers.PiecesCreator;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
-public class KnightTest {
-
-  List<Piece> pieceList;
-  ChessBoard chessBoard;
-
-  @BeforeMethod(description = "Расстановка фигур по умолчанию")
-  public void prepare() {
-    pieceList = PiecesCreator.getDefaultPieceList();
-    chessBoard = ChessBoard.createChessBoard(pieceList);
-  }
+public class KnightTest extends DefaultBoard {
 
   @Test(description = "Белый левый конь может сделать ход 1")
   public void knightTest1() {

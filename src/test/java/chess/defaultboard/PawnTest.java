@@ -1,4 +1,4 @@
-package chess.pawn;
+package chess.defaultboard;
 
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
@@ -11,44 +11,17 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import chess.ChessBoard;
 import chess.enums.Moves;
-import chess.helpers.PiecesCreator;
 import chess.pojo.Piece;
 import chess.pojo.Square;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
-public class PawnTest {
-
-  List<Piece> pieceList;
-  ChessBoard chessBoard;
-
-  @DataProvider(name = "square")
-  public static Object[][] square() {
-    return new Object[][] {
-        {0},
-        {1},
-        {2},
-        {3},
-        {4},
-        {5},
-        {6},
-        {7},
-    };
-  }
-
-  @BeforeMethod(description = "Расстановка фигур по умолчанию")
-  public void prepare() {
-    pieceList = PiecesCreator.getDefaultPieceList();
-    chessBoard = ChessBoard.createChessBoard(pieceList);
-  }
+public class PawnTest extends DefaultBoard {
 
   @Test(description = "Белая пешка ходит на одну клетку вперёд", dataProvider = "square")
   public void pawnTest1(int square) {
