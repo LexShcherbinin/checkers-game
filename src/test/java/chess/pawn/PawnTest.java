@@ -44,7 +44,7 @@ public class PawnTest {
     };
   }
 
-  @BeforeMethod
+  @BeforeMethod(description = "Расстановка фигур по умолчанию")
   public void prepare() {
     pieceList = PiecesCreator.getDefaultPieceList();
     chessBoard = ChessBoard.createChessBoard(pieceList);
