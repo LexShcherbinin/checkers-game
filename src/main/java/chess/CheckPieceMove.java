@@ -106,7 +106,8 @@ public final class CheckPieceMove {
   }
 
   public boolean checkMoveIsPossible() {
-    if (!checkPieceNotEscape() || checkFriendlyPieceInDestination() || (!before.getName().equals(KNIGHT) && !checkPathIsClear())) {
+    if (!checkPieceNotEscape() || checkFriendlyPieceInDestination() || (!before.getName().equals(KNIGHT)
+        && !checkPathIsClear())) {
       return false;
     }
 
@@ -204,7 +205,7 @@ public final class CheckPieceMove {
       int dy = after.getColor() == WHITE ? -1 : 1;
 
       chessBoard.clearSquare(Square.of(yTo + dy, xTo));
-      chessBoard.getGameInfo().upEatPiecesCount();
+      chessBoard.getGameInfo().setEatPiecesCount(chessBoard.getGameInfo().getEatPiecesCount() + 1);
     }
   }
 
@@ -222,7 +223,8 @@ public final class CheckPieceMove {
   }
 
   /**
-   * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece, Names name)".
+   * По умолчанию всегда превращает пешку в ферзя. Для превращения в другую фигуру использовать метод "changePiece(Piece piece,
+   * Names name)".
    */
   public void makePawnPromotionIfNeeded() {
     if ((after.getColor().equals(WHITE) && yTo == MAX_ROW_INDEX) || (after.getColor().equals(BLACK) && yTo == MIN_ROW_INDEX)) {

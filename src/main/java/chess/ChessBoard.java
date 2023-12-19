@@ -5,11 +5,11 @@ import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
 import static chess.enums.Names.PAWN;
 
+import chess.common.TextColor;
 import chess.enums.Colors;
 import chess.enums.GameStatus;
 import chess.enums.Moves;
 import chess.enums.Names;
-import chess.common.TextColor;
 import chess.pojo.GameInfo;
 import chess.pojo.Piece;
 import chess.pojo.Square;
@@ -166,7 +166,7 @@ public final class ChessBoard {
 
       if (checkPieceMove.checkEnemyPieceInDestination()) {
         clearSquare(after.getSquare());
-        gameInfo.upEatPiecesCount();
+        gameInfo.setEatPiecesCount(gameInfo.getEatPiecesCount() + 1);
       }
 
       if (piece.getName().equals(PAWN)) {
@@ -184,25 +184,25 @@ public final class ChessBoard {
       removePiece(piece);
       addPiece(after);
 
-      updateGameInfo(piece, after);
-      changePriority();
+      gameInfo.setStepCount(gameInfo.getStepCount() + 1);
+      gameInfo.setFrom(piece.getSquare());
+      gameInfo.setTo(after.getSquare());
 
+      changePriority();
       return true;
     }
 
     return false;
   }
 
-  /**
-   * Обновить информацию об игре.
-   */
-  private void updateGameInfo(Piece from, Piece to) {
-    String lastStep = String.format("%s(%s -> %s)", from, from.getSquare(), to.getSquare());
-    gameInfo.upStepCount();
-    gameInfo.setLastStep(lastStep);
-    gameInfo.setFrom(from.getSquare());
-    gameInfo.setTo(to.getSquare());
-  }
+//  /**
+//   * Обновить информацию об игре.
+//   */
+//  private void updateGameInfo(Piece from, Piece to) {
+//    gameInfo.setStepCount(gameInfo.getStepCount() + 1);
+//    gameInfo.setFrom(from.getSquare());
+//    gameInfo.setTo(to.getSquare());
+//  }
 
   @Override
   public String toString() {
@@ -224,9 +224,10 @@ public final class ChessBoard {
       board[y][x] = colorize(piece, color);
     }
 
-    if (gameInfo.getLastStep() != null) {
+    if (gameInfo.getPreviousMove() != null) {
       board[gameInfo.getFrom().getVertical()][gameInfo.getFrom().getHorizontal()] = colorize(squareChar, TextColor.YELLOW_BRIGHT);
-      board[gameInfo.getTo().getVertical()][gameInfo.getTo().getHorizontal()] = colorize(gameInfo.getPreviousPiece(), TextColor.YELLOW_BRIGHT);
+      board[gameInfo.getTo().getVertical()][gameInfo.getTo().getHorizontal()] =
+          colorize(gameInfo.getPreviousPiece(), TextColor.YELLOW_BRIGHT);
     }
 
     String boardColor = TextColor.WHITE;

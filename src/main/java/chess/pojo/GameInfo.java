@@ -25,45 +25,48 @@ public final class GameInfo {
   private int stepCount;
 
   /**
-   * Последний сделанный ход.
-   */
-  private String lastStep;
-
-  /**
    * Предыдущий ход.
    */
   private Moves previousMove;
 
   /**
-   * Предыдущая фигура, сделавшая ход.
+   * Фигура, сделавшая предыдущий ход.
    */
   private Piece previousPiece;
 
+  /**
+   * Клетка "Откуда".
+   */
   private Square from;
+
+  /**
+   * Клетка "Куда".
+   */
   private Square to;
 
   public static GameInfo newGame() {
     return new GameInfo()
         .setEatPiecesCount(0)
         .setStepCount(0)
-        .setLastStep(null)
         .setPreviousMove(null)
-        .setPreviousPiece(null);
+        .setPreviousPiece(null)
+        .setFrom(null)
+        .setTo(null);
   }
 
-  public void upEatPiecesCount() {
-    this.eatPiecesCount++;
-  }
-
-  public void upStepCount() {
-    this.stepCount++;
-  }
+//  public void upEatPiecesCount() {
+//    this.eatPiecesCount++;
+//  }
+//
+//  public void upStepCount() {
+//    this.stepCount++;
+//  }
 
   @Override
   public String toString() {
-    return "=".repeat(80) + "\n" +
-        "Ход #%s \t/// %s ///\tКоличество съеденных фигур: %s\t\n".formatted(stepCount, lastStep, eatPiecesCount) +
-        "=".repeat(80) + "\n";
+    String borderLine = "=".repeat(80);
+    return "%s\nХод #%s \t/// %s(%s -> %s) ///\tКоличество съеденных фигур: %s\t\n%s\n"
+        .formatted(borderLine, stepCount, previousPiece, from, to, eatPiecesCount, borderLine);
   }
 
 }
