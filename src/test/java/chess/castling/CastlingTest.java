@@ -3,6 +3,8 @@ package chess.castling;
 import static chess.enums.Colors.BLACK;
 import static chess.enums.Colors.WHITE;
 import static chess.enums.Names.KING;
+import static chess.enums.Names.KNIGHT;
+import static chess.enums.Names.QUEEN;
 import static chess.enums.Names.ROOK;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -149,6 +151,40 @@ public class CastlingTest extends DefaultCastling {
     chessBoard.setPriority(BLACK);
     boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_LEFT);
     assertTrue(isPossible);
+  }
+
+  @Test(description = "Белый король, рокировка вправо не возможна, если путь не свободен")
+  public void castlingTest31() {
+    chessBoard.addPiece(new Piece(QUEEN, WHITE, Square.of(0, 5)));
+
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_RIGHT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белый король, рокировка влево не возможна, если путь не свободен")
+  public void castlingTest32() {
+    chessBoard.addPiece(new Piece(KNIGHT, WHITE, Square.of(0, 3)));
+
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_LEFT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка вправо не возможна, если путь не свободен")
+  public void castlingTest33() {
+    chessBoard.addPiece(new Piece(QUEEN, BLACK, Square.of(7, 5)));
+    chessBoard.setPriority(BLACK);
+
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_RIGHT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка влево не возможна, если путь не свободен")
+  public void castlingTest34() {
+    chessBoard.addPiece(new Piece(KNIGHT, WHITE, Square.of(7, 3)));
+    chessBoard.setPriority(BLACK);
+
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_LEFT);
+    assertFalse(isPossible);
   }
 
 }

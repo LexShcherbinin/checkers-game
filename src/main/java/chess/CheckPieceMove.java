@@ -106,8 +106,7 @@ public final class CheckPieceMove {
   }
 
   public boolean checkMoveIsPossible() {
-    if (!checkPieceNotEscape() || checkFriendlyPieceInDestination() || (!before.getName().equals(KNIGHT)
-        && !checkPathIsClear())) {
+    if (!checkPieceNotEscape() || checkFriendlyPieceInDestination() || (!before.getName().equals(KNIGHT) && !checkPathIsClear())) {
       return false;
     }
 
