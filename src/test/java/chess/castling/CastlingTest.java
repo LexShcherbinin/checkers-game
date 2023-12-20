@@ -15,10 +15,9 @@ import org.testng.annotations.Test;
 
 public class CastlingTest extends DefaultCastling {
 
-  @Test
+  @Test(description = "Белый король, рокировка вправо возможна")
   public void castlingTest1() {
-    Piece piece = new Piece(KING, WHITE, Square.of(0, 4));
-    boolean isPossible = chessBoard.makeMove(piece, Moves.KING_CASTLING_RIGHT);
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_RIGHT);
 
     assertTrue(isPossible);
     assertFalse(chessBoard.containsPiece(Square.of(0, 4)));
@@ -28,10 +27,9 @@ public class CastlingTest extends DefaultCastling {
     assertEquals(chessBoard.getPieces().size(), pieceList.size());
   }
 
-  @Test
+  @Test(description = "Белый король, рокировка влево возможна")
   public void castlingTest2() {
-    Piece piece = new Piece(KING, WHITE, Square.of(0, 4));
-    boolean isPossible = chessBoard.makeMove(piece, Moves.KING_CASTLING_LEFT);
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_LEFT);
 
     assertTrue(isPossible);
     assertFalse(chessBoard.containsPiece(Square.of(0, 4)));
@@ -41,11 +39,10 @@ public class CastlingTest extends DefaultCastling {
     assertEquals(chessBoard.getPieces().size(), pieceList.size());
   }
 
-  @Test
+  @Test(description = "Чёрный король, рокировка вправо возможна")
   public void castlingTest3() {
-    Piece piece = new Piece(KING, BLACK, Square.of(7, 4));
-    chessBoard.changePriority();
-    boolean isPossible = chessBoard.makeMove(piece, Moves.KING_CASTLING_RIGHT);
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_RIGHT);
 
     assertTrue(isPossible);
     assertFalse(chessBoard.containsPiece(Square.of(7, 4)));
@@ -55,11 +52,10 @@ public class CastlingTest extends DefaultCastling {
     assertEquals(chessBoard.getPieces().size(), pieceList.size());
   }
 
-  @Test
+  @Test(description = "Чёрный король, рокировка влево возможна")
   public void castlingTest4() {
-    Piece piece = new Piece(KING, BLACK, Square.of(7, 4));
-    chessBoard.changePriority();
-    boolean isPossible = chessBoard.makeMove(piece, Moves.KING_CASTLING_LEFT);
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_LEFT);
 
     assertTrue(isPossible);
     assertFalse(chessBoard.containsPiece(Square.of(7, 4)));
@@ -67,6 +63,92 @@ public class CastlingTest extends DefaultCastling {
     assertTrue(chessBoard.containsPiece(new Piece(KING, BLACK, Square.of(7, 1)).setMoveBefore(true)));
     assertTrue(chessBoard.containsPiece(new Piece(ROOK, BLACK, Square.of(7, 2)).setMoveBefore(true)));
     assertEquals(chessBoard.getPieces().size(), pieceList.size());
+  }
+
+  @Test(description = "Белый король, рокировка вправо не возможна, если король уже ходил")
+  public void castlingTest11() {
+    boolean isPossible = chessBoard.makeMove(whiteKing.setMoveBefore(true), Moves.KING_CASTLING_RIGHT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белый король, рокировка влево не возможна, если король уже ходил")
+  public void castlingTest12() {
+    boolean isPossible = chessBoard.makeMove(whiteKing.setMoveBefore(true), Moves.KING_CASTLING_LEFT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка вправо не возможна, если король уже ходил")
+  public void castlingTest13() {
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing.setMoveBefore(true), Moves.KING_CASTLING_RIGHT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка влево не возможна, если король уже ходил")
+  public void castlingTest14() {
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing.setMoveBefore(true), Moves.KING_CASTLING_LEFT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белый король, рокировка вправо не возможна, если правая ладья уже ходила")
+  public void castlingTest21() {
+    whiteRookRight.setMoveBefore(true);
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_RIGHT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белый король, рокировка вправо возможна, если левая ладья уже ходила, а правая нет")
+  public void castlingTest22() {
+    whiteRookLeft.setMoveBefore(true);
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_RIGHT);
+    assertTrue(isPossible);
+  }
+
+  @Test(description = "Белый король, рокировка влево не возможна, если левая ладья уже ходила")
+  public void castlingTest23() {
+    whiteRookLeft.setMoveBefore(true);
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_LEFT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Белый король, рокировка влево возможна, если правая ладья уже ходила, а левая нет")
+  public void castlingTest24() {
+    whiteRookRight.setMoveBefore(true);
+    boolean isPossible = chessBoard.makeMove(whiteKing, Moves.KING_CASTLING_LEFT);
+    assertTrue(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка вправо не возможна, если правая ладья уже ходила")
+  public void castlingTest25() {
+    blackRookRight.setMoveBefore(true);
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_RIGHT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка вправо возможна, если левая ладья уже ходила, а правая нет")
+  public void castlingTest26() {
+    blackRookLeft.setMoveBefore(true);
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_RIGHT);
+    assertTrue(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка влево не возможна, если левая ладья уже ходила")
+  public void castlingTest27() {
+    blackRookLeft.setMoveBefore(true);
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_LEFT);
+    assertFalse(isPossible);
+  }
+
+  @Test(description = "Чёрный король, рокировка влево возможна, если правая ладья уже ходила, а левая нет")
+  public void castlingTest28() {
+    blackRookRight.setMoveBefore(true);
+    chessBoard.setPriority(BLACK);
+    boolean isPossible = chessBoard.makeMove(blackKing, Moves.KING_CASTLING_LEFT);
+    assertTrue(isPossible);
   }
 
 }
